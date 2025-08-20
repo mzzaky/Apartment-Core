@@ -1,4 +1,4 @@
-# ApartmentCore Plugin v1.0.0
+# ApartmentCore Plugin v1.1.0
 
 Advanced apartment management system for Minecraft servers.
 
@@ -52,6 +52,8 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore sell <id>` | Sell your apartment | `apartmentcore.sell` |
 | `/apartmentcore teleport <id>` | Teleport to your apartment | `apartmentcore.teleport` |
 | `/apartmentcore version` | Check plugin version | `apartmentcore.use` |
+| `/apartmentcore list` | Show All Apartment | `apartmentcore.use` |
+| `/apartmentcore confirm` | Selling Requirement Action | `apartmentcore.use` |
 
 ### Owner Commands
 | Command | Description | Permission |
@@ -60,6 +62,7 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore rent info <id>` | View income information | `apartmentcore.rent` |
 | `/apartmentcore tax pay <id>` | Pay apartment taxes | `apartmentcore.tax` |
 | `/apartmentcore tax info <id>` | View tax information | `apartmentcore.tax` |
+| `/apartmentcore upgrade` | Upgrade Apartment Action | `apartmentcore.upgrade` |
 
 ### Admin Commands
 | Command | Description | Permission |
