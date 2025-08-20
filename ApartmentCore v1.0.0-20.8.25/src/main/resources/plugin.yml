@@ -1,0 +1,75 @@
+name: ApartmentCore
+version: '1.0.0'
+main: com.aithor.apartmentcorei3.ApartmentCorei3
+api-version: '1.21'
+author: Aithor
+description: Advanced apartment management system for Minecraft
+depend: [Vault, WorldGuard]
+softdepend: [PlaceholderAPI]
+
+commands:
+  apartmentcore:
+    description: Main command for ApartmentCore
+    usage: /<command> [args]
+    aliases: [ac, apartment]
+
+permissions:
+  apartmentcore.use:
+    description: Allow basic use of apartment commands
+    default: true
+
+  apartmentcore.admin:
+    description: Allow use of admin commands
+    default: op
+
+  apartmentcore.buy:
+    description: Allow buying apartments
+    default: true
+
+  apartmentcore.sell:
+    description: Allow selling apartments
+    default: true
+
+  apartmentcore.teleport:
+    description: Allow teleporting to owned apartments
+    default: true
+
+  apartmentcore.rent:
+    description: Allow claiming rent from apartments
+    default: true
+
+  apartmentcore.tax:
+    description: Allow paying taxes for apartments
+    default: true
+
+  apartmentcore.admin.create:
+    description: Allow creating new apartments
+    default: op
+
+  apartmentcore.admin.remove:
+    description: Allow removing apartments
+    default: op
+
+  apartmentcore.admin.set:
+    description: Allow modifying apartment properties
+    default: op
+
+  apartmentcore.admin.teleport:
+    description: Allow teleporting to any apartment
+    default: op
+
+  apartmentcore.admin.list:
+    description: Allow viewing all apartments
+    default: op
+
+  apartmentcore.admin.reload:
+    description: Allow reloading plugin configuration
+    default: op
+
+  apartmentcore.bypass.tax:
+    description: Bypass tax payments
+    default: false
+
+  apartmentcore.bypass.limit:
+    description: Bypass apartment ownership limits
+    default: false
