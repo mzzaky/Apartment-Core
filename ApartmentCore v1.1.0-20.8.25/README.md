@@ -1,209 +1,213 @@
-# ApartmentCore Plugin v1.0.0
+# ApartmentCore Changelog
 
-Advanced apartment management system for Minecraft servers.
+## Version 1.1.0 (Major Update)
+*Released: 2024*
 
-## Features
+### 🎯 Major Improvements
 
-- 🏠 **Apartment Management**: Convert WorldGuard regions into purchasable apartments
-- 💰 **Income Generation**: Apartments generate passive income based on their level
-- 📊 **Level System**: 5 apartment levels with increasing income rates
-- 🏦 **Tax System**: Automatic tax collection with penalty system
-- 🔐 **Permission-based Security**: Comprehensive permission nodes for all features
-- 📝 **Data Persistence**: YAML or MySQL/SQLite database support
-- 🎯 **PlaceholderAPI Integration**: Display apartment info in other plugins
-- ⚡ **Optimized Performance**: Async operations and caching for minimal server impact
+#### Core System Enhancements
+- **Fixed NullPointerException Issues**: Resolved critical startup errors by properly initializing data files before dependency checks
+- **Minecraft Time System**: Completely reworked time calculations to use proper Minecraft time instead of real-world time
+- **Tax System Overhaul**: Fixed tax collection to properly track Minecraft days and process taxes accordingly
+- **Memory Optimization**: Added proper null checks and error handling throughout the codebase
 
-## Dependencies
+#### New Features
+- **Apartment Upgrade System**: Players can now upgrade apartments from level 1 to 5
+    - Command: `/apartmentcore upgrade <apartment_id>`
+    - Each level increases income generation
+    - Upgrade costs are configurable
 
-### Required
-- **Minecraft**: 1.21.4
-- **Spigot/Paper**: Latest version for 1.21.4
-- **Vault**: Economy API
-- **WorldGuard**: Region management
+- **Confirmation System**: Added safety confirmations for important actions
+    - Selling apartments now requires confirmation
+    - Command: `/apartmentcore confirm`
+    - 30-second timeout for confirmations
 
-### Optional
-- **PlaceholderAPI**: For placeholder support
+- **List Command**: New listing functionality with filters
+    - `/apartmentcore list all` - Show all apartments
+    - `/apartmentcore list sale` - Show apartments for sale
+    - `/apartmentcore list mine` - Show owned apartments
 
-## Installation
+- **Command Cooldown System**: Prevents command spam
+    - Configurable cooldown period
+    - Bypass permission: `apartmentcore.bypass.cooldown`
 
-1. Download the ApartmentCore.jar file
-2. Place it in your server's `plugins` folder
-3. Install required dependencies (Vault, WorldGuard)
-4. Restart your server
-5. Configure the plugin in `plugins/ApartmentCore/config.yml`
+- **Enhanced PlaceholderAPI Support**:
+    - `%apartmentcore_owned_count%` - Number of apartments owned
+    - `%apartmentcore_total_income%` - Total pending income
+    - Fixed registration timing issues
 
-## Building from Source
+### 🐛 Bug Fixes
 
-```bash
-git clone https://github.com/yourusername/ApartmentCore.git
-cd ApartmentCore
-mvn clean package
-```
+#### Critical Fixes
+1. **Data Persistence**: Fixed data not saving properly on server shutdown
+2. **Tax Calculation**: Corrected Minecraft day tracking for accurate tax collection
+3. **Income Generation**: Fixed random income generation within proper ranges
+4. **Region Teleportation**: Improved teleport location calculation to find safe spots
+5. **Permission Checks**: Added missing permission validations for all commands
+6. **WorldGuard Integration**: Fixed player addition/removal from regions
 
-The compiled JAR will be in the `target` folder.
+#### Minor Fixes
+- Fixed version placeholder showing `${project.version}` instead of actual version
+- Corrected apartment limit checking for players
+- Fixed penalty calculations using proper percentages
+- Improved error messages for better user feedback
+- Fixed concurrent modification exceptions in collections
 
-## Commands
+### 🔧 Technical Improvements
 
-### General Commands
-| Command | Description | Permission |
-|---------|-------------|------------|
-| `/apartmentcore info [id]` | View plugin or apartment info | `apartmentcore.use` |
-| `/apartmentcore buy <id>` | Buy an apartment | `apartmentcore.buy` |
-| `/apartmentcore sell <id>` | Sell your apartment | `apartmentcore.sell` |
-| `/apartmentcore teleport <id>` | Teleport to your apartment | `apartmentcore.teleport` |
-| `/apartmentcore version` | Check plugin version | `apartmentcore.use` |
+#### Code Quality
+- **Error Handling**: Comprehensive try-catch blocks for all critical operations
+- **Input Validation**: Added validation for all numeric inputs
+- **Null Safety**: Extensive null checks to prevent NPEs
+- **Thread Safety**: Using ConcurrentHashMap for thread-safe operations
+- **Resource Management**: Proper cleanup of tasks on disable
 
-### Owner Commands
-| Command | Description | Permission |
-|---------|-------------|------------|
-| `/apartmentcore rent claim <id>` | Claim generated income | `apartmentcore.rent` |
-| `/apartmentcore rent info <id>` | View income information | `apartmentcore.rent` |
-| `/apartmentcore tax pay <id>` | Pay apartment taxes | `apartmentcore.tax` |
-| `/apartmentcore tax info <id>` | View tax information | `apartmentcore.tax` |
+#### Performance
+- **Optimized Schedulers**: Reduced task frequency for better performance
+- **Efficient Day Tracking**: Only check for day changes every 5 seconds
+- **Memory Management**: Proper cleanup of expired confirmations
+- **Database Optimization**: Prepared for future MySQL implementation
 
-### Admin Commands
-| Command | Description | Permission |
-|---------|-------------|------------|
-| `/apartmentcore admin create <region> <id> <price> <tax> <days>` | Create apartment | `apartmentcore.admin` |
-| `/apartmentcore admin remove <id>` | Remove apartment | `apartmentcore.admin` |
-| `/apartmentcore admin set owner <id> <player>` | Change owner | `apartmentcore.admin` |
-| `/apartmentcore admin set price <id> <amount>` | Change price | `apartmentcore.admin` |
-| `/apartmentcore admin set tax <id> <amount>` | Change tax | `apartmentcore.admin` |
-| `/apartmentcore admin set tax_time <id> <days>` | Change tax period | `apartmentcore.admin` |
-| `/apartmentcore admin set level <id> <level>` | Change level | `apartmentcore.admin` |
-| `/apartmentcore admin teleport <id>` | Teleport to any apartment | `apartmentcore.admin` |
-| `/apartmentcore admin apartment_list` | List all apartments | `apartmentcore.admin` |
-| `/apartmentcore admin reload` | Reload configuration | `apartmentcore.admin` |
+### 📋 Configuration Updates
 
-## Apartment Levels & Income
-
-| Level | Hourly Income | Upgrade Cost |
-|-------|---------------|--------------|
-| 1 | $10-100 | - |
-| 2 | $100-200 | $1,000 |
-| 3 | $200-300 | $2,000 |
-| 4 | $300-400 | $3,000 |
-| 5 | $400-500 | $5,000 |
-
-## Tax System
-
-- Taxes are collected automatically every configured period (default: 7 days)
-- If unable to pay, apartment becomes **inactive**
-- Daily penalty of 25% of apartment price during inactive period
-- After 3 days of non-payment, apartment becomes available for purchase
-
-## PlaceholderAPI Placeholders
-
-- `%apartmentcore_<id>_owner%` - Apartment owner name
-- `%apartmentcore_<id>_price%` - Apartment price
-- `%apartmentcore_<id>_tax%` - Tax amount
-- `%apartmentcore_<id>_level%` - Apartment level
-- `%apartmentcore_<id>_income%` - Pending income
-- `%apartmentcore_<id>_status%` - Active/Inactive status
-
-## Configuration
-
-Key configuration options in `config.yml`:
-
+#### New Configuration Options
 ```yaml
-# Debug mode
-debug: false
+# Command cooldown in milliseconds
+security:
+  command-cooldown: 1000
 
-# Economy settings
+# Grace period for inactive apartments
+time:
+  inactive-grace-period: 3
+
+# Economy percentages
 economy:
-  currency-symbol: "$"
-  default-price: 10000
-  default-tax: 500
-  
-# Auto-save
-auto-save:
-  enabled: true
-  interval-minutes: 10
-  
-# Performance
-performance:
-  use-async: true
-  use-cache: true
+  sell-percentage: 70
+  penalty-percentage: 25
 ```
 
-## Permissions
+### 🔐 Security Enhancements
 
-### Basic Permissions
-- `apartmentcore.use` - Basic plugin usage
-- `apartmentcore.buy` - Buy apartments
-- `apartmentcore.sell` - Sell apartments
-- `apartmentcore.teleport` - Teleport to owned apartments
-- `apartmentcore.rent` - Manage apartment income
-- `apartmentcore.tax` - Pay apartment taxes
+- **Permission System**: Complete permission node coverage
+- **Input Sanitization**: All user inputs are validated
+- **Command Cooldowns**: Prevents abuse and server stress
+- **Confirmation System**: Protects against accidental actions
+- **Admin Logging**: All admin actions are logged
 
-### Admin Permissions
-- `apartmentcore.admin` - All admin commands
-- `apartmentcore.admin.create` - Create apartments
-- `apartmentcore.admin.remove` - Remove apartments
-- `apartmentcore.admin.set` - Modify apartments
-- `apartmentcore.admin.teleport` - Teleport to any apartment
-- `apartmentcore.admin.list` - View all apartments
-- `apartmentcore.admin.reload` - Reload configuration
+### 📊 Data Structure Improvements
 
-### Bypass Permissions
-- `apartmentcore.bypass.tax` - Bypass tax payments
-- `apartmentcore.bypass.limit` - Bypass ownership limits
+#### Apartment Class Enhancements
+- Added `inactiveSince` field for tracking inactive duration
+- Added `lastTaxCheckDay` for accurate tax tracking
+- Improved serialization/deserialization
 
-## Creating an Apartment (Admin Guide)
+#### New Classes
+- `LevelConfig`: Manages apartment level configurations
+- `ConfirmationAction`: Handles pending confirmations
 
-1. Create a WorldGuard region for the apartment area
-2. Use the create command:
-   ```
-   /apartmentcore admin create <region_name> <apartment_id> <price> <tax> <tax_days>
-   ```
-   Example:
-   ```
-   /apartmentcore admin create apartment_region apt_001 50000 1000 7
-   ```
+### 🎮 User Experience
 
-## Troubleshooting
+#### Command Improvements
+- Better error messages with specific guidance
+- Color-coded status indicators
+- Formatted money displays with currency symbol
+- Clear feedback for all actions
 
-### Plugin won't enable
-- Check that all dependencies are installed
-- Verify Minecraft version compatibility
-- Check console for error messages
+#### Quality of Life
+- Auto-save functionality with configurable intervals
+- Detailed apartment information displays
+- Warning messages for pending apartment loss
+- Grace period notifications
 
-### Apartments not generating income
-- Verify apartment is active (not inactive due to unpaid taxes)
-- Check that the apartment has an owner
-- Ensure income generation is enabled in config
+### 📝 Documentation
 
-### Tax not being collected
-- Check tax system is enabled in config
-- Verify Minecraft time is progressing normally
-- Check player has sufficient funds
+- **JavaDoc**: Complete documentation for all methods
+- **Comments**: Inline comments for complex logic
+- **README**: Updated with new commands and features
+- **Config**: Detailed configuration file comments
+
+### ⚠️ Known Issues
+
+- PlaceholderAPI may need server restart to register properly
+- Large apartment counts (1000+) may impact performance
+- MySQL implementation pending for large servers
+
+### 🔄 Migration Notes
+
+**From v1.0.0 to v1.1.0:**
+1. Backup your `apartments.yml` file
+2. Update the plugin JAR
+3. Let the plugin regenerate config.yml
+4. Restart the server
+5. Existing apartments will be automatically migrated
+
+### 🚀 Future Plans
+
+- MySQL/SQLite database support
+- Player-to-player apartment trading
+- Apartment auctions system
+- GUI interface for apartment management
+- Region visualization
+- Rent collection scheduling
+- Multi-world support improvements
+
+---
+
+## Version 1.0.0 (Initial Release)
+*Released: 2024*
+
+### Features
+- Basic apartment management system
+- WorldGuard region integration
+- Vault economy support
+- Tax collection system
+- Income generation
+- PlaceholderAPI support
+- Admin commands
+- YAML data storage
+
+### Commands
+- Basic buy/sell functionality
+- Teleportation system
+- Tax payment
+- Income claiming
+- Admin management
+
+### Known Issues
+- NullPointerException on startup
+- Time calculations using real-world time
+- Missing upgrade functionality
+- No confirmation system
+
+---
+
+## Installation Requirements
+
+### Dependencies
+- **Minecraft**: 1.21.4
+- **Spigot/Paper**: Latest version
+- **Vault**: Required
+- **WorldGuard**: Required
+- **PlaceholderAPI**: Optional
+
+### Permissions
+See plugin.yml for complete permission nodes
+
+---
 
 ## Support
 
-For issues, feature requests, or questions:
-- GitHub Issues: [Create an issue](https://github.com/yourusername/ApartmentCore/issues)
-- Discord: [Join our server](https://discord.gg/yourserver)
+For issues or feature requests:
+- Report bugs with full error logs
+- Include server version information
+- Describe steps to reproduce
 
-## License
-
-This plugin is proprietary software. All rights reserved.
+---
 
 ## Credits
 
-- **Author**: Aithor
-- **Version**: 1.0.0
-- **Minecraft Version**: 1.21.4
+**Developer**: Aithor  
+**Version**: 1.1.0  
+**License**: Proprietary
 
-## Changelog
-
-### Version 1.0.0 (Initial Release)
-- Core apartment management system
-- WorldGuard region integration
-- Income generation system
-- Tax collection with penalties
-- 5-level apartment system
-- PlaceholderAPI support
-- Admin commands for complete control
-- YAML data storage
-- Comprehensive permission system
-- Optimization for server performance
+Special thanks to the Minecraft plugin development community for testing and feedback.
