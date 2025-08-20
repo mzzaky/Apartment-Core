@@ -1,6 +1,6 @@
 # ApartmentCore Plugin v1.1.0
 
-Advanced apartment management system for Minecraft servers.
+Advanced apartment management system for Minecraft servers with comprehensive features and optimizations.
 
 ## Features
 
@@ -50,10 +50,11 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore info [id]` | View plugin or apartment info | `apartmentcore.use` |
 | `/apartmentcore buy <id>` | Buy an apartment | `apartmentcore.buy` |
 | `/apartmentcore sell <id>` | Sell your apartment | `apartmentcore.sell` |
+| `/apartmentcore confirm` | Confirm pending action | `apartmentcore.confirm` |
 | `/apartmentcore teleport <id>` | Teleport to your apartment | `apartmentcore.teleport` |
+| `/apartmentcore upgrade <id>` | Upgrade apartment level | `apartmentcore.upgrade` |
+| `/apartmentcore list [all/sale/mine]` | List apartments | `apartmentcore.list` |
 | `/apartmentcore version` | Check plugin version | `apartmentcore.use` |
-| `/apartmentcore list` | Show All Apartment | `apartmentcore.use` |
-| `/apartmentcore confirm` | Selling Requirement Action | `apartmentcore.use` |
 
 ### Owner Commands
 | Command | Description | Permission |
@@ -62,7 +63,6 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore rent info <id>` | View income information | `apartmentcore.rent` |
 | `/apartmentcore tax pay <id>` | Pay apartment taxes | `apartmentcore.tax` |
 | `/apartmentcore tax info <id>` | View tax information | `apartmentcore.tax` |
-| `/apartmentcore upgrade` | Upgrade Apartment Action | `apartmentcore.upgrade` |
 
 ### Admin Commands
 | Command | Description | Permission |
@@ -103,6 +103,8 @@ The compiled JAR will be in the `target` folder.
 - `%apartmentcore_<id>_level%` - Apartment level
 - `%apartmentcore_<id>_income%` - Pending income
 - `%apartmentcore_<id>_status%` - Active/Inactive status
+- `%apartmentcore_owned_count%` - Number of apartments owned by player
+- `%apartmentcore_total_income%` - Total pending income for player
 
 ## Configuration
 
@@ -151,6 +153,7 @@ performance:
 ### Bypass Permissions
 - `apartmentcore.bypass.tax` - Bypass tax payments
 - `apartmentcore.bypass.limit` - Bypass ownership limits
+- `apartmentcore.bypass.cooldown` - Bypass command cooldowns
 
 ## Creating an Apartment (Admin Guide)
 
@@ -194,10 +197,22 @@ This plugin is proprietary software. All rights reserved.
 ## Credits
 
 - **Author**: Aithor
-- **Version**: 1.0.0
+- **Version**: 1.1.0
 - **Minecraft Version**: 1.21.4
 
 ## Changelog
+
+### Version 1.1.0 (Latest)
+- Fixed critical NullPointerException and data persistence issues
+- Added apartment upgrade system (levels 1-5)
+- Implemented confirmation system for important actions
+- Added list command with filters
+- Fixed Minecraft time calculations for tax system
+- Improved teleportation with safe location finding
+- Added command cooldown system
+- Enhanced PlaceholderAPI support
+- Better error handling and input validation
+- Performance optimizations and thread safety
 
 ### Version 1.0.0 (Initial Release)
 - Core apartment management system
