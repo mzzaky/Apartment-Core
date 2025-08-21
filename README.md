@@ -16,7 +16,18 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - 📝 **Data Persistence**: YAML or MySQL/SQLite database support
 - 🎯 **PlaceholderAPI Integration**: Display apartment info in other plugins
 - ⚡ **Optimized Performance**: Async operations and caching for minimal server impact
+- 🔊 **Rating System**
 
+### New in v1.2.0
+
+- 🏷️ **Apartment Display Names**: Owners can set custom names (with color codes) for their apartments.
+- 💬 **Welcome Messages**: Custom welcome messages displayed when teleporting to or purchasing an apartment.
+- 💰 **Enhanced Rent System**: Rent claim time tracking and new PlaceholderAPI for rent info.
+- 💾 **Backup System**: Automatic and manual backup and restore for apartment data.
+- ⭐ **Apartment Rating System**: Players can rate apartments (0–10) and see top-rated apartments.
+- 🎯 **Full Tab Completion**: Smart tab completion for all commands.
+- 🎫 **New PlaceholderAPI Placeholders**: For display name, rating, welcome message, and rent info.
+- 🛠️ **Improved Data Handling**: Apartments.yml and config.yml updated with new fields for better customization and tracking.
 
 ## Dependencies
 
@@ -57,8 +68,9 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore confirm` | Confirm pending action | `apartmentcore.confirm` |
 | `/apartmentcore teleport <id>` | Teleport to your apartment | `apartmentcore.teleport` |
 | `/apartmentcore upgrade <id>` | Upgrade apartment level | `apartmentcore.upgrade` |
-| `/apartmentcore list [all/sale/mine]` | List apartments | `apartmentcore.list` |
+| `/apartmentcore list [all/sale/mine/top]` | List apartments | `apartmentcore.list` |
 | `/apartmentcore version` | Check plugin version | `apartmentcore.use` |
+| `/apartmentcore rate <id> <0-10>` | Rate an apartment | `apartmentcore.use` |
 
 ### Owner Commands
 | Command | Description | Permission |
@@ -83,6 +95,10 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore admin teleport <id>` | Teleport to any apartment | `apartmentcore.admin` |
 | `/apartmentcore admin apartment_list` | List all apartments | `apartmentcore.admin` |
 | `/apartmentcore admin reload` | Reload configuration | `apartmentcore.admin` |
+| `/apartmentcore admin backup create` | 	Create manual backup | `apartmentcore.admin` |
+| `/apartmentcore admin backup list` | List all backups | `apartmentcore.admin` |
+| `/apartmentcore admin backup restore <file>` | Restore from backup | `apartmentcore.admin` |
+
 
 ## Apartment Levels & Income
 
@@ -111,6 +127,10 @@ The compiled JAR will be in the `target` folder.
 - `%apartmentcore_<id>_status%` - Active/Inactive status
 - `%apartmentcore_owned_count%` - Number of apartments owned by player
 - `%apartmentcore_total_income%` - Total pending income for player
+- `%apartmentcore_<id>_displayname%` - Apartment display name
+- `%apartmentcore_<id>_rating%` - Average rating (e.g., "8.5")
+- `%apartmentcore_<id>_welcome%` - Welcome message
+- `%apartmentcore_last_rent_claim%`- Time since last rent claim
 
 ## Configuration
 
@@ -203,12 +223,24 @@ This plugin is proprietary software. All rights reserved.
 ## Credits
 
 - **Author**: Aithor
-- **Version**: 1.1.0
+- **Version**: 1.2.0
 - **Minecraft Version**: 1.21.4
 
 ## Changelog
+### Version 1.2.0 (2025-08-22)
+- Added Apartment Display Names feature
+- Added customizable Welcome Messages
+- Improved Rent System with enhanced tracking
+- Introduced Backup System (auto & manual)
+- Introduced Apartment Rating System
+- Added full tab completion for all commands
+- Added new PlaceholderAPI placeholders
+- Updated apartments.yml and config.yml with new fields
+- Improved error messages and data saving performance
+- Fixed tab completion and rent claim tracking bugs
+  
 
-### Version 1.1.0 (Latest)
+### Version 1.1.0 (20.8.2025)
 - Fixed critical NullPointerException and data persistence issues
 - Added apartment upgrade system (levels 1-5)
 - Implemented confirmation system for important actions
@@ -220,7 +252,7 @@ This plugin is proprietary software. All rights reserved.
 - Better error handling and input validation
 - Performance optimizations and thread safety
 
-### Version 1.0.0 (Initial Release)
+### Version 1.0.0 (19.8.2025)
 - Core apartment management system
 - WorldGuard region integration
 - Income generation system
