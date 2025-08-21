@@ -1,4 +1,4 @@
-# ApartmentCore Plugin v1.1.0
+# ApartmentCore Plugin v1.2.0
 
 Advanced apartment management system for Minecraft servers with comprehensive features and optimizations.
 
@@ -44,7 +44,6 @@ git clone https://github.com/yourusername/ApartmentCore.git
 cd ApartmentCore
 mvn clean package
 ```
-
 The compiled JAR will be in the `target` folder.
 
 ## Commands
@@ -68,6 +67,8 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore rent info <id>` | View income information | `apartmentcore.rent` |
 | `/apartmentcore tax pay <id>` | Pay apartment taxes | `apartmentcore.tax` |
 | `/apartmentcore tax info <id>` | View tax information | `apartmentcore.tax` |
+| `/apartmentcore setname <id> <n>` | Set apartment display name | `Owner only` |
+| `/apartmentcore setwelcome <id> <msg>` | Set welcome message | `Owner only` |
 
 ### Admin Commands
 | Command | Description | Permission |
