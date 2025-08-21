@@ -8,10 +8,15 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - 💰 **Income Generation**: Apartments generate passive income based on their level
 - 📊 **Level System**: 5 apartment levels with increasing income rates
 - 🏦 **Tax System**: Automatic tax collection with penalty system
+- 📝 **Buy & Sell**: Players can resell the apartments they have purchased for up to 70% of the original price.
+- 📌 **Fast Travel**: allowing apartment owners to instantly teleport to the building's location.
+- 🌐 **Easy Configuration**: configuration that controls almost all aspects of the plugin, easy to understand.
+- 💎 **Custom GUI**: A special panel to make it easier for players to access this feature.
 - 🔐 **Permission-based Security**: Comprehensive permission nodes for all features
 - 📝 **Data Persistence**: YAML or MySQL/SQLite database support
 - 🎯 **PlaceholderAPI Integration**: Display apartment info in other plugins
 - ⚡ **Optimized Performance**: Async operations and caching for minimal server impact
+
 
 ## Dependencies
 
