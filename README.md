@@ -172,3 +172,60 @@ The plugin tracks comprehensive statistics including:
 
 1. Create a WorldGuard region for the apartment area
 2. Use the create command:
+`/apartmentcore admin create <region_name> <apartment_id> <price> <tax> <tax_days>`
+Example
+`/apartmentcore admin create apartment_region apt_001 50000 1000 7`
+
+## Changelog
+
+### Version 1.2.5 (2025-08-27)
+- Added Custom Teleport Locations feature for apartment owners
+- Introduced Guest Book System with command-based messaging
+- Added Tax & Income countdown timers with PlaceholderAPI support
+- Implemented comprehensive Statistics System with configurable tracking
+- Added new PlaceholderAPI placeholders for timers and statistics
+- Improved data structure for better performance
+- Enhanced configuration with new statistics and guest book settings
+
+### Version 1.2.1 (2025-08-25)
+- Refactored main class into several manager classes
+- Improved code organization and maintainability
+
+### Version 1.2.0 (2025-08-22)
+- Added Apartment Display Names feature
+- Added customizable Welcome Messages
+- Improved Rent System with enhanced tracking
+- Introduced Backup System (auto & manual)
+- Introduced Apartment Rating System
+- Added full tab completion for all commands
+- Added new PlaceholderAPI placeholders
+
+### Version 1.1.0 (2025-08-20)
+- Fixed critical NullPointerException and data persistence issues
+- Added apartment upgrade system (levels 1-5)
+- Implemented confirmation system for important actions
+- Added list command with filters
+- Fixed Minecraft time calculations for tax system
+
+### Version 1.0.0 (2025-08-19)
+- Core apartment management system
+- WorldGuard region integration
+- Income generation system
+- Tax collection with penalties
+- 5-level apartment system
+
+## Support
+
+For issues, feature requests, or questions:
+- GitHub Issues: [Create an issue](https://github.com/yourusername/ApartmentCore/issues)
+- Discord: [Join our server](https://discord.gg/yourserver)
+
+## License
+
+This plugin is proprietary software. All rights reserved.
+
+## Credits
+
+- **Author**: Aithor
+- **Version**: 1.2.5
+- **Minecraft Version**: 1.21.4
