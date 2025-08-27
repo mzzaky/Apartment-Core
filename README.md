@@ -1,4 +1,4 @@
-# ApartmentCore Plugin v1.2.0
+# ApartmentCore Plugin v1.2.5
 
 Advanced apartment management system for Minecraft servers with comprehensive features and optimizations.
 
@@ -8,26 +8,29 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - 💰 **Income Generation**: Apartments generate passive income based on their level
 - 📊 **Level System**: 5 apartment levels with increasing income rates
 - 🏦 **Tax System**: Automatic tax collection with penalty system
-- 📝 **Buy & Sell**: Players can resell the apartments they have purchased for up to 70% of the original price.
-- 📌 **Fast Travel**: allowing apartment owners to instantly teleport to the building's location.
-- 🌐 **Easy Configuration**: configuration that controls almost all aspects of the plugin, easy to understand.
-- 💎 **Custom GUI**: A special panel to make it easier for players to access this feature.
-- 🔐 **Permission-based Security**: Comprehensive permission nodes for all features
-- 📝 **Data Persistence**: YAML or MySQL/SQLite database support
+- 🏷️ **Apartment Display Names**: Owners can set custom names with color codes
+- 💬 **Welcome Messages**: Custom messages when entering apartments
+- 📝 **Guest Book System**: Visitors can leave messages for apartment owners
+- 📍 **Custom Teleport Points**: Owners can set custom teleport locations
+- ⏱️ **Tax & Income Timers**: Track when taxes are due and income will be generated
+- 📈 **Statistics System**: Comprehensive tracking of apartment metrics
+- 🔁 **Buy & Sell**: Players can resell their apartments for up to 70% of price
+- 🌐 **Fast Travel**: Instant teleportation to owned apartments
+- 💎 **Custom GUI**: Special panel for easier feature access
+- 🔐 **Permission-based Security**: Comprehensive permission nodes
+- 💾 **Data Persistence**: YAML or MySQL/SQLite database support
 - 🎯 **PlaceholderAPI Integration**: Display apartment info in other plugins
-- ⚡ **Optimized Performance**: Async operations and caching for minimal server impact
-- 🔊 **Rating System**
+- ⚡ **Optimized Performance**: Async operations and caching
+- ⭐ **Rating System**: Players can rate apartments (0-10)
+- 🔄 **Backup System**: Automatic and manual backup/restore
 
-### New in v1.2.0
+### New in v1.2.5
 
-- 🏷️ **Apartment Display Names**: Owners can set custom names (with color codes) for their apartments.
-- 💬 **Welcome Messages**: Custom welcome messages displayed when teleporting to or purchasing an apartment.
-- 💰 **Enhanced Rent System**: Rent claim time tracking and new PlaceholderAPI for rent info.
-- 💾 **Backup System**: Automatic and manual backup and restore for apartment data.
-- ⭐ **Apartment Rating System**: Players can rate apartments (0–10) and see top-rated apartments.
-- 🎯 **Full Tab Completion**: Smart tab completion for all commands.
-- 🎫 **New PlaceholderAPI Placeholders**: For display name, rating, welcome message, and rent info.
-- 🛠️ **Improved Data Handling**: Apartments.yml and config.yml updated with new fields for better customization and tracking.
+- 📍 **Custom Teleport Locations**: Apartment owners can set specific teleport points within their apartment using `/apartmentcore setteleport <id>`
+- 📝 **Guest Book System**: Command-based messaging system where visitors can leave messages for apartment owners
+- ⏱️ **Tax & Income Countdown**: Real-time countdown timers showing when taxes are due and when income will be generated
+- 📊 **Enhanced Statistics**: Comprehensive apartment statistics with PlaceholderAPI support
+- 🔧 **Improved Configuration**: Statistics settings now configurable in config.yml
 
 ## Dependencies
 
@@ -47,15 +50,6 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 3. Install required dependencies (Vault, WorldGuard)
 4. Restart your server
 5. Configure the plugin in `plugins/ApartmentCore/config.yml`
-
-## Building from Source
-
-```bash
-git clone https://github.com/yourusername/ApartmentCore.git
-cd ApartmentCore
-mvn clean package
-```
-The compiled JAR will be in the `target` folder.
 
 ## Commands
 
@@ -79,8 +73,16 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore rent info <id>` | View income information | `apartmentcore.rent` |
 | `/apartmentcore tax pay <id>` | Pay apartment taxes | `apartmentcore.tax` |
 | `/apartmentcore tax info <id>` | View tax information | `apartmentcore.tax` |
-| `/apartmentcore setname <id> <n>` | Set apartment display name | `Owner only` |
+| `/apartmentcore setname <id> <name>` | Set apartment display name | `Owner only` |
 | `/apartmentcore setwelcome <id> <msg>` | Set welcome message | `Owner only` |
+| `/apartmentcore setteleport <id>` | Set custom teleport location | `Owner only` |
+
+### Guest Book Commands (v1.2.5)
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/apartmentcore guestbook write <id> <msg>` | Leave a message | `apartmentcore.use` |
+| `/apartmentcore guestbook read <id>` | Read guest book messages | `Owner only` |
+| `/apartmentcore guestbook clear <id>` | Clear all messages | `Owner only` |
 
 ### Admin Commands
 | Command | Description | Permission |
@@ -95,10 +97,42 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore admin teleport <id>` | Teleport to any apartment | `apartmentcore.admin` |
 | `/apartmentcore admin apartment_list` | List all apartments | `apartmentcore.admin` |
 | `/apartmentcore admin reload` | Reload configuration | `apartmentcore.admin` |
-| `/apartmentcore admin backup create` | 	Create manual backup | `apartmentcore.admin` |
+| `/apartmentcore admin backup create` | Create manual backup | `apartmentcore.admin` |
 | `/apartmentcore admin backup list` | List all backups | `apartmentcore.admin` |
 | `/apartmentcore admin backup restore <file>` | Restore from backup | `apartmentcore.admin` |
+| `/apartmentcore admin statistics` | View global statistics | `apartmentcore.admin` |
 
+## PlaceholderAPI Placeholders
+
+### Basic Placeholders
+- `%apartmentcore_<id>_owner%` - Apartment owner name
+- `%apartmentcore_<id>_price%` - Apartment price
+- `%apartmentcore_<id>_tax%` - Tax amount
+- `%apartmentcore_<id>_level%` - Apartment level
+- `%apartmentcore_<id>_income%` - Pending income
+- `%apartmentcore_<id>_status%` - Active/Inactive status
+- `%apartmentcore_owned_count%` - Number of apartments owned by player
+- `%apartmentcore_total_income%` - Total pending income for player
+- `%apartmentcore_<id>_displayname%` - Apartment display name
+- `%apartmentcore_<id>_rating%` - Average rating (e.g., "8.5")
+- `%apartmentcore_<id>_welcome%` - Welcome message
+- `%apartmentcore_last_rent_claim%` - Time since last rent claim
+
+### Timer Placeholders (v1.2.5)
+- `%apartmentcore_<id>_tax_countdown%` - Days until next tax payment
+- `%apartmentcore_<id>_income_countdown%` - Minutes until next income generation
+- `%apartmentcore_<id>_guestbook_count%` - Number of unread messages
+
+### Statistics Placeholders (v1.2.5)
+- `%apartmentcore_<id>_statistic_visits%` - Total visits to apartment
+- `%apartmentcore_<id>_statistic_total_income%` - Total income generated
+- `%apartmentcore_<id>_statistic_total_taxes%` - Total taxes paid
+- `%apartmentcore_<id>_statistic_owner_count%` - Total number of owners
+- `%apartmentcore_<id>_statistic_age_days%` - Days since apartment creation
+- `%apartmentcore_global_statistic_total_sold%` - Total apartments sold globally
+- `%apartmentcore_global_statistic_total_income%` - Total income generated globally
+- `%apartmentcore_global_statistic_highest_sale%` - Highest apartment sale price
+- `%apartmentcore_global_statistic_most_popular%` - Most visited apartment ID
 
 ## Apartment Levels & Income
 
@@ -116,150 +150,25 @@ The compiled JAR will be in the `target` folder.
 - If unable to pay, apartment becomes **inactive**
 - Daily penalty of 25% of apartment price during inactive period
 - After 3 days of non-payment, apartment becomes available for purchase
+- Tax countdown timer shows days remaining until next payment
 
-## PlaceholderAPI Placeholders
+## Guest Book System (v1.2.5)
 
-- `%apartmentcore_<id>_owner%` - Apartment owner name
-- `%apartmentcore_<id>_price%` - Apartment price
-- `%apartmentcore_<id>_tax%` - Tax amount
-- `%apartmentcore_<id>_level%` - Apartment level
-- `%apartmentcore_<id>_income%` - Pending income
-- `%apartmentcore_<id>_status%` - Active/Inactive status
-- `%apartmentcore_owned_count%` - Number of apartments owned by player
-- `%apartmentcore_total_income%` - Total pending income for player
-- `%apartmentcore_<id>_displayname%` - Apartment display name
-- `%apartmentcore_<id>_rating%` - Average rating (e.g., "8.5")
-- `%apartmentcore_<id>_welcome%` - Welcome message
-- `%apartmentcore_last_rent_claim%`- Time since last rent claim
+The guest book system allows visitors to leave messages for apartment owners:
+- Visitors can write messages up to 200 characters
+- Owners receive notifications when online
+- Maximum 50 messages per apartment
+- Support for color codes in messages (if enabled)
+- Messages display sender name and timestamp
 
-## Configuration
+## Statistics Tracking (v1.2.5)
 
-Key configuration options in `config.yml`:
-
-```yaml
-# Debug mode
-debug: false
-
-# Economy settings
-economy:
-  currency-symbol: "$"
-  default-price: 10000
-  default-tax: 500
-  
-# Auto-save
-auto-save:
-  enabled: true
-  interval-minutes: 10
-  
-# Performance
-performance:
-  use-async: true
-  use-cache: true
-```
-
-## Permissions
-
-### Basic Permissions
-- `apartmentcore.use` - Basic plugin usage
-- `apartmentcore.buy` - Buy apartments
-- `apartmentcore.sell` - Sell apartments
-- `apartmentcore.teleport` - Teleport to owned apartments
-- `apartmentcore.rent` - Manage apartment income
-- `apartmentcore.tax` - Pay apartment taxes
-
-### Admin Permissions
-- `apartmentcore.admin` - All admin commands
-- `apartmentcore.admin.create` - Create apartments
-- `apartmentcore.admin.remove` - Remove apartments
-- `apartmentcore.admin.set` - Modify apartments
-- `apartmentcore.admin.teleport` - Teleport to any apartment
-- `apartmentcore.admin.list` - View all apartments
-- `apartmentcore.admin.reload` - Reload configuration
-
-### Bypass Permissions
-- `apartmentcore.bypass.tax` - Bypass tax payments
-- `apartmentcore.bypass.limit` - Bypass ownership limits
-- `apartmentcore.bypass.cooldown` - Bypass command cooldowns
+The plugin tracks comprehensive statistics including:
+- **Per Apartment**: Total owners, income generated, taxes paid, visits, upgrades
+- **Global**: Total sales, transactions, highest sale price, most popular apartment
+- All statistics are configurable and accessible via PlaceholderAPI
 
 ## Creating an Apartment (Admin Guide)
 
 1. Create a WorldGuard region for the apartment area
 2. Use the create command:
-   ```
-   /apartmentcore admin create <region_name> <apartment_id> <price> <tax> <tax_days>
-   ```
-   Example:
-   ```
-   /apartmentcore admin create apartment_region apt_001 50000 1000 7
-   ```
-
-## Troubleshooting
-
-### Plugin won't enable
-- Check that all dependencies are installed
-- Verify Minecraft version compatibility
-- Check console for error messages
-
-### Apartments not generating income
-- Verify apartment is active (not inactive due to unpaid taxes)
-- Check that the apartment has an owner
-- Ensure income generation is enabled in config
-
-### Tax not being collected
-- Check tax system is enabled in config
-- Verify Minecraft time is progressing normally
-- Check player has sufficient funds
-
-## Support
-
-For issues, feature requests, or questions:
-- GitHub Issues: [Create an issue](https://github.com/yourusername/ApartmentCore/issues)
-- Discord: [Join our server](https://discord.gg/yourserver)
-
-## License
-
-This plugin is proprietary software. All rights reserved.
-
-## Credits
-
-- **Author**: Aithor
-- **Version**: 1.2.0
-- **Minecraft Version**: 1.21.4
-
-## Changelog
-### Version 1.2.0 (2025-08-22)
-- Added Apartment Display Names feature
-- Added customizable Welcome Messages
-- Improved Rent System with enhanced tracking
-- Introduced Backup System (auto & manual)
-- Introduced Apartment Rating System
-- Added full tab completion for all commands
-- Added new PlaceholderAPI placeholders
-- Updated apartments.yml and config.yml with new fields
-- Improved error messages and data saving performance
-- Fixed tab completion and rent claim tracking bugs
-  
-
-### Version 1.1.0 (20.8.2025)
-- Fixed critical NullPointerException and data persistence issues
-- Added apartment upgrade system (levels 1-5)
-- Implemented confirmation system for important actions
-- Added list command with filters
-- Fixed Minecraft time calculations for tax system
-- Improved teleportation with safe location finding
-- Added command cooldown system
-- Enhanced PlaceholderAPI support
-- Better error handling and input validation
-- Performance optimizations and thread safety
-
-### Version 1.0.0 (19.8.2025)
-- Core apartment management system
-- WorldGuard region integration
-- Income generation system
-- Tax collection with penalties
-- 5-level apartment system
-- PlaceholderAPI support
-- Admin commands for complete control
-- YAML data storage
-- Comprehensive permission system
-- Optimization for server performance
