@@ -32,6 +32,14 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - 📊 **Enhanced Statistics**: Comprehensive apartment statistics with PlaceholderAPI support
 - 🔧 **Improved Configuration**: Statistics settings now configurable in config.yml
 
+# KNOWN ISSUES
+- Command `/apartmentcore setteleport <id>` tab completion does not appear
+- Incorrect tab completion for the command `/apartmentcore tax claim <id>`, which should be `/apartmentcore tax pay <id>`
+- Subcommand tab completion for the command `/apartmentcore guestbook` does not appear, which should be like this: `/apartmentcore guestbook write|read|clear <id>`
+- All statistics placeholders return empty responses when used.
+- The placeholder `%apartmentcore_<id>_tax_countdown%` does not provide the correct response. It should provide a countdown in minutes until the tax bill is due.
+- the placeholder `%apartmentcore_<id>_income_countdown%` does not provide the correct response. It should provide a countdown in minutes until the income is generated.
+
 ## Dependencies
 
 ### Required
