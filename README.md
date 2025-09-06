@@ -250,6 +250,7 @@ This plugin is proprietary software. All rights reserved.
 - Added new PlaceholderAPI placeholders: %apartmentcore_<id>_tax_due_in% and %apartmentcore_<id>_income_in%.
 - Added new commands, permissions, and configuration options to support the new features.
 - Created guestbook.yml to handle guest book data persistence.
+- bug fixes
 
 ## Version 1.2.1 (2025-08-27)
 - refactoring the code in the main plugin class into several classes.
