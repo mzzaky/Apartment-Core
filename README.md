@@ -1,4 +1,4 @@
-# ApartmentCore Plugin v1.2.0
+# **ApartmentCore Plugin v1.2.5**
 
 Advanced apartment management system for Minecraft servers with comprehensive features and optimizations.
 
@@ -26,13 +26,13 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - 🎫 **New PlaceholderAPI Placeholders**: For display name, rating, welcome message, and rent info.
 - 🛠️ **Improved Data Handling**: Apartments.yml and config.yml updated with new fields for better customization and tracking.
 
-New in v1.2.5
--📍 Manual Teleport Location: Owners can set a precise teleport point using /ac setteleport.
-- 📖 Guest Book System: Visitors can leave messages; owners can read and clear them using the /ac guestbook command.
-- ⏱️ Real-time Countdowns: Added real-time countdowns for next tax payment and income generation, visible in info commands and new placeholders.
-- 🎫 New PlaceholderAPI Placeholders: Added placeholders for tax and income countdowns.
-- 🛠️ New Data File: Introduced guestbook.yml for storing messages.
-- ⚙️ New Configuration Options: Added settings for the guest book system in config.yml.
+## New in v1.2.5
+- 📍 **Manual Teleport Location**: Owners can set a precise teleport point using /ac setteleport.
+- 📖 **Guest Book System**: Visitors can leave messages; owners can read and clear them using the /ac guestbook command.
+- ⏱️ **Real-time Countdowns**: Added real-time countdowns for next tax payment and income generation, visible in info commands and new placeholders.
+- 🎫 **New PlaceholderAPI Placeholders**: Added placeholders for tax and income countdowns.
+- 🛠️ **New Data File**: Introduced guestbook.yml for storing messages.
+- ⚙️ **New Configuration Options**: Added settings for the guest book system in config.yml.
 
 ## Dependencies
 
