@@ -1,15 +1,10 @@
-# **ApartmentCore Plugin v1.2.5**
+# **ApartmentCore Plugin v1.2.6**
 
 Advanced apartment management system for Minecraft servers with comprehensive features and optimizations.
 
-## Known Issues
-- `/apartmentcore admin set level` doesnt work
-- `/apartmentcore admin set tax` doesnt work
-- `/apartmentcore admin set tax_days` doesnt work
-
 ## Features
 
-- 🏠 **Apartment Management**: Convert WorldGuard regions into purchasable apartments
+- 🏠 **Apartment Converter**: Convert WorldGuard regions into purchasable apartments
 - 💰 **Income Generation**: Apartments generate passive income based on their level
 - 📊 **Level System**: 5 apartment levels with increasing income rates
 - 🏦 **Tax System**: Automatic tax collection with penalty system
@@ -29,15 +24,22 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - ⭐ **Apartment Rating System**: Players can rate apartments (0–10) and see top-rated apartments.
 - 🎯 **Full Tab Completion**: Smart tab completion for all commands.
 - 🎫 **New PlaceholderAPI Placeholders**: For display name, rating, welcome message, and rent info.
-- 🛠️ **Improved Data Handling**: Apartments.yml and config.yml updated with new fields for better customization and tracking.
-
-## New in v1.2.5
-- 📍 **Manual Teleport Location**: Owners can set a precise teleport point using /ac setteleport.
 - 📖 **Guest Book System**: Visitors can leave messages; owners can read and clear them using the /ac guestbook command.
-- ⏱️ **Real-time Countdowns**: Added real-time countdowns for next tax payment and income generation, visible in info commands and new placeholders.
-- 🎫 **New PlaceholderAPI Placeholders**: Added placeholders for tax and income countdowns.
-- 🛠️ **New Data File**: Introduced guestbook.yml for storing messages.
-- ⚙️ **New Configuration Options**: Added settings for the guest book system in config.yml.
+
+## New in v1.2.6
+- Fixed Admin Commands: Three admin set commands that previously did not work have now been fixed and are functioning as intended
+- Adding the `/apartmentcore admin set rate <id> <value>` command, which allows administrators to manually set or override the average rating of an apartment.
+- Introducing a new statistics tracking system for each apartment owned. Data is stored in a new file called `apartments-stats.yml.` Statistics tracked include: (1) Total Taxes Paid,  (2) Total Revenue Generated, (3) Age of Ownership.
+- New PlaceholderAPI support: 
+  | Placeholder | Description |
+  |--------------|-------------|
+  | `%apartmentcore_statistic_<id>_total_tax_paid%` | Displays the total tax paid. |
+  | `%apartmentcore_statistic_<id>_total_income_generated%` | Displays the total income generated. |
+  | `%apartmentcore_statistic_<id>_ownership_age_days%` | Displays the age of ownership in days. |
+
+- Daily Task Optimization: Daily tasks were refactored to handle tax calculations and ownership age additions more efficiently in a single cycle.
+- Data Integrity: The new statistical system has been fully integrated into the auto-save cycle and shutdown procedures to ensure no data is lost.
+
 
 ## Dependencies
 
@@ -57,15 +59,6 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 3. Install required dependencies (Vault, WorldGuard)
 4. Restart your server
 5. Configure the plugin in `plugins/ApartmentCore/config.yml`
-
-## Building from Source
-
-```bash
-git clone https://github.com/yourusername/ApartmentCore.git
-cd ApartmentCore
-mvn clean package
-```
-The compiled JAR will be in the `target` folder.
 
 ## Commands
 
@@ -96,20 +89,21 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore rent info <id>` | View income information | `apartmentcore.rent` |
 | `/apartmentcore tax pay <id>` | Pay apartment taxes | `apartmentcore.tax` |
 | `/apartmentcore tax info <id>` | View tax information | `apartmentcore.tax` |
-| `/apartmentcore setname <id> <n>` | Set apartment display name | `Owner only` |
-| `/apartmentcore setwelcome <id> <msg>` | Set welcome message | `Owner only` |
-| `/apartmentcore setteleport <id>` | Set welcome message | `apartmentcore.setteleport` |
+| `/apartmentcore set name <id> <n>` | Set apartment display name | `Owner only` |
+| `/apartmentcore set welcome <id> <msg>` | Set welcome message | `Owner only` |
+| `/apartmentcore set teleport <id>` | Set teleport location | `apartmentcore.setteleport` |
 
 ### Admin Commands
 | Command | Description | Permission |
 |---------|-------------|------------|
 | `/apartmentcore admin create <region> <id> <price> <tax> <days>` | Create apartment | `apartmentcore.admin` |
 | `/apartmentcore admin remove <id>` | Remove apartment | `apartmentcore.admin` |
-| `/apartmentcore admin set owner <id> <player>` | Change owner | `apartmentcore.admin` |
-| `/apartmentcore admin set price <id> <amount>` | Change price | `apartmentcore.admin` |
-| `/apartmentcore admin set tax <id> <amount>` | Change tax | `apartmentcore.admin` |
-| `/apartmentcore admin set tax_time <id> <days>` | Change tax period | `apartmentcore.admin` |
-| `/apartmentcore admin set level <id> <level>` | Change level | `apartmentcore.admin` |
+| `/apartmentcore admin set owner <id> <player>` | Change owner | `apartmentcore.admin.set` |
+| `/apartmentcore admin set price <id> <amount>` | Change price | `apartmentcore.admin.set` |
+| `/apartmentcore admin set rate <id> <value>` | Change rating | `apartmentcore.admin.set` |
+| `/apartmentcore admin set tax <id> <amount>` | Change tax | `apartmentcore.admin.set` |
+| `/apartmentcore admin set tax_time <id> <days>` | Change tax period | `apartmentcore.admin.set` |
+| `/apartmentcore admin set level <id> <level>` | Change level | `apartmentcore.admin.set` |
 | `/apartmentcore admin teleport <id>` | Teleport to any apartment | `apartmentcore.admin` |
 | `/apartmentcore admin apartment_list` | List all apartments | `apartmentcore.admin` |
 | `/apartmentcore admin reload` | Reload configuration | `apartmentcore.admin` |
@@ -151,6 +145,9 @@ The compiled JAR will be in the `target` folder.
 - `%apartmentcore_last_rent_claim%`- Time since last rent claim
 - `%apartmentcore_<id>_tax_due_in%` - Real-time countdown for the next tax payment.
 - `%apartmentcore_<id>_income_in%` - Real-time countdown for the next income generation.
+- `%apartmentcore_statistic_<id>_total_tax_paid%` - Displays the total tax paid.
+- `%apartmentcore_statistic_<id>_total_income_generated%` - Displays the total income generated.
+- `%apartmentcore_statistic_<id>_ownership_age_days%` - Displays the age of ownership in days.
 
 ## Configuration
 
@@ -243,7 +240,7 @@ This plugin is proprietary software. All rights reserved.
 ## Credits
 
 - **Author**: Aithor
-- **Version**: 1.2.5
+- **Version**: 1.2.6
 - **Minecraft Version**: 1.21.4
 
 ## Changelog
