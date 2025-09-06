@@ -89,9 +89,9 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 | `/apartmentcore rent info <id>` | View income information | `apartmentcore.rent` |
 | `/apartmentcore tax pay <id>` | Pay apartment taxes | `apartmentcore.tax` |
 | `/apartmentcore tax info <id>` | View tax information | `apartmentcore.tax` |
-| `/apartmentcore set name <id> <n>` | Set apartment display name | `Owner only` |
-| `/apartmentcore set welcome <id> <msg>` | Set welcome message | `Owner only` |
-| `/apartmentcore set teleport <id>` | Set teleport location | `apartmentcore.setteleport` |
+| `/apartmentcore setname <id> <n>` | Set apartment display name | `Owner only` |
+| `/apartmentcore setwelcome <id> <msg>` | Set welcome message | `Owner only` |
+| `/apartmentcore setteleport <id>` | Set teleport location | `apartmentcore.setteleport` |
 
 ### Admin Commands
 | Command | Description | Permission |
@@ -292,3 +292,4 @@ This plugin is proprietary software. All rights reserved.
 - YAML data storage
 - Comprehensive permission system
 - Optimization for server performance
+
