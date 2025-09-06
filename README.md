@@ -2,6 +2,11 @@
 
 Advanced apartment management system for Minecraft servers with comprehensive features and optimizations.
 
+## Known Issues
+- `/apartmentcore admin set level` doesnt work
+- `/apartmentcore admin set tax` doesnt work
+- `/apartmentcore admin set tax_days` doesnt work
+
 ## Features
 
 - 🏠 **Apartment Management**: Convert WorldGuard regions into purchasable apartments
