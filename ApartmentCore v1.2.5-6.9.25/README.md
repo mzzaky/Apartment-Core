@@ -1,4 +1,4 @@
-# ApartmentCore Plugin v1.2.0
+# **ApartmentCore Plugin v1.2.5**
 
 Advanced apartment management system for Minecraft servers with comprehensive features and optimizations.
 
@@ -17,9 +17,6 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - 🎯 **PlaceholderAPI Integration**: Display apartment info in other plugins
 - ⚡ **Optimized Performance**: Async operations and caching for minimal server impact
 - 🔊 **Rating System**
-
-### New in v1.2.0
-
 - 🏷️ **Apartment Display Names**: Owners can set custom names (with color codes) for their apartments.
 - 💬 **Welcome Messages**: Custom welcome messages displayed when teleporting to or purchasing an apartment.
 - 💰 **Enhanced Rent System**: Rent claim time tracking and new PlaceholderAPI for rent info.
@@ -28,6 +25,14 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - 🎯 **Full Tab Completion**: Smart tab completion for all commands.
 - 🎫 **New PlaceholderAPI Placeholders**: For display name, rating, welcome message, and rent info.
 - 🛠️ **Improved Data Handling**: Apartments.yml and config.yml updated with new fields for better customization and tracking.
+
+## New in v1.2.5
+- 📍 **Manual Teleport Location**: Owners can set a precise teleport point using /ac setteleport.
+- 📖 **Guest Book System**: Visitors can leave messages; owners can read and clear them using the /ac guestbook command.
+- ⏱️ **Real-time Countdowns**: Added real-time countdowns for next tax payment and income generation, visible in info commands and new placeholders.
+- 🎫 **New PlaceholderAPI Placeholders**: Added placeholders for tax and income countdowns.
+- 🛠️ **New Data File**: Introduced guestbook.yml for storing messages.
+- ⚙️ **New Configuration Options**: Added settings for the guest book system in config.yml.
 
 ## Dependencies
 
@@ -72,6 +77,13 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore version` | Check plugin version | `apartmentcore.use` |
 | `/apartmentcore rate <id> <0-10>` | Rate an apartment | `apartmentcore.use` |
 
+### Guestbook Commands
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/apartmentcore guestbook leave <id> <msg>` | Leave a message in a guest book | `apartmentcore.leave` |
+| `/apartmentcore guestbook read <id>` | Read your guest book messages | `apartmentcore.read` |
+| `/apartmentcore guestbook clear <id>` | Clear all messages from your guest book | `apartmentcore.clear` |
+
 ### Owner Commands
 | Command | Description | Permission |
 |---------|-------------|------------|
@@ -81,6 +93,7 @@ The compiled JAR will be in the `target` folder.
 | `/apartmentcore tax info <id>` | View tax information | `apartmentcore.tax` |
 | `/apartmentcore setname <id> <n>` | Set apartment display name | `Owner only` |
 | `/apartmentcore setwelcome <id> <msg>` | Set welcome message | `Owner only` |
+| `/apartmentcore setteleport <id>` | Set welcome message | `apartmentcore.setteleport` |
 
 ### Admin Commands
 | Command | Description | Permission |
@@ -131,6 +144,8 @@ The compiled JAR will be in the `target` folder.
 - `%apartmentcore_<id>_rating%` - Average rating (e.g., "8.5")
 - `%apartmentcore_<id>_welcome%` - Welcome message
 - `%apartmentcore_last_rent_claim%`- Time since last rent claim
+- `%apartmentcore_<id>_tax_due_in%` - Real-time countdown for the next tax payment.
+- `%apartmentcore_<id>_income_in%` - Real-time countdown for the next income generation.
 
 ## Configuration
 
@@ -223,10 +238,23 @@ This plugin is proprietary software. All rights reserved.
 ## Credits
 
 - **Author**: Aithor
-- **Version**: 1.2.0
+- **Version**: 1.2.5
 - **Minecraft Version**: 1.21.4
 
 ## Changelog
+
+## Version 1.2.5 (2025-09-06)
+- Added Manual Teleport Location system, allowing owners to set a precise teleport point via /ac setteleport.
+- Introduced a Guest Book system for visitors to leave messages and for owners to read/clear them (/ac guestbook).
+- Implemented Real-time Countdowns for the next tax due date and income generation event, visible in info commands and new placeholders.
+- Added new PlaceholderAPI placeholders: %apartmentcore_<id>_tax_due_in% and %apartmentcore_<id>_income_in%.
+- Added new commands, permissions, and configuration options to support the new features.
+- Created guestbook.yml to handle guest book data persistence.
+- bug fixes
+
+## Version 1.2.1 (2025-08-27)
+- refactoring the code in the main plugin class into several classes.
+
 ### Version 1.2.0 (2025-08-22)
 - Added Apartment Display Names feature
 - Added customizable Welcome Messages
@@ -238,7 +266,6 @@ This plugin is proprietary software. All rights reserved.
 - Updated apartments.yml and config.yml with new fields
 - Improved error messages and data saving performance
 - Fixed tab completion and rent claim tracking bugs
-  
 
 ### Version 1.1.0 (20.8.2025)
 - Fixed critical NullPointerException and data persistence issues
