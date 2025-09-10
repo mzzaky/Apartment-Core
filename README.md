@@ -1,4 +1,4 @@
-# **ApartmentCore Plugin v1.2.6**
+# **ApartmentCore Plugin v1.2.7**
 
 Advanced apartment management system for Minecraft servers with comprehensive features and optimizations.
 
@@ -7,7 +7,7 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - 🏠 **Apartment Converter**: Convert WorldGuard regions into purchasable apartments
 - 💰 **Income Generation**: Apartments generate passive income based on their level
 - 📊 **Level System**: 5 apartment levels with increasing income rates
-- 🏦 **Tax System**: Automatic tax collection with penalty system
+- 🏦 **Tax System**: Automatic tax collection with progressive penalties and layered notifications
 - 📝 **Buy & Sell**: Players can resell the apartments they have purchased for up to 70% of the original price.
 - 📌 **Fast Travel**: allowing apartment owners to instantly teleport to the building's location.
 - 🌐 **Easy Configuration**: configuration that controls almost all aspects of the plugin, easy to understand.
@@ -26,20 +26,50 @@ Advanced apartment management system for Minecraft servers with comprehensive fe
 - 🎫 **New PlaceholderAPI Placeholders**: For display name, rating, welcome message, and rent info.
 - 📖 **Guest Book System**: Visitors can leave messages; owners can read and clear them using the /ac guestbook command.
 
-## New in v1.2.6
-- Fixed Admin Commands: Three admin set commands that previously did not work have now been fixed and are functioning as intended
-- Adding the `/apartmentcore admin set rate <id> <value>` command, which allows administrators to manually set or override the average rating of an apartment.
-- Introducing a new statistics tracking system for each apartment owned. Data is stored in a new file called `apartments-stats.yml.` Statistics tracked include: (1) Total Taxes Paid,  (2) Total Revenue Generated, (3) Age of Ownership.
-- New PlaceholderAPI support: 
-  | Placeholder | Description |
-  |--------------|-------------|
-  | `%apartmentcore_statistic_<id>_total_tax_paid%` | Displays the total tax paid. |
-  | `%apartmentcore_statistic_<id>_total_income_generated%` | Displays the total income generated. |
-  | `%apartmentcore_statistic_<id>_ownership_age_days%` | Displays the age of ownership in days. |
+## New in v1.2.7
+### New Tax System
+- **Tax**:
+  - Base tax rate = 2.5% of the apartment purchase price.
+  - Tax increases by 2.5% per apartment level (e.g., Level 3 = 7.5%).
+  - Tax is automatically charged every 24 real-world hours.
+  - Tax bills can accumulate.
 
-- Daily Task Optimization: Daily tasks were refactored to handle tax calculations and ownership age additions more efficiently in a single cycle.
-- Data Integrity: The new statistical system has been fully integrated into the auto-save cycle and shutdown procedures to ensure no data is lost.
+- **Apartment Status**:
+  - **Active**: Normal, the apartment can generate income.
+  - **Overdue (3 days without payment)**:
+    - Income stops.
+    - New tax is 2x the base tax.
+  - **Inactive (5 days without payment)**:
+    - Apartment cannot be used at all.
+    - New tax is 3x the base tax.
+  - **Repossession (7 days without payment)**:
+    - Ownership is permanently revoked.
 
+- **Payment Mechanism**:
+  - `/apartmentcore tax info` → displays all tax bills.
+  - `/apartmentcore tax pay` → pays tax arrears.
+  - `/apartmentcore tax auto <on/off>` → toggles auto-payment.
+  - If auto-payment is active and the balance is sufficient → taxes are automatically paid.
+  - If auto-payment fails (insufficient balance) → bills continue to accumulate.
+
+- **Additional Rules**:
+  - Apartments with tax arrears cannot be sold.
+  - All payments can only be made if there are active bills.
+
+- **Layered Notifications**:
+  - New bill: `📢 A new tax bill of X coins has appeared.`
+  - Day 2: `⏳ Remember! Tax of X coins must be paid tomorrow.`
+  - Day 3 (Overdue): `⚠ Your tax is overdue! The total arrears are now Y coins.`
+  - Day 5 (Inactive): `⛔ Your apartment is now Inactive! The total arrears are now Z coins.`
+  - Day 7 (Repossession): `❌ Your apartment has been repossessed by the server due to failure to pay taxes.`
+
+- **Expected Output**:
+  - System stores tax bills per apartment.
+  - System processes status based on time since the last bill.
+  - System sends automatic notifications according to the phase.
+  - System provides an API for other plugins to check apartment tax status.
+
+---
 
 ## Dependencies
 
@@ -245,6 +275,20 @@ This plugin is proprietary software. All rights reserved.
 
 ## Changelog
 
+## Version v1.2.6 (2025-09-07)
+- Fixed Admin Commands: Three admin set commands that previously did not work have now been fixed and are functioning as intended
+- Adding the `/apartmentcore admin set rate <id> <value>` command, which allows administrators to manually set or override the average rating of an apartment.
+- Introducing a new statistics tracking system for each apartment owned. Data is stored in a new file called `apartments-stats.yml.` Statistics tracked include: (1) Total Taxes Paid,  (2) Total Revenue Generated, (3) Age of Ownership.
+- New PlaceholderAPI support: 
+  | Placeholder | Description |
+  |--------------|-------------|
+  | `%apartmentcore_statistic_<id>_total_tax_paid%` | Displays the total tax paid. |
+  | `%apartmentcore_statistic_<id>_total_income_generated%` | Displays the total income generated. |
+  | `%apartmentcore_statistic_<id>_ownership_age_days%` | Displays the age of ownership in days. |
+
+- Daily Task Optimization: Daily tasks were refactored to handle tax calculations and ownership age additions more efficiently in a single cycle.
+- Data Integrity: The new statistical system has been fully integrated into the auto-save cycle and shutdown procedures to ensure no data is lost.
+
 ## Version 1.2.5 (2025-09-06)
 - Added Manual Teleport Location system, allowing owners to set a precise teleport point via /ac setteleport.
 - Introduced a Guest Book system for visitors to leave messages and for owners to read/clear them (/ac guestbook).
@@ -292,4 +336,5 @@ This plugin is proprietary software. All rights reserved.
 - YAML data storage
 - Comprehensive permission system
 - Optimization for server performance
+
 
