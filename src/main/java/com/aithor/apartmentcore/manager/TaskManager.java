@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.manager;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -9,11 +9,11 @@ import org.bukkit.scheduler.BukkitRunnable;
  * Manages all scheduled tasks for the plugin
  */
 public class TaskManager {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final ApartmentManager apartmentManager;
     private final ConfigManager configManager;
 
-    public TaskManager(ApartmentCorei3 plugin, ApartmentManager apartmentManager, ConfigManager configManager) {
+    public TaskManager(ApartmentCore plugin, ApartmentManager apartmentManager, ConfigManager configManager) {
         this.plugin = plugin;
         this.apartmentManager = apartmentManager;
         this.configManager = configManager;

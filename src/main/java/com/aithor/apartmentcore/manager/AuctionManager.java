@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.manager;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.model.Apartment;
 import com.aithor.apartmentcore.model.ApartmentAuction;
 
@@ -26,7 +26,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
  * Manages apartment auctions
  */
 public class AuctionManager {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final ApartmentManager apartmentManager;
     private final Economy economy;
     private final ConfigManager configManager;
@@ -35,7 +35,7 @@ public class AuctionManager {
     private final Map<String, ApartmentAuction> activeAuctions;
     private final Map<UUID, Long> auctionCooldowns;
 
-    public AuctionManager(ApartmentCorei3 plugin, ApartmentManager apartmentManager,
+    public AuctionManager(ApartmentCore plugin, ApartmentManager apartmentManager,
                           Economy economy, ConfigManager configManager, DataManager dataManager) {
         this.plugin = plugin;
         this.apartmentManager = apartmentManager;

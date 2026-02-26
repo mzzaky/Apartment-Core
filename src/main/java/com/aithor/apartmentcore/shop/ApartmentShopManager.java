@@ -1,7 +1,7 @@
 package com.aithor.apartmentcore.shop;
 
 import com.aithor.apartmentcore.model.Apartment;
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.manager.ApartmentManager;
 import com.aithor.apartmentcore.manager.ConfigManager;
 import com.aithor.apartmentcore.manager.DataManager;
@@ -19,7 +19,7 @@ import java.util.UUID;
  * Manages the apartment shop system - purchases, upgrades, and buff applications
  */
 public class ApartmentShopManager {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final ApartmentManager apartmentManager;
     private final Economy economy;
     private final ConfigManager configManager;
@@ -29,7 +29,7 @@ public class ApartmentShopManager {
     private final Map<String, ApartmentShopData> shopData;
     private final File shopDataFile;
     
-    public ApartmentShopManager(ApartmentCorei3 plugin, ApartmentManager apartmentManager, 
+    public ApartmentShopManager(ApartmentCore plugin, ApartmentManager apartmentManager, 
                                Economy economy, ConfigManager configManager, DataManager dataManager) {
         this.plugin = plugin;
         this.apartmentManager = apartmentManager;

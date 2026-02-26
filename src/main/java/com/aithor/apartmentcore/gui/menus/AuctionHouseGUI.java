@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.gui.menus;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.manager.AuctionManager;
 import com.aithor.apartmentcore.model.Apartment;
 import com.aithor.apartmentcore.model.ApartmentAuction;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  */
 public class AuctionHouseGUI extends PaginatedGUI {
     
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final GUIManager guiManager;
     private final AuctionManager auctionManager;
     
@@ -44,7 +44,7 @@ public class AuctionHouseGUI extends PaginatedGUI {
     private static final int FILTER_NO_BIDS_SLOT = 5;
     private static final int REFRESH_SLOT = 7;
     
-    public AuctionHouseGUI(Player player, ApartmentCorei3 plugin, GUIManager guiManager) {
+    public AuctionHouseGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         super(player, ChatColor.DARK_PURPLE + "Auction House", 54, 28);
         this.plugin = plugin;
         this.guiManager = guiManager;

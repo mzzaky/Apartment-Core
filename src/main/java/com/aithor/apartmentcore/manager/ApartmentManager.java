@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.manager;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.model.Apartment;
 import com.aithor.apartmentcore.model.ApartmentRating;
 import com.aithor.apartmentcore.model.ApartmentStats;
@@ -34,7 +34,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.milkbowl.vault.economy.Economy;
 
 public class ApartmentManager {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final Economy economy;
     private final ConfigManager configManager;
     private final DataManager dataManager;
@@ -59,7 +59,7 @@ public class ApartmentManager {
     }
 
 
-    public ApartmentManager(ApartmentCorei3 plugin, Economy economy, ConfigManager configManager, DataManager dataManager) {
+    public ApartmentManager(ApartmentCore plugin, Economy economy, ConfigManager configManager, DataManager dataManager) {
         this.plugin = plugin;
         this.economy = economy;
         this.configManager = configManager;

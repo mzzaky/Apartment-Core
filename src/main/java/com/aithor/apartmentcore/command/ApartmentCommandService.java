@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.command;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.manager.ApartmentManager;
 import com.aithor.apartmentcore.manager.AuctionManager;
 import com.aithor.apartmentcore.manager.ConfigManager;
@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class ApartmentCommandService {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final ApartmentManager apartmentManager;
     private final Economy economy;
     private final ConfigManager configManager;
@@ -45,7 +45,7 @@ public class ApartmentCommandService {
     // Correct field (actual one used)
     private final Map<UUID, Long> guestBookCooldowns = new HashMap<>();
 
-    public ApartmentCommandService(ApartmentCorei3 plugin,
+    public ApartmentCommandService(ApartmentCore plugin,
                                    ApartmentManager apartmentManager,
                                    Economy economy,
                                    ConfigManager configManager) {

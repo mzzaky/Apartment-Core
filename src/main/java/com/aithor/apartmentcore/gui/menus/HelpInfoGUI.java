@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.gui.GUIManager;
 import com.aithor.apartmentcore.gui.interfaces.GUI;
 import com.aithor.apartmentcore.gui.items.ItemBuilder;
@@ -27,7 +27,7 @@ import java.util.Map;
 public class HelpInfoGUI implements GUI {
 
     private final Player player;
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final GUIManager guiManager;
     private String title;
     private Inventory inventory;
@@ -52,7 +52,7 @@ public class HelpInfoGUI implements GUI {
     private int versionSlot = DEFAULT_VERSION_SLOT;
     private int backSlot = DEFAULT_BACK_SLOT;
 
-    public HelpInfoGUI(Player player, ApartmentCorei3 plugin, GUIManager guiManager) {
+    public HelpInfoGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         this.player = player;
         this.plugin = plugin;
         this.guiManager = guiManager;

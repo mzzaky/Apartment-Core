@@ -1,7 +1,7 @@
 package com.aithor.apartmentcore.gui.menus;
 
 import com.aithor.apartmentcore.model.Apartment;
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.model.ApartmentRating;
 import com.aithor.apartmentcore.model.ApartmentStats;
 import com.aithor.apartmentcore.model.TaxInvoice;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class StatisticsGUI extends PaginatedGUI {
 
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final GUIManager guiManager;
 
     // Header/action slots (top border row)
@@ -36,7 +36,7 @@ public class StatisticsGUI extends PaginatedGUI {
     private static final int PAY_ALL_TAXES_SLOT = 2;
     private static final int SUMMARY_SLOT = 4;
 
-    public StatisticsGUI(Player player, ApartmentCorei3 plugin, GUIManager guiManager) {
+    public StatisticsGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         super(player, ChatColor.DARK_AQUA + "Statistics Overview", 54, 28);
         this.plugin = plugin;
         this.guiManager = guiManager;

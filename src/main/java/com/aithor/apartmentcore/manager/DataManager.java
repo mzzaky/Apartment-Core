@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.manager;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,7 +18,7 @@ import java.util.Date;
  * Manages data file operations and backups
  */
 public class DataManager {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final ConfigManager configManager;
 
     private FileConfiguration dataConfig;
@@ -30,7 +30,7 @@ public class DataManager {
     private File statsFile;
 
 
-    public DataManager(ApartmentCorei3 plugin, ConfigManager configManager) {
+    public DataManager(ApartmentCore plugin, ConfigManager configManager) {
         this.plugin = plugin;
         this.configManager = configManager;
         setupBackupSystem();

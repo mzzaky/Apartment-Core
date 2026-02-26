@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.gui.menus;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.model.Apartment;
 import com.aithor.apartmentcore.model.GuestBookEntry;
 import com.aithor.apartmentcore.gui.GUIManager;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class GuestbookGUI extends PaginatedGUI {
     
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final GUIManager guiManager;
     private final String apartmentId;
     
@@ -36,7 +36,7 @@ public class GuestbookGUI extends PaginatedGUI {
     private static final int CLEAR_ALL_SLOT = 2;
     private static final int GUESTBOOK_INFO_SLOT = 7;
     
-    public GuestbookGUI(Player player, ApartmentCorei3 plugin, GUIManager guiManager, String apartmentId) {
+    public GuestbookGUI(Player player, ApartmentCore plugin, GUIManager guiManager, String apartmentId) {
         super(player, ChatColor.DARK_AQUA + "Guestbook", 54, 28);
         this.plugin = plugin;
         this.guiManager = guiManager;

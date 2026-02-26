@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.model;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.manager.ApartmentManager;
 import com.aithor.apartmentcore.manager.ConfigManager;
 
@@ -144,7 +144,7 @@ public class Apartment {
     /**
      * Get hourly income with shop buffs applied (version with plugin access)
      */
-    public double getHourlyIncomeWithShopBuffs(ConfigManager configManager, ApartmentCorei3 plugin) {
+    public double getHourlyIncomeWithShopBuffs(ConfigManager configManager, ApartmentCore plugin) {
         LevelConfig config = configManager.getLevelConfig(level);
         if (config == null) {
             return 10; // Default fallback
@@ -193,7 +193,7 @@ public class Apartment {
     /**
      * Base tax amount with shop buffs applied (tax reduction)
      */
-    public double computeBaseTaxAmountWithShopBuffs(ApartmentCorei3 plugin) {
+    public double computeBaseTaxAmountWithShopBuffs(ApartmentCore plugin) {
         double baseTax = computeBaseTaxAmount();
         
         // Apply tax reduction buff
@@ -263,7 +263,7 @@ public class Apartment {
      * - Send layered notifications.
      * - Apply status transitions and repossession at day 7.
      */
-    public void tickTaxInvoices(Economy econ, ApartmentCorei3 plugin,
+    public void tickTaxInvoices(Economy econ, ApartmentCore plugin,
                                 ConfigManager configManager, ApartmentManager apartmentManager) {
         if (owner == null) return;
 

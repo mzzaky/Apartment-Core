@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.placeholder;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.manager.ApartmentManager;
 import com.aithor.apartmentcore.manager.ConfigManager;
 import com.aithor.apartmentcore.model.Apartment;
@@ -20,13 +20,13 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
  * PlaceholderAPI Expansion for ApartmentCore
  */
 public class ApartmentPlaceholder extends PlaceholderExpansion {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final ApartmentManager apartmentManager;
     private final ConfigManager configManager;
     // Optional refresh heartbeat for future cache logic
     private volatile long lastRefreshAt = System.currentTimeMillis();
 
-    public ApartmentPlaceholder(ApartmentCorei3 plugin, ApartmentManager apartmentManager) {
+    public ApartmentPlaceholder(ApartmentCore plugin, ApartmentManager apartmentManager) {
         this.plugin = plugin;
         this.apartmentManager = apartmentManager;
         this.configManager = plugin.getConfigManager();

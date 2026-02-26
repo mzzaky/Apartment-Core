@@ -1,7 +1,7 @@
 package com.aithor.apartmentcore.gui.menus;
 
 import com.aithor.apartmentcore.model.Apartment;
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.gui.GUIManager;
 import com.aithor.apartmentcore.gui.interfaces.GUI;
 import com.aithor.apartmentcore.gui.items.ItemBuilder;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ApartmentShopGUI implements GUI {
     
     private final Player player;
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final GUIManager guiManager;
     private final String apartmentId;
     private final String title;
@@ -44,7 +44,7 @@ public class ApartmentShopGUI implements GUI {
     private static final int INFO_SLOT = 4;
     private static final int STATS_SLOT = 22;
     
-    public ApartmentShopGUI(Player player, ApartmentCorei3 plugin, GUIManager guiManager, String apartmentId) {
+    public ApartmentShopGUI(Player player, ApartmentCore plugin, GUIManager guiManager, String apartmentId) {
         this.player = player;
         this.plugin = plugin;
         this.guiManager = guiManager;

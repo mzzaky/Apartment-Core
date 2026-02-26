@@ -26,7 +26,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.File;
 
-public class ApartmentCorei3 extends JavaPlugin {
+public class ApartmentCore extends JavaPlugin {
     private Economy economy;
     private ConfigManager configManager;
     private DataManager dataManager;

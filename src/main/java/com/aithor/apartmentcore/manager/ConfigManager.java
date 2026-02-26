@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.manager;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.model.LevelConfig;
 
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import java.nio.file.StandardCopyOption;
  * Manages all configuration values and settings
  */
 public class ConfigManager {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
 
     // Configuration values
     private boolean debugMode;
@@ -105,7 +105,7 @@ public class ConfigManager {
     private boolean securityLogSuspicious;
 
 
-    public ConfigManager(ApartmentCorei3 plugin) {
+    public ConfigManager(ApartmentCore plugin) {
         this.plugin = plugin;
         this.levelConfigs = new HashMap<>();
     }

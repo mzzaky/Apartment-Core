@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.manager;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 
 import java.io.*;
 import java.nio.file.*;
@@ -12,13 +12,13 @@ import java.util.logging.Level;
  * Manages custom file logging with rotation and cleanup
  */
 public class LoggerManager {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final ConfigManager config;
     private final SimpleDateFormat timestampFormat;
     private File logFile;
     private File logsDir;
 
-    public LoggerManager(ApartmentCorei3 plugin, ConfigManager config) {
+    public LoggerManager(ApartmentCore plugin, ConfigManager config) {
         this.plugin = plugin;
         this.config = config;
         this.timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

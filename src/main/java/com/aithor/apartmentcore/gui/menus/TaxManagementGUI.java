@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.gui.menus;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.model.Apartment;
 import com.aithor.apartmentcore.model.ApartmentStats;
 import com.aithor.apartmentcore.model.TaxInvoice;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class TaxManagementGUI extends PaginatedGUI {
     
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final GUIManager guiManager;
     
     // Action slots
@@ -35,7 +35,7 @@ public class TaxManagementGUI extends PaginatedGUI {
     private static final int AUTO_PAY_TOGGLE_SLOT = 2;
     private static final int TAX_INFO_SLOT = 7;
     
-    public TaxManagementGUI(Player player, ApartmentCorei3 plugin, GUIManager guiManager) {
+    public TaxManagementGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         super(player, ChatColor.DARK_RED + "Tax Management", 54, 28);
         this.plugin = plugin;
         this.guiManager = guiManager;

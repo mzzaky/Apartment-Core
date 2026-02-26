@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.command;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.manager.ApartmentManager;
 import com.aithor.apartmentcore.manager.AuctionManager;
 import com.aithor.apartmentcore.manager.ConfigManager;
@@ -34,14 +34,14 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class CommandHandler implements TabCompleter {
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final ApartmentManager apartmentManager;
     private final Economy economy;
     private final ConfigManager configManager;
     private final Map<UUID, Long> guestBookCooldowns = new HashMap<>();
     private final ApartmentCommandService commandService;
 
-    public CommandHandler(ApartmentCorei3 plugin, ApartmentManager apartmentManager, Economy economy, ConfigManager configManager) {
+    public CommandHandler(ApartmentCore plugin, ApartmentManager apartmentManager, Economy economy, ConfigManager configManager) {
         this.plugin = plugin;
         this.apartmentManager = apartmentManager;
         this.economy = economy;

@@ -1,7 +1,7 @@
 package com.aithor.apartmentcore.gui.menus;
 
 import com.aithor.apartmentcore.model.Apartment;
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.model.ApartmentRating;
 import com.aithor.apartmentcore.gui.GUIManager;
 import com.aithor.apartmentcore.gui.interfaces.PaginatedGUI;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class ApartmentBrowserGUI extends PaginatedGUI {
     
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final GUIManager guiManager;
 
     // YAML menu section and placeholder context
@@ -58,7 +58,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
     private int sortSlot = DEFAULT_SORT_SLOT;
     private int backSlot = DEFAULT_BACK_SLOT;
     
-    public ApartmentBrowserGUI(Player player, ApartmentCorei3 plugin, GUIManager guiManager) {
+    public ApartmentBrowserGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         super(player, ChatColor.DARK_BLUE + "Browse Apartments", 54, 28);
         this.plugin = plugin;
         this.guiManager = guiManager;

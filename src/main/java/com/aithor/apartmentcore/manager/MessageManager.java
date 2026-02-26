@@ -1,6 +1,6 @@
 package com.aithor.apartmentcore.manager;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 
 import java.io.File;
 import java.io.InputStream;
@@ -12,12 +12,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class MessageManager {
 
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final ConfigManager configManager;
     private FileConfiguration messageConfig;
     private File messagesFile;
 
-    public MessageManager(ApartmentCorei3 plugin) {
+    public MessageManager(ApartmentCore plugin) {
         this.plugin = plugin;
         this.configManager = plugin.getConfigManager();
         saveDefaultMessages();

@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 
-import com.aithor.apartmentcore.ApartmentCorei3;
+import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.gui.interfaces.GUI;
 import com.aithor.apartmentcore.gui.menus.ApartmentBrowserGUI;
 import com.aithor.apartmentcore.gui.menus.ApartmentDetailsGUI;
@@ -31,12 +31,12 @@ import com.aithor.apartmentcore.gui.utils.GUIUtils;
  */
 public class GUIManager implements Listener {
     
-    private final ApartmentCorei3 plugin;
+    private final ApartmentCore plugin;
     private final Map<UUID, GUI> openGUIs;
     private final Map<Inventory, GUI> inventoryToGUI;
     private int refreshTaskId = -1;
     
-    public GUIManager(ApartmentCorei3 plugin) {
+    public GUIManager(ApartmentCore plugin) {
         this.plugin = plugin;
         this.openGUIs = new HashMap<>();
         this.inventoryToGUI = new HashMap<>();
