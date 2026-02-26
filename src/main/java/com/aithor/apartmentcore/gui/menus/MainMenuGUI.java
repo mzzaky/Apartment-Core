@@ -30,15 +30,16 @@ public class MainMenuGUI implements GUI {
     private static final int BROWSE_BUY_SLOT = 13;
     private static final int TAX_MANAGEMENT_SLOT = 15;
     private static final int AUCTION_HOUSE_SLOT = 20;
-    private static final int STATISTICS_SLOT = 22;
-    private static final int HELP_INFO_SLOT = 24;
+    private static final int RESEARCH_SLOT = 22;
+    private static final int STATISTICS_SLOT = 24;
+    private static final int HELP_INFO_SLOT = 31;
 
     public MainMenuGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         this.player = player;
         this.plugin = plugin;
         this.guiManager = guiManager;
         this.title = ChatColor.translateAlternateColorCodes('&', "&2ApartmentCore Main Menu");
-        this.inventory = Bukkit.createInventory(null, 45, this.title);
+        this.inventory = Bukkit.createInventory(null, 54, this.title);
     }
 
     @Override
@@ -58,6 +59,7 @@ public class MainMenuGUI implements GUI {
         addBrowseAndBuy();
         addTaxManagement();
         addAuctionHouse();
+        addResearch();
         addStatistics();
         addHelpInfo();
 
@@ -213,6 +215,52 @@ public class MainMenuGUI implements GUI {
         inventory.setItem(AUCTION_HOUSE_SLOT, item);
     }
 
+    private void addResearch() {
+        if (plugin.getResearchManager() == null || !plugin.getResearchManager().isEnabled()) {
+            ItemStack item = new ItemBuilder(Material.BARRIER)
+                    .name("&c Research Center")
+                    .lore(
+                            "&7Research system is disabled",
+                            "",
+                            "&c Not available")
+                    .build();
+            inventory.setItem(RESEARCH_SLOT, item);
+            return;
+        }
+
+        com.aithor.apartmentcore.research.ResearchManager rm = plugin.getResearchManager();
+        com.aithor.apartmentcore.research.PlayerResearchData data = rm.getPlayerData(player.getUniqueId());
+
+        int totalCompleted = 0;
+        int totalMax = 0;
+        for (com.aithor.apartmentcore.research.ResearchType type : com.aithor.apartmentcore.research.ResearchType.values()) {
+            totalCompleted += data.getCompletedTier(type);
+            totalMax += type.getMaxTier();
+        }
+
+        String statusLine;
+        if (data.hasActiveResearch()) {
+            statusLine = "&e Researching: &f" + data.getActiveResearch().getDisplayName();
+        } else {
+            statusLine = "&7 No active research";
+        }
+
+        ItemStack item = new ItemBuilder(Material.ENCHANTING_TABLE)
+                .name("&d Research Center")
+                .lore(
+                        "&7Conduct research for permanent buffs",
+                        "",
+                        "&e Research Progress:",
+                        "&7 Completed: &f" + totalCompleted + "&7/&f" + totalMax + " &7tiers",
+                        statusLine,
+                        "",
+                        "&a Click to open")
+                .glow()
+                .build();
+
+        inventory.setItem(RESEARCH_SLOT, item);
+    }
+
     private void addStatistics() {
         // Aggregate player stats
         long ownedCount = plugin.getApartmentManager().getApartments().values().stream()
@@ -320,6 +368,16 @@ public class MainMenuGUI implements GUI {
                 plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openAuctionHouse(player));
             } else {
                 GUIUtils.sendMessage(player, "&cAuction system is disabled!");
+                GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+            }
+            return;
+        }
+
+        if (slot == RESEARCH_SLOT) {
+            if (plugin.getResearchManager() != null && plugin.getResearchManager().isEnabled()) {
+                plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openResearch(player));
+            } else {
+                GUIUtils.sendMessage(player, "&cResearch system is disabled!");
                 GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
             }
             return;

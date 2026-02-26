@@ -258,6 +258,10 @@ public class ApartmentCommandService {
         // Check apartment limit
         if (!player.hasPermission("apartmentcore.bypass.limit")) {
             int maxApartments = plugin.getConfig().getInt("settings.max-apartments-per-player", 5);
+            // Apply Expansion Plan research bonus
+            if (plugin.getResearchManager() != null) {
+                maxApartments += plugin.getResearchManager().getExtraOwnershipSlots(player.getUniqueId());
+            }
             if (maxApartments > 0) {
                 long owned = apartmentManager.getApartments().values().stream()
                         .filter(a -> player.getUniqueId().equals(a.owner))

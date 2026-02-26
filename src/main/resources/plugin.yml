@@ -157,6 +157,10 @@ permissions:
     description: Allow viewing shop items
     default: true
 
+  apartmentcore.research:
+    description: Allow using the research system
+    default: true
+
   apartmentcore.admin.shop:
     description: Allow managing shop configurations
     default: op

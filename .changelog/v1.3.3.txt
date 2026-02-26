@@ -17,3 +17,37 @@
 - mengganti item material factory (status aktif) pada menu myfactory dari emerald_block menjadi diamond
 - Menambahkan efek sound, title message, dan toast (action bar) saat apartemen berhasil di-upgrade levelnya.
 - Menghapus file apartment_gui.yml dan seluruh logika kode yang menggunakan file tersebut; GUI kini menggunakan pengaturan default internal.
+
+=== Research System (New Feature) ===
+
+- Added a new Research System that provides permanent player-level buffs through tier-based research (Tier I-V).
+- Created `research.yml` configuration file with configurable cost (exponential scaling), duration (exponential scaling), and effect values per research type.
+- Created `data/research_data.yml` for persistent storage of player research progress and active research state.
+- Implemented 5 research types:
+  1. "Revenue Acceleration" — Reduces income generation interval by 5% per tier (applied as proportional income boost).
+  2. "Capital Growth Strategy" — Increases income generation amount by 5% per tier.
+  3. "Tax Efficiency Strategy" — Reduces final tax amount by 5% per tier (stacks with shop tax reduction).
+  4. "Expansion Plan" — Increases apartment ownership limit by +1 per tier.
+  5. "Auction Efficiency" — Reduces auction creation fee by 5% per tier and lowers commission rate by 1% per tier.
+- Research costs scale exponentially: cost = base * multiplier^(tier-1). Default bases range from $50,000 to $150,000.
+- Research durations scale exponentially: duration = base * multiplier^(tier-1). Default bases range from 1h to 3h.
+- Players can only run one research at a time; completion is checked every second.
+- On research completion: player receives chat notification, title message, and sound effect.
+
+New files added:
+- `src/main/java/com/aithor/apartmentcore/research/ResearchType.java` — Enum defining the 5 research types with config keys, display names, descriptions, icons, and max tier.
+- `src/main/java/com/aithor/apartmentcore/research/PlayerResearchData.java` — Model class storing per-player completed tiers and active research state.
+- `src/main/java/com/aithor/apartmentcore/research/ResearchManager.java` — Core manager handling config loading, cost/duration calculations, research start/complete/cancel, buff getters, tick processing, and YAML persistence.
+- `src/main/java/com/aithor/apartmentcore/gui/menus/ResearchGUI.java` — Custom GUI (54-slot) displaying all 5 researches with tier progress bars, buff descriptions, cost/duration info, active research tracking with progress bar and countdown.
+- `src/main/resources/research.yml` — Configuration file for the research system.
+
+Modified files:
+- `ApartmentCore.java` — Added ResearchManager field, initialization in onEnable(), shutdown in onDisable(), and getter method.
+- `GUIManager.java` — Added `openResearch(Player)` method and ResearchGUI import.
+- `MainMenuGUI.java` — Expanded inventory from 45 to 54 slots, added Research Center item (slot 22), rearranged Statistics (slot 24) and Help Info (slot 31), added click handler for Research slot.
+- `Apartment.java` — Modified `getHourlyIncomeWithShopBuffs()` to also apply Capital Growth (+5% income) and Revenue Acceleration (proportional income boost). Modified `computeBaseTaxAmountWithShopBuffs()` to also apply Tax Efficiency research reduction.
+- `AuctionManager.java` — Modified `createAuction()` to reduce auction fee by Auction Efficiency research bonus. Modified `processAuctionEnd()` to reduce commission rate by Auction Efficiency research bonus.
+- `CommandHandler.java` — Modified buy command to add Expansion Plan research bonus to max apartment ownership limit.
+- `ApartmentCommandService.java` — Modified buy command to add Expansion Plan research bonus to max apartment ownership limit.
+- `messages.yml` — Added `research.*` message entries (started, completed, already_active, max_tier, insufficient_funds, disabled, no_permission).
+- `plugin.yml` — Added `apartmentcore.research` permission (default: true).

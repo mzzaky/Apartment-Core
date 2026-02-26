@@ -11,6 +11,7 @@ import com.aithor.apartmentcore.manager.MessageManager;
 import com.aithor.apartmentcore.manager.TaskManager;
 import com.aithor.apartmentcore.model.ConfirmationAction;
 import com.aithor.apartmentcore.placeholder.ApartmentPlaceholder;
+import com.aithor.apartmentcore.research.ResearchManager;
 import com.aithor.apartmentcore.shop.ApartmentShopManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.Command;
@@ -39,6 +40,7 @@ public class ApartmentCore extends JavaPlugin {
     private AuctionManager auctionManager;
     private GUIManager guiManager;
     private ApartmentShopManager shopManager;
+    private ResearchManager researchManager;
     private BukkitTask auctionTask;
 
     private final Map<UUID, Long> commandCooldowns = new ConcurrentHashMap<>();
@@ -97,6 +99,9 @@ public class ApartmentCore extends JavaPlugin {
         // Shop system
         this.shopManager = new ApartmentShopManager(this, apartmentManager, economy, configManager, dataManager);
 
+        // Research system
+        this.researchManager = new ResearchManager(this, economy, configManager);
+
         // Commands
         this.commandHandler = new CommandHandler(this, apartmentManager, economy, configManager);
         PluginCommand cmd = getCommand("apartmentcore");
@@ -153,6 +158,10 @@ public class ApartmentCore extends JavaPlugin {
         if (shopManager != null) {
             try { shopManager.saveShopData(); } catch (Throwable ignored) {}
             shopManager = null;
+        }
+        if (researchManager != null) {
+            try { researchManager.shutdown(); } catch (Throwable ignored) {}
+            researchManager = null;
         }
         log("ApartmentCore disabled.");
     }
@@ -266,6 +275,10 @@ public class ApartmentCore extends JavaPlugin {
     
     public ApartmentShopManager getShopManager() {
         return shopManager;
+    }
+
+    public ResearchManager getResearchManager() {
+        return researchManager;
     }
 
     /**
