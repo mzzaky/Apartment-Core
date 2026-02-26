@@ -142,32 +142,52 @@ public class Apartment {
     }
     
     /**
-     * Get hourly income with shop buffs applied (version with plugin access)
+     * Get hourly income with shop buffs and research buffs applied (version with plugin access)
      */
     public double getHourlyIncomeWithShopBuffs(ConfigManager configManager, ApartmentCore plugin) {
         LevelConfig config = configManager.getLevelConfig(level);
         if (config == null) {
             return 10; // Default fallback
         }
-        
+
         // Base income calculation
         double baseIncome = config.minIncome + Math.random() * (config.maxIncome - config.minIncome);
-        
+
         // Apply shop buffs
         if (plugin != null && plugin.getShopManager() != null) {
             var shopManager = plugin.getShopManager();
-            
+
             // Add flat base income bonus
             double baseIncomeBonus = shopManager.getBaseIncomeBonus(id);
             baseIncome += baseIncomeBonus;
-            
+
             // Apply percentage income bonus
             double incomeBonus = shopManager.getIncomeBonusPercentage(id);
             if (incomeBonus > 0) {
                 baseIncome *= (1.0 + incomeBonus / 100.0);
             }
         }
-        
+
+        // Apply research buffs (player-level permanent bonuses)
+        if (owner != null && plugin != null && plugin.getResearchManager() != null) {
+            var rm = plugin.getResearchManager();
+
+            // Capital Growth Strategy: +5% income per tier
+            double capitalGrowthBonus = rm.getIncomeAmountBonus(owner);
+            if (capitalGrowthBonus > 0) {
+                baseIncome *= (1.0 + capitalGrowthBonus / 100.0);
+            }
+
+            // Revenue Acceleration: -5% generation interval per tier
+            // Since the global interval is shared, we compensate by proportionally boosting income.
+            // A 5% interval reduction means income arrives 1/(1-0.05) = ~5.26% more frequently,
+            // which is equivalent to multiplying income by 1/(1 - reduction/100).
+            double intervalReduction = rm.getIncomeIntervalReduction(owner);
+            if (intervalReduction > 0 && intervalReduction < 100) {
+                baseIncome *= (1.0 / (1.0 - intervalReduction / 100.0));
+            }
+        }
+
         return baseIncome;
     }
 
@@ -191,19 +211,27 @@ public class Apartment {
     }
     
     /**
-     * Base tax amount with shop buffs applied (tax reduction)
+     * Base tax amount with shop buffs and research buffs applied (tax reduction)
      */
     public double computeBaseTaxAmountWithShopBuffs(ApartmentCore plugin) {
         double baseTax = computeBaseTaxAmount();
-        
-        // Apply tax reduction buff
+
+        // Apply shop tax reduction buff
         if (plugin != null && plugin.getShopManager() != null) {
             double taxReduction = plugin.getShopManager().getTaxReductionPercentage(id);
             if (taxReduction > 0) {
                 baseTax *= (1.0 - taxReduction / 100.0);
             }
         }
-        
+
+        // Apply research Tax Efficiency Strategy: -5% final tax per tier
+        if (owner != null && plugin != null && plugin.getResearchManager() != null) {
+            double researchTaxReduction = plugin.getResearchManager().getTaxReduction(owner);
+            if (researchTaxReduction > 0) {
+                baseTax *= (1.0 - researchTaxReduction / 100.0);
+            }
+        }
+
         return Math.max(0, baseTax); // Ensure tax never goes negative
     }
 

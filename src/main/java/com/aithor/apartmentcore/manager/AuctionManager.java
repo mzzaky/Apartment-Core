@@ -146,8 +146,15 @@ public class AuctionManager {
             return false;
         }
 
-        // Check auction fee
+        // Check auction fee (apply Auction Efficiency research reduction)
         double auctionFee = configManager.getAuctionCreationFee();
+        if (plugin.getResearchManager() != null) {
+            double feeReduction = plugin.getResearchManager().getAuctionFeeReduction(player.getUniqueId());
+            if (feeReduction > 0) {
+                auctionFee *= (1.0 - feeReduction / 100.0);
+                auctionFee = Math.max(0, auctionFee);
+            }
+        }
         if (auctionFee > 0) {
             if (!economy.has(player, auctionFee)) {
                 player.sendMessage(ChatColor.RED + "You need " + configManager.formatMoney(auctionFee) + " to create an auction!");
@@ -382,8 +389,15 @@ public class AuctionManager {
                 } catch (Throwable ignored) {}
             }
 
-            // Pay seller (minus commission)
-            double commission = auction.currentBid * configManager.getAuctionCommission();
+            // Pay seller (minus commission, apply Auction Efficiency research reduction)
+            double commissionRate = configManager.getAuctionCommission();
+            if (plugin.getResearchManager() != null) {
+                double commReduction = plugin.getResearchManager().getAuctionCommissionReduction(auction.ownerId);
+                if (commReduction > 0) {
+                    commissionRate = Math.max(0, commissionRate - (commReduction / 100.0));
+                }
+            }
+            double commission = auction.currentBid * commissionRate;
             double sellerAmount = auction.currentBid - commission;
             EconomyResponse sellerResp = economy.depositPlayer(owner, sellerAmount);
             if (sellerResp == null || !sellerResp.transactionSuccess()) {

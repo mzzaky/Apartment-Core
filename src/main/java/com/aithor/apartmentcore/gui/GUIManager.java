@@ -22,6 +22,7 @@ import com.aithor.apartmentcore.gui.menus.AuctionHouseGUI;
 import com.aithor.apartmentcore.gui.menus.GuestbookGUI;
 import com.aithor.apartmentcore.gui.menus.MainMenuGUI;
 import com.aithor.apartmentcore.gui.menus.MyApartmentsGUI;
+import com.aithor.apartmentcore.gui.menus.ResearchGUI;
 import com.aithor.apartmentcore.gui.menus.StatisticsGUI;
 import com.aithor.apartmentcore.gui.menus.TaxManagementGUI;
 import com.aithor.apartmentcore.gui.utils.GUIUtils;
@@ -202,6 +203,15 @@ public class GUIManager implements Listener {
         openGUI(player, gui);
     }
     
+    /**
+     * Open research center GUI
+     * @param player The player
+     */
+    public void openResearch(Player player) {
+        ResearchGUI gui = new ResearchGUI(player, plugin, this);
+        openGUI(player, gui);
+    }
+
     /**
      * Open any GUI for a player
      * @param player The player

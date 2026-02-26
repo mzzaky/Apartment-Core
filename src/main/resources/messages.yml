@@ -96,3 +96,13 @@ shop:
   refund: "{prefix}&a💰 You received {amount} refund from shop purchases for apartment {apartment}."
   shop_disabled: "{prefix}&c❌ The shop system is currently disabled!"
   no_apartments: "{prefix}&c❌ You need to own at least one apartment to access the shop!"
+
+# Research System Messages
+research:
+  started: "{prefix}&a Research &e%research% &aTier &f%tier% &ahas been started!"
+  completed: "{prefix}&a Research &e%research% &aTier &f%tier% &acompleted! You gained a permanent buff."
+  already_active: "{prefix}&c You already have an active research in progress!"
+  max_tier: "{prefix}&c This research is already at maximum tier!"
+  insufficient_funds: "{prefix}&c Insufficient funds to start this research!"
+  disabled: "{prefix}&c The research system is currently disabled!"
+  no_permission: "{prefix}&c You don't have permission to use the research system!"
