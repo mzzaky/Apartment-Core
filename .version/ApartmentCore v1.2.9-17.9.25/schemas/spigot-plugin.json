@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spigot/Bukkit plugin.yml permissive schema (local)",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "name": { "type": "string" },
+    "version": { "type": ["string", "number"] },
+    "main": { "type": "string" },
+    "api-version": { "type": "string" },
+    "authors": { "type": ["string", "array"] },
+    "author": { "type": ["string", "array"] },
+    "description": { "type": "string" },
+    "depend": { "type": ["array", "string"] },
+    "softdepend": { "type": ["array", "string"] },
+    "loadbefore": { "type": ["array", "string"] },
+    "commands": { "type": "object", "additionalProperties": true },
+    "permissions": { "type": "object", "additionalProperties": true }
+  }
+}

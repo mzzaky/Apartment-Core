@@ -1,0 +1,58 @@
+# ApartmentCore minimal messages
+format:
+  prefix: "&6[ApartmentCore]&r "
+
+general:
+  cooldown: "{prefix}&cHarap tunggu sebelum menggunakan perintah lagi!"
+  player_only: "{prefix}&cHanya pemain yang bisa memakai perintah ini!"
+  no_permission: "{prefix}&cKamu tidak memiliki izin untuk %action%!"
+  unknown_command: "{prefix}&cPerintah tidak dikenal. Gunakan &e/apartmentcore help"
+  reloaded: "{prefix}&aKonfigurasi dan pesan berhasil dimuat ulang!"
+  version_header: "{prefix}&6=== ApartmentCore v%version% ==="
+  about_author: "{prefix}&eAuthor: &fAithor"
+  about_help_hint: "{prefix}&eGunakan &f/apartmentcore help &euntuk bantuan"
+  help_header: "{prefix}&6=== Daftar Perintah ApartmentCore ==="
+  admin_help_header: "{prefix}&6=== Perintah Admin ==="
+  usage:
+    buy: "{prefix}&e/apartmentcore buy <apartment_id>"
+    sell: "{prefix}&e/apartmentcore sell <apartment_id>"
+    teleport: "{prefix}&e/apartmentcore teleport <apartment_id>"
+    rent: "{prefix}&e/apartmentcore rent <claim|info> <apartment_id>"
+    tax_auto: "{prefix}&e/apartmentcore tax auto <on|off>"
+    upgrade: "{prefix}&e/apartmentcore upgrade <apartment_id>"
+    setname: "{prefix}&e/apartmentcore setname <apartment_id> <display_name>"
+    setwelcome: "{prefix}&e/apartmentcore setwelcome <apartment_id> <message>"
+    setteleport: "{prefix}&e/apartmentcore setteleport <apartment_id>"
+    rate: "{prefix}&e/apartmentcore rate <apartment_id> <0-10>"
+    list: "{prefix}&e/apartmentcore list [all|sale|mine|top]"
+    guestbook: "{prefix}&e/apartmentcore guestbook <leave|read|clear> <apartment_id> ..."
+    confirm: "{prefix}&e/apartmentcore confirm"
+    admin_create: "{prefix}&e/apartmentcore admin create <region> <id> <price>"
+    admin_remove: "{prefix}&e/apartmentcore admin remove <apartment_id>"
+    admin_set: "{prefix}&e/apartmentcore admin set <property> <apartment_id> <value>"
+    list_all: "{prefix}&e/apartmentcore admin apartment_list"
+    admin_backup: "{prefix}&e/apartmentcore admin backup <create|list|restore> [filename]"
+    admin_reload: "{prefix}&e/apartmentcore admin reload"
+
+guestbook:
+  usage: "{prefix}&cUsage: /apartmentcore guestbook &7<leave|read|clear> &f<apartment_id> &7..."
+  leave:
+    cooldown: "{prefix}&cKamu harus menunggu sebelum meninggalkan pesan lagi."
+    too_long: "{prefix}&cPesanmu terlalu panjang! Maks &f%max_chars% &ckarakter."
+    success: "{prefix}&aKamu meninggalkan pesan di buku tamu &e%apartment%&a."
+  read:
+    empty: "{prefix}&eBuku tamu untuk &e%apartment% &ekosong."
+    header: "{prefix}&6--- Buku Tamu untuk &e%apartment% &6---"
+    line_format: "&7[%date%] &b%player%&7: &f%message%"
+  clear:
+    not_owner: "{prefix}&cHanya pemilik yang bisa menghapus buku tamu."
+    confirm_line1: "{prefix}&eYakin ingin menghapus buku tamu untuk &e%apartment%&e?"
+    confirm_line2: "{prefix}&eKetik &f/apartmentcore confirm &euntuk konfirmasi."
+
+notifications:
+  bill_new: "{prefix}&e&l[Tagihan]&r &7Tagihan pajak baru sebesar &f%amount% &7untuk &e%apartment%&7."
+  auto_paid: "{prefix}&a&l[AutoPay]&r &7Dibayar otomatis &f%amount% &7untuk &e%apartment%&7."
+  bill_reminder_day2: "{prefix}&6&l[Pengingat]&r &7Pajak sebesar &f%amount% &7jatuh tempo besok untuk &e%apartment%&7."
+  bill_overdue_day3: "{prefix}&c&l[Terlambat]&r &7Pajakmu jatuh tempo! Total tunggakan sekarang &f%total%&7."
+  apartment_inactive_day5: "{prefix}&4&l[Nonaktif]&r &7Apartemenmu sekarang Nonaktif! Total tunggakan &f%total%&7."
+  apartment_repossessed_day7: "{prefix}&4&l[Disita]&r &7Apartemen &e%apartment% &7telah disita karena gagal bayar pajak."

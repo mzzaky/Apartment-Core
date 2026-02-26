@@ -1,0 +1,191 @@
+# ApartmentCore Shop System Configuration
+# Version: 1.3.2
+
+# Shop System Settings
+shop:
+  # Enable/disable the shop system entirely
+  enabled: true
+  
+  # Allow players to customize shop items costs and values
+  allow_custom_costs: false
+  
+  # Refund percentage when apartment is sold (0.0 to 1.0)
+  refund_percentage: 0.5
+
+# Shop Item Configuration
+# You can customize costs and buff values for each item tier
+items:
+  premium_kitchen:
+    display_name: "Premium Kitchen"
+    description: "Increases your apartment's income by a percentage bonus"
+    icon: "FURNACE"
+    # Cost for each tier (tier 1-5)
+    costs:
+      tier_1: 5000
+      tier_2: 10000
+      tier_3: 18000
+      tier_4: 30000
+      tier_5: 50000
+    # Buff values for each tier (percentage)
+    buff_values:
+      tier_1: 10.0
+      tier_2: 15.0
+      tier_3: 20.0
+      tier_4: 25.0
+      tier_5: 30.0
+  
+  luxury_furniture:
+    display_name: "Luxury Furniture"
+    description: "Adds flat income bonus to your apartment"
+    icon: "ITEM_FRAME"
+    costs:
+      tier_1: 3000
+      tier_2: 8000
+      tier_3: 15000
+      tier_4: 25000
+      tier_5: 40000
+    # Buff values for each tier (flat amount)
+    buff_values:
+      tier_1: 50.0
+      tier_2: 100.0
+      tier_3: 175.0
+      tier_4: 275.0
+      tier_5: 400.0
+  
+  solar_panel_system:
+    display_name: "Solar Panel System"
+    description: "Reduces your apartment's tax payments by percentage"
+    icon: "DAYLIGHT_DETECTOR"
+    costs:
+      tier_1: 7000
+      tier_2: 12000
+      tier_3: 20000
+      tier_4: 32000
+      tier_5: 50000
+    # Buff values for each tier (percentage)
+    buff_values:
+      tier_1: 5.0
+      tier_2: 10.0
+      tier_3: 15.0
+      tier_4: 20.0
+      tier_5: 25.0
+  
+  high_speed_internet:
+    display_name: "High Speed Internet"
+    description: "Speeds up income generation by reducing tick intervals"
+    icon: "REDSTONE"
+    costs:
+      tier_1: 4000
+      tier_2: 9000
+      tier_3: 16000
+      tier_4: 28000
+      tier_5: 45000
+    # Buff values for each tier (tick reduction)
+    buff_values:
+      tier_1: 1.0
+      tier_2: 2.0
+      tier_3: 3.0
+      tier_4: 4.0
+      tier_5: 5.0
+  
+  extra_living_room:
+    display_name: "Extra Living Room"
+    description: "Increases maximum guestbook messages for your apartment"
+    icon: "BOOKSHELF"
+    costs:
+      tier_1: 2000
+      tier_2: 5000
+      tier_3: 10000
+      tier_4: 18000
+      tier_5: 30000
+    # Buff values for each tier (extra messages)
+    buff_values:
+      tier_1: 10.0
+      tier_2: 20.0
+      tier_3: 30.0
+      tier_4: 40.0
+      tier_5: 50.0
+
+# GUI Configuration
+gui:
+  # Shop GUI title
+  title: "&8{apartment_name} - Shop"
+  
+  # GUI size (must be multiple of 9, between 9 and 54)
+  size: 45
+  
+  # Border material
+  border_material: "CYAN_STAINED_GLASS_PANE"
+  
+  # Sounds
+  sounds:
+    purchase_success: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    purchase_fail: "ENTITY_VILLAGER_NO"
+    gui_click: "UI_BUTTON_CLICK"
+
+# Shop Messages
+messages:
+  # Purchase success/failure messages
+  purchase_success: "&a✅ Successfully purchased {item_name} tier {tier} for {cost}!"
+  purchase_failed_funds: "&c❌ Insufficient funds! You need {cost} but have {balance}."
+  purchase_failed_max_tier: "&c❌ This item is already at maximum tier!"
+  purchase_failed_no_permission: "&c❌ You don't have permission to purchase shop items!"
+  purchase_failed_not_owner: "&c❌ You don't own this apartment!"
+  
+  # Refund messages
+  refund_given: "&a💰 You received {amount} refund from shop purchases for apartment {apartment_name}."
+  
+  # Shop access messages
+  shop_disabled: "&c❌ The shop system is currently disabled!"
+  no_apartments: "&c❌ You need to own at least one apartment to access the shop!"
+  
+  # Shop item descriptions
+  tier_info: "&7Tier {tier}/{max_tier}"
+  current_buff: "&e⭐ Current: {buff_description}"
+  next_buff: "&a⭐ Next: {buff_description}"
+  max_tier_reached: "&a🌟 MAX TIER REACHED!"
+  
+  # Action prompts
+  click_to_upgrade: "&a▶ Click to upgrade for {cost}!"
+  cannot_afford: "&c❌ Cannot afford upgrade!"
+  already_max: "&7Already at maximum tier"
+
+# Performance Settings
+performance:
+  # Cache shop data to reduce file I/O
+  cache_shop_data: true
+  
+  # Auto-save shop data interval (in minutes)
+  auto_save_interval: 5
+  
+  # Maximum shop purchases per minute per player (anti-spam)
+  max_purchases_per_minute: 10
+
+# Debug Settings
+debug:
+  # Log all shop transactions
+  log_transactions: true
+  
+  # Log shop data loading/saving
+  log_data_operations: false
+  
+  # Show detailed purchase process in console
+  detailed_purchase_logs: false
+
+# Compatibility Settings
+compatibility:
+  # PlaceholderAPI shop placeholders
+  placeholderapi:
+    enabled: true
+    prefix: "apartmentshop_"
+  
+  # Economy integration
+  economy:
+    # Use decimal places for shop costs
+    use_decimals: true
+    
+    # Round costs to nearest value
+    round_costs: false
+
+# Don't modify this - used for configuration version tracking
+config_version: 1

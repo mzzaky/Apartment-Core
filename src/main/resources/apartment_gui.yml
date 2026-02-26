@@ -1,0 +1,500 @@
+# ApartmentCore GUI configuration (apartment_gui.yml)
+# All menus are defined under the 'menus' key. Each menu supports:
+# - enabled: true/false
+# - title: Inventory title (supports color codes, emojis)
+# - size: 9..54 and multiple of 9
+# - items: Map of logical item keys to:
+#     slot: number
+#     material: Bukkit Material enum
+#     name: display name (supports color codes & placeholders)
+#     lore: list of strings (supports color codes & placeholders)
+#     glow: true/false (adds enchantment glow effect)
+#     custom-model-data: integer (0 = default, use resource pack custom model data)
+#     enabled: true/false (set false to hide item)
+#
+# Example custom model data usage:
+#   my-custom-item:
+#     slot: 10
+#     material: DIAMOND_SWORD
+#     name: "&6My Custom Sword"
+#     custom-model-data: 1001  # This will use model #1001 from your resource pack
+#     glow: true
+#     enabled: true
+
+menus:
+  main-menu:
+    enabled: true
+    title: "&2ApartmentCore Main Menu"
+    size: 45
+    border:
+      enabled: true
+      material: GRAY_STAINED_GLASS_PANE
+    items:
+      my-apartments:
+        slot: 11
+        material: DARK_OAK_DOOR
+        name: "&6🏠 My Apartments"
+        lore:
+          - "&7Manage your owned apartments"
+          - ""
+          - "&e📊 Statistics:"
+          - "&7• Owned: &f%owned%/&f%max%"
+          - "&7• Pending Income: &a%pending%"
+          - ""
+          - "&a▶ Click to open"
+        glow: true
+        custom-model-data: 0  # 0 = default, use resource pack custom model data
+        enabled: true
+      browse-buy:
+        slot: 13
+        material: GOLD_INGOT
+        name: "&6🛒 Browse & Buy"
+        lore:
+          - "&7Browse available apartments"
+          - ""
+          - "&e📊 Market Info:"
+          - "&7• Available: &f%available%"
+          - "&7• Starting from: &a%cheapest%"
+          - ""
+          - "&a▶ Click to browse"
+        glow: true
+        enabled: true
+      tax-management:
+        slot: 15
+        material: GREEN_CONCRETE
+        name: "&6💰 Tax Management"
+        lore:
+          - "&7Manage your tax payments"
+          - ""
+          - "&e📊 Tax Status:"
+          - "&7• Status: %tax_status%"
+          - "&7• Total Due: &f%tax_due%"
+          - "&7• Overdue: &f%overdue_count% &7apartments"
+          - ""
+          - "&a▶ Click to manage"
+        glow: true
+        enabled: true
+      auction-house:
+        slot: 29
+        material: DIAMOND_AXE
+        name: "&6🔨 Auction House"
+        lore:
+          - "&7Buy and sell apartments via auction"
+          - ""
+          - "&e📊 Auction Info:"
+          - "&7• Active Auctions: &f%active_auctions%"
+          - "&7• Commission: &f%auction_commission%%"
+          - ""
+          - "&a▶ Click to open"
+        glow: true
+        enabled: true
+
+  apartment-browser:
+    enabled: true
+    title: "&1🏠 Browse Apartments"
+    size: 54
+    items-per-page: 28
+    controls:
+      back:
+        slot: 0
+        material: ARROW
+        name: "&c◀ Back to Main Menu"
+        lore:
+          - "&7Return to the main menu"
+        glow: false
+        enabled: true
+      filter-all:
+        slot: 1
+        material: WHITE_CONCRETE
+        name: "&6All Apartments"
+        lore:
+          - "&7Show all available apartments"
+          - ""
+          - "&7Click to activate"
+        glow: false
+        enabled: true
+      filter-cheap:
+        slot: 2
+        material: YELLOW_CONCRETE
+        name: "&6Budget Friendly"
+        lore:
+          - "&7Show cheaper apartments"
+          - "&7(Below median price)"
+          - ""
+          - "&7Click to activate"
+        glow: false
+        enabled: true
+      filter-expensive:
+        slot: 3
+        material: ORANGE_CONCRETE
+        name: "&6Premium Properties"
+        lore:
+          - "&7Show luxury apartments"
+          - "&7(Above median price)"
+          - ""
+          - "&7Click to activate"
+        glow: false
+        enabled: true
+
+  apartment-details:
+    enabled: true
+    title: "&3🏠 Apartment Details"
+    size: 54
+    border:
+      enabled: true
+      material: CYAN_STAINED_GLASS_PANE
+    items:
+      guestbook:
+        slot: 28
+        material: WRITABLE_BOOK
+        name: "&6📖 Guestbook"
+        lore:
+          - "&7View and manage guestbook"
+          - "&7See visitor messages"
+          - ""
+          - "&a▶ Click to open"
+        glow: true
+        enabled: true
+      statistics:
+        slot: 30
+        material: BOOK
+        name: "&6📊 Statistics"
+        lore:
+          - "&7View detailed statistics"
+          - "&7Income, tax, and rating data"
+          - ""
+          - "&a▶ Click to view"
+        glow: true
+        enabled: true
+      tax-info:
+        slot: 32
+        material: GOLD_INGOT
+        name: "&6💰 Tax Information"
+        lore:
+          - "&7View tax status and payments"
+          - "&7Current: &f%tax_status%"
+          - "&7Due: &f%tax_due%"
+          - ""
+          - "&a▶ Click to manage"
+        glow: true
+        enabled: true
+
+  my-apartments:
+    enabled: true
+    title: "&a🏠 My Apartments"
+    size: 54
+    border:
+      enabled: true
+      material: GREEN_STAINED_GLASS_PANE
+    items:
+      apartment-item:
+        slot: -1  # Dynamic slot for apartment items
+        material: DARK_OAK_DOOR
+        name: "&6🏠 %apartment_name%"
+        lore:
+          - "&7Level: &f%apartment_level%"
+          - "&7Income: &a%apartment_income%"
+          - "&7Tax Status: &f%apartment_tax_status%"
+          - "&7Rating: &f%apartment_rating%"
+          - ""
+          - "&a▶ Left-click to manage"
+          - "&a▶ Right-click for details"
+        glow: true
+        enabled: true
+
+  statistics:
+    enabled: true
+    title: "&e📊 Statistics Overview"
+    size: 45
+    border:
+      enabled: true
+      material: YELLOW_STAINED_GLASS_PANE
+    items:
+      player-stats:
+        slot: 13
+        material: PLAYER_HEAD
+        name: "&6👤 Your Statistics"
+        lore:
+          - "&7Total Apartments: &f%total_apartments%"
+          - "&7Total Income: &a%total_income%"
+          - "&7Total Tax Paid: &c%total_tax_paid%"
+          - "&7Average Rating: &f%average_rating%"
+          - ""
+          - "&a▶ Click to view details"
+        glow: true
+        enabled: true
+
+  tax-management:
+    enabled: true
+    title: "&c💰 Tax Management"
+    size: 45
+    border:
+      enabled: true
+      material: RED_STAINED_GLASS_PANE
+    items:
+      tax-overview:
+        slot: 13
+        material: GOLD_INGOT
+        name: "&6💰 Tax Overview"
+        lore:
+          - "&7Total Due: &f%total_tax_due%"
+          - "&7Overdue: &f%overdue_apartments%"
+          - "&7Auto-pay: &f%auto_pay_status%"
+          - ""
+          - "&a▶ Click to manage"
+        glow: true
+        custom-model-data: 0  # Example: Change to 1001 to use custom texture from resource pack
+        enabled: true
+
+  auction-house:
+    enabled: true
+    title: "&6🔨 Auction House"
+    size: 54
+    border:
+      enabled: true
+      material: ORANGE_STAINED_GLASS_PANE
+    items:
+      auction-item:
+        slot: -1  # Dynamic slot for auction items
+        material: DIAMOND_AXE
+        name: "&6🔨 %auction_apartment%"
+        lore:
+          - "&7Seller: &f%auction_seller%"
+          - "&7Current Bid: &a%auction_current_bid%"
+          - "&7Time Left: &f%auction_time_left%"
+          - "&7Bids: &f%auction_bid_count%"
+          - ""
+          - "&a▶ Click to bid"
+        glow: true
+        custom-model-data: 0
+        enabled: true
+
+  guestbook:
+    enabled: true
+    title: "&d📖 Guestbook"
+    size: 45
+    border:
+      enabled: true
+      material: PURPLE_STAINED_GLASS_PANE
+    items:
+      guestbook-entry:
+        slot: -1  # Dynamic slot for guestbook entries
+        material: PAPER
+        name: "&6📝 %guestbook_author%"
+        lore:
+          - "&7%guestbook_date%"
+          - "&f%guestbook_message%"
+          - ""
+          - "&7Click to interact"
+        glow: false
+        enabled: true
+
+  apartment-shop:
+    enabled: true
+    title: "&a🛍️ Apartment Shop"
+    size: 54
+    border:
+      enabled: true
+      material: EMERALD
+    items:
+      shop-item:
+        slot: -1  # Dynamic slot for shop items
+        material: DIAMOND
+        name: "&6💎 %shop_item_name%"
+        lore:
+          - "&7Tier: &f%shop_item_tier%"
+          - "&7Cost: &a%shop_item_cost%"
+          - "&7Effect: &f%shop_item_effect%"
+          - ""
+          - "&a▶ Click to purchase"
+        glow: true
+        enabled: true
+
+  help-info:
+    enabled: true
+    title: "&9❓ Help & Information"
+    size: 45
+    border:
+      enabled: true
+      material: BLUE_STAINED_GLASS_PANE
+    items:
+      commands:
+        slot: 11
+        material: COMMAND_BLOCK
+        name: "&6📋 Command Reference"
+        lore:
+          - "&7View all available commands"
+          - "&7Main commands and usage"
+          - ""
+          - "&a▶ Click to view"
+        glow: true
+        enabled: true
+      faq:
+        slot: 13
+        material: BOOK
+        name: "&6❓ FAQ & Guides"
+        lore:
+          - "&7Frequently asked questions"
+          - "&7Common issues and solutions"
+          - ""
+          - "&a▶ Click for help"
+        glow: true
+        enabled: true
+      features:
+        slot: 15
+        material: DIAMOND
+        name: "&6⭐ Plugin Features"
+        lore:
+          - "&7What you can do with ApartmentCore"
+          - "&7All available features"
+          - ""
+          - "&a▶ Click to learn"
+        glow: true
+        enabled: true
+      support:
+        slot: 29
+        material: OAK_SIGN
+        name: "&6🆘 Support & Contact"
+        lore:
+          - "&7Need help? Get support information"
+          - "&7How to report issues"
+          - ""
+          - "&a▶ Click for contact info"
+        glow: true
+        enabled: true
+      version:
+        slot: 31
+        material: NAME_TAG
+        name: "&6📋 Version Information"
+        lore:
+          - "&7Plugin version and details"
+          - "&7Version: &f%version%"
+          - "&7Economy: &f%economy%"
+          - ""
+          - "&a▶ Click for details"
+        glow: true
+        enabled: true
+      back:
+        slot: 40
+        material: ARROW
+        name: "&6⬅️ Back to Main Menu"
+        lore:
+          - "&7Return to the main menu"
+          - ""
+          - "&a▶ Click to go back"
+        glow: false
+        enabled: true
+      filter-rated:
+        slot: 5
+        material: GOLD_BLOCK
+        name: "&6Top Rated"
+        lore:
+          - "&7Show highly rated apartments"
+          - "&7(Rating 4.0+ stars)"
+          - ""
+          - "&7Click to activate"
+        glow: false
+        enabled: true
+      filter-level:
+        slot: 6
+        material: DIAMOND_BLOCK
+        name: "&6High Level"
+        lore:
+          - "&7Show level 3+ apartments"
+          - "&7(Better income potential)"
+          - ""
+          - "&7Click to activate"
+        glow: false
+        enabled: true
+      sort:
+        slot: 7
+        material: HOPPER
+        name: "&6Sort: %current_sort%"
+        lore:
+          - "&7Current sorting method"
+          - ""
+          - "&7Available sorts:"
+          - "&7• Price: Low to High"
+          - "&7• Price: High to Low"
+          - "&7• Rating: High to Low"
+          - "&7• Level: High to Low"
+          - ""
+          - "&a▶ Click to change"
+        glow: false
+        enabled: true
+      guestbooks:
+        slot: 31
+        material: WRITABLE_BOOK
+        name: "&6📖 Guestbooks"
+        lore:
+          - "&7View apartment guestbooks"
+          - ""
+          - "&e📊 Message Info:"
+          - "&7• Total Messages: &f%guestbook_total%"
+          - "&7• Max per Book: &f%guestbook_max%"
+          - ""
+          - "&a▶ Click to view"
+        glow: true
+        enabled: true
+      settings:
+        slot: 33
+        material: COMPARATOR
+        name: "&6⚙️ Settings"
+        lore:
+          - "&7Configure your preferences"
+          - ""
+          - "&e⚙️ Available Settings:"
+          - "&7• Auto-pay taxes"
+          - "&7• Notification preferences"
+          - "&7• Display options"
+          - ""
+          - "&a▶ Click to configure"
+        glow: true
+        enabled: true
+      statistics:
+        slot: 20
+        material: BOOK
+        name: "&6📊 Statistics"
+        lore:
+          - "&7Your overall performance"
+          - ""
+          - "&e📋 Overview:"
+          - "&7• Owned: &f%owned%"
+          - "&7• Lifetime Income: &a%lifetime_income%"
+          - "&7• Total Tax Paid: &c%total_tax_paid%"
+          - "&7• Pending Income: &a%pending%"
+          - "&7• Outstanding Taxes: &c%tax_due%"
+          - ""
+          - "&a▶ Click to open"
+        glow: true
+        enabled: true
+      apartment-shop:
+        slot: 22
+        material: EMERALD
+        name: "&6🛍️ Apartment Shop"
+        lore:
+          - "&7Upgrade your apartments with premium amenities!"
+          - ""
+          - "&e📊 Shop Statistics:"
+          - "&7• Owned Apartments: &f%owned%"
+          - "&7• Total Investment: &a%shop_investment%"
+          - "&7• Active Upgrades: &f%shop_upgrades%"
+          - ""
+          - "&a▶ Click to access shop"
+        glow: true
+        enabled: true
+      help-info:
+        slot: 24
+        material: ENCHANTED_BOOK
+        name: "&6❓ Help & Info"
+        lore:
+          - "&7Get help and information"
+          - ""
+          - "&e📚 Available Help:"
+          - "&7• Command reference"
+          - "&7• FAQ and guides"
+          - "&7• Contact support"
+          - ""
+          - "&a▶ Click for help"
+        glow: true
+        enabled: true

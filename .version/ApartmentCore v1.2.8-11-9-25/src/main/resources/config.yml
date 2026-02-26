@@ -1,0 +1,200 @@
+# ApartmentCore Configuration File
+# Version: 1.2.8
+# Author: Aithor
+
+# Debug mode - shows additional information in console
+debug: false
+
+# Database Settings
+database:
+  # Use MySQL instead of YAML for data storage
+  use-mysql: false
+  # MySQL connection details (only if use-mysql is true)
+  mysql:
+    host: localhost
+    port: 3306
+    database: apartmentcore
+    username: root
+    password: password
+    # Connection pool settings
+    pool-size: 10
+    connection-timeout: 5000
+
+auction:
+  enabled: true                        # Enable/disable auction system
+  min-starting-bid: 1000               # Minimum starting bid
+  max-starting-bid: 1000000            # Maximum starting bid
+  min-duration-hours: 1                # Minimum auction duration
+  max-duration-hours: 168              # Maximum duration (7 days)
+  min-bid-increment: 100               # Minimum bid increment
+  creation-fee: 500                    # Fee to create auction
+  commission-percentage: 5             # Server commission (5%)
+  cooldown-seconds: 3600               # Cooldown between auctions
+  broadcast-enabled: true              # Broadcast auction events
+  extend-threshold-minutes: 5          # Auto-extend threshold
+  extend-time-minutes: 10              # Extension duration
+  
+# Economy Settings
+economy:
+  # Currency symbol to display
+  currency-symbol: "$"
+  # Default apartment price if not specified
+  default-price: 10000
+  # Default tax amount
+  default-tax: 500
+  # Default tax payment period (in Minecraft days)
+  default-tax-days: 7
+  # Sell price percentage (when selling apartment back)
+  sell-percentage: 70
+  # Penalty percentage per day for late tax payment
+  penalty-percentage: 25
+
+# Apartment Level Settings
+apartment-levels:
+  # Level 1 settings
+  level-1:
+    min-income: 10
+    max-income: 100
+    upgrade-cost: 0
+  # Level 2 settings
+  level-2:
+    min-income: 100
+    max-income: 200
+    upgrade-cost: 1000
+  # Level 3 settings
+  level-3:
+    min-income: 200
+    max-income: 300
+    upgrade-cost: 2000
+  # Level 4 settings
+  level-4:
+    min-income: 300
+    max-income: 400
+    upgrade-cost: 3000
+  # Level 5 settings
+  level-5:
+    min-income: 400
+    max-income: 500
+    upgrade-cost: 5000
+
+# Time Settings (all in Minecraft time)
+time:
+  # Ticks per Minecraft hour (default: 1000)
+  ticks-per-hour: 1000
+  # Ticks per Minecraft day (default: 24000)
+  ticks-per-day: 24000
+  # Days before apartment becomes available after non-payment
+  inactive-grace-period: 3
+
+# Auto-save Settings
+auto-save:
+  # Enable automatic saving
+  enabled: true
+  # Save interval in minutes (real time)
+  interval-minutes: 10
+  
+# Backup Settings
+backup:
+  enabled: true
+  # How many old backups to keep
+  max-backups: 10
+
+# GuestBook Settings
+guestbook:
+  # Maximum number of messages stored per apartment
+  max-messages: 50
+  # Maximum length of a single message
+  max-message-length: 100
+  # Cooldown in seconds for leaving a message in the same apartment
+  leave-cooldown: 60
+
+# Performance Settings
+performance:
+  # Use async tasks for heavy operations
+  use-async: true
+  # Cache apartment data in memory
+  use-cache: true
+  # Cache expiry time in seconds
+  cache-expiry: 300
+
+# Messages Settings
+messages:
+  # Message prefix
+  prefix: "&6[ApartmentCore] &r"
+  # Use color codes in messages
+  use-colors: true
+  # Language file to use
+  language: "en_US"
+
+# Limits Settings
+limits:
+  # Maximum apartments per player (0 = unlimited)
+  max-apartments-per-player: 5
+  # Maximum apartment price
+  max-apartment-price: 1000000
+  # Minimum apartment price
+  min-apartment-price: 100
+  # Maximum tax amount
+  max-tax-amount: 100000
+  # Minimum tax amount
+  min-tax-amount: 10
+
+# WorldGuard Integration
+worldguard:
+  # Automatically add apartment owner to region
+  auto-add-owner: true
+  # Automatically remove owner when apartment is sold
+  auto-remove-owner: true
+  # Check region flags before creating apartment
+  check-flags: true
+  # Required flags for apartment regions
+  required-flags:
+    - "build: deny"
+    - "pvp: deny"
+
+# PlaceholderAPI Settings
+placeholderapi:
+  # Enable PlaceholderAPI integration
+  enabled: true
+  # Update placeholder values interval (seconds)
+  update-interval: 60
+
+# Logging Settings
+logging:
+  # Log all transactions
+  log-transactions: true
+  # Log all admin actions
+  log-admin-actions: true
+  # Log file location
+  log-file: "logs/apartmentcore.log"
+  # Maximum log file size (MB)
+  max-log-size: 10
+  # Keep old log files
+  keep-old-logs: true
+  # Number of old log files to keep
+  max-old-logs: 10
+
+# Security Settings
+security:
+  # Require confirmation for dangerous actions
+  require-confirmation: true
+  # Confirmation timeout (seconds)
+  confirmation-timeout: 30
+  # Log suspicious activities
+  log-suspicious: true
+  # Prevent rapid command execution (milliseconds)
+  command-cooldown: 1000
+
+# Feature Toggles
+features:
+  # Enable apartment income generation
+  income-generation: true
+  # Enable tax system
+  tax-system: true
+  # Enable apartment levels
+  level-system: true
+  # Enable teleportation
+  teleportation: true
+
+# Don't modify this
+config-version: 3

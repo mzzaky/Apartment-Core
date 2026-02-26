@@ -1,0 +1,293 @@
+# =========================================
+# ApartmentCore Messages Configuration
+# =========================================
+#
+# - Supports Minecraft color codes using '&' (e.g., &a, &c, &7, &l, &n).
+# - Placeholders like %player%, %amount%, %apartment%, %days% will be replaced at runtime.
+# - Edit texts freely. Keep the placeholders intact.
+#
+# Tips:
+# - Use \n to force a line break inside a message when needed.
+# - Use &r to reset formatting.
+# - You can include Unicode icons if your font supports them (e.g., ⚠, ✅). 
+#
+format:
+  prefix_enabled: true
+  prefix: "&6[ApartmentCore]&r "
+  use_prefix_in_console: false
+  date_format: "yyyy-MM-dd HH:mm"
+
+general:
+  cooldown: "&cPlease wait before using another command!"
+  player_only: "&cOnly players can use this command!"
+  no_permission: "&cYou don't have permission to %action%!"
+  unknown_command: "&cUnknown command. Use &e/apartmentcore help"
+  reloaded: "&aConfiguration reloaded!"
+  version_header: "&6=== ApartmentCore v%version% ==="
+  about_author: "&eAuthor: &fAithor"
+  about_help_hint: "&eUse &f/apartmentcore help &efor commands"
+  help_header: "&6=== ApartmentCore Commands ==="
+  admin_help_header: "&6=== Admin Commands ==="
+  usage:
+    buy: "&cUsage: /apartmentcore buy <apartment_id>"
+    sell: "&cUsage: /apartmentcore sell <apartment_id>"
+    setname: "&cUsage: /apartmentcore setname <apartment_id> <display_name>"
+    setwelcome: "&cUsage: /apartmentcore setwelcome <apartment_id> <message>"
+    setteleport: "&cUsage: /apartmentcore setteleport <apartment_id>"
+    rate: "&cUsage: /apartmentcore rate <apartment_id> <0-10>"
+    teleport: "&cUsage: /apartmentcore teleport <apartment_id>"
+    list: "&cUsage: /apartmentcore list [all|sale|mine|top]"
+    rent: "&cUsage: /apartmentcore rent <claim|info> <apartment_id>"
+    tax: "&cUsage: /apartmentcore tax <info|pay|auto> [on/off]"
+    tax_auto: "&cUsage: /apartmentcore tax auto <on|off>"
+    guestbook: "&cUsage: /apartmentcore guestbook <leave|read|clear> <apartment_id> ..."
+    admin_create: "&cUsage: /apartmentcore admin create <region> <id> <price> <tax> <tax_days>"
+    admin_remove: "&cUsage: /apartmentcore admin remove <apartment_id>"
+    admin_set: "&cUsage: /apartmentcore admin set <property> <apartment_id> <value>"
+    admin_teleport: "&cUsage: /apartmentcore admin teleport <apartment_id>"
+    admin_backup: "&cUsage: /apartmentcore admin backup <create|list|restore> [filename]"
+    admin_backup_restore: "&cUsage: /apartmentcore admin backup restore <filename.yml>"
+
+apartment:
+  not_found: "&cApartment not found!"
+  already_owned: "&cThis apartment is already owned!"
+  not_owner: "&cYou don't own this apartment!"
+  inactive_blocked: "&cApartment Inactive. All functions are frozen until the tax is paid."
+  world_not_found: "&cCould not find the world for this apartment."
+  region_manager_missing: "&cWorldGuard RegionManager not found."
+  region_not_found: "&cRegion not found!"
+  for_sale_label: "For Sale"
+  display:
+    teleported: "&aTeleported to &e%apartment%"
+    welcome_inline: "&b%message%"
+  buy:
+    insufficient_funds: "&cYou don't have enough money! Need: &f%amount%"
+    success: "&aSuccessfully purchased apartment &e%apartment% &afor &f%amount%"
+    limit_reached: "&cYou have reached the maximum number of apartments (&f%max%&c)!"
+  sell:
+    arrears_block: "&cApartments with tax arrears cannot be sold. Pay all taxes first."
+    confirm_preview: "&eYou will receive &f%amount% &efor selling &e%apartment%"
+    confirm_hint: "&eType &f/apartmentcore confirm &eto confirm the sale."
+    pending_none: "&cYou have no pending actions to confirm!"
+    cannot_complete: "&cCannot complete the sale!"
+    success: "&aSuccessfully sold &e%apartment% &afor &f%amount%"
+  setname:
+    too_long: "&cDisplay name cannot be longer than 32 characters!"
+    success: "&aApartment display name set to: &r%apartment_display%"
+  setwelcome:
+    too_long: "&cWelcome message cannot be longer than 100 characters!"
+    cleared: "&aWelcome message cleared!"
+    success: "&aWelcome message set to: &r%message%"
+  setteleport:
+    no_permission: "&cYou don't have permission to set a teleport location."
+    not_inside: "&cYou must be standing inside the apartment to set its teleport location."
+    success: "&aTeleport location for &e%apartment% &ahas been set to your current position."
+  info:
+    header: "&6=== Apartment Info: &e%apartment% &6==="
+    id: "&eID: &f%id%"
+    owner: "&eOwner: &f%owner%"
+    price: "&ePrice: &f%price%"
+    base_tax: "&eBase Tax: &f%percent%% &7(&f%amount%&7)"
+    active_invoices: "&eActive Invoices: &f%count%&e, Total Arrears: &f%total%"
+    level: "&eLevel: &f%level%/5"
+    hourly_income: "&eHourly Income: &f%min_income% &7- &f%max_income%"
+    rating: "&eRating: &f%avg_rating%/10.0 &7(&f%reviews% &7reviews)"
+    rating_none: "&eRating: &7Not rated yet"
+    tax_status: "&eTax Status: &f%status%"
+    can_generate_yes: "&eCan Generate Income: &aYes"
+    can_generate_no: "&eCan Generate Income: &cNo"
+    new_invoice_in: "&eNew Invoice In: &f%time%"
+    next_income_in: "&eNext Income In: &f%time%"
+    pending_income: "&ePending Income: &f%amount%"
+    penalty: "&ePenalty: &c%amount%"
+    upgrade_cost: "&eUpgrade Cost: &f%amount%"
+
+rent:
+  info_header: "&6=== Rent Info: &e%apartment% &6==="
+  pending_income: "&ePending Income: &f%amount%"
+  income_range: "&eHourly Income Range: &f%min_income% &7- &f%max_income%"
+  level: "&eLevel: &f%level%/5"
+  next_income_in: "&eNext Income In: &f%time%"
+  status_active: "&eStatus: &aActive"
+  status_inactive: "&eStatus: &cInactive (no income)"
+  claim:
+    none: "&cNo income to claim!"
+    success: "&aClaimed &f%amount% &afrom &e%apartment%"
+
+rating:
+  not_active: "&cYou can only rate active apartments!"
+  invalid_range: "&cRating must be between 0 and 10!"
+  cooldown: "&cYou can rate this apartment again in &f%hours% &chours!"
+  success: "&aYou rated &e%apartment% &f%rating%/10.0!"
+  new_average: "&eNew average rating: &f%avg%/10.0"
+
+list:
+  empty: "&eNo apartments found for filter: &f%filter%"
+  header:
+    all: "&6=== All Apartments ==="
+    sale: "&6=== Apartments For Sale ==="
+    mine: "&6=== Your Apartments ==="
+    top: "&6=== Top Rated Apartments ==="
+  entry_format: "&e%name% &7(&f%id%&7): &fOwner: &7%owner%&f, Price: &7%price%&f, L%level%%rating% %status%"
+  entry_rating_format: " &7%.1f⭐"
+  entry_status_inactive: "&c[INACTIVE]"
+
+guestbook:
+  usage: "&cUsage: /apartmentcore guestbook <leave|read|clear> <apartment_id> ..."
+  leave:
+    cooldown: "&cYou must wait before leaving another message."
+    too_long: "&cYour message is too long! Max &f%max_chars% &ccharacters."
+    success: "&aYou left a message in &e%apartment%&a's guestbook."
+  read:
+    empty: "&eThe guestbook for &e%apartment% &eis empty."
+    header: "&6--- Guestbook for &e%apartment% &6---"
+    line_format: "&7[%date%] &b%player%&7: &f%message%"
+  clear:
+    not_owner: "&cOnly the owner can clear the guestbook."
+    confirm_line1: "&eAre you sure you want to clear the guestbook for &e%apartment%&e?"
+    confirm_line2: "&eType &f/apartmentcore confirm &eto confirm."
+    success: "&aGuestbook for &e%apartment% &ahas been cleared."
+
+tax:
+  info:
+    none_owned: "&eYou don't have any apartments."
+    header: "&6=== Tax information for all apartments ==="
+    line: "&e- %apartment% &f[%status%]&e, active invoices: &f%active%&e, Total invoices: &f%total%"
+    unpaid_line: "&7  #%index% %amount% &7| created %days% days ago | %due_status%"
+    due_status_due: "&cdue date"
+    due_status_not_due: "&fnot due date"
+    total: "&6Total all invoices: &f%amount%"
+  pay:
+    none_owned: "&eYou don't have an apartment."
+    none_active: "&eThere are no active tax bills at this time.."
+    insufficient: "&cInsufficient funds! Need: &f%amount%"
+    success: "&aAll tax arrears have been paid: &f%amount%"
+  auto:
+    usage: "&cUsage: /apartmentcore tax auto <on|off>"
+    none_owned: "&eYou don't have an apartment."
+    toggled: "&aAuto-payment for taxes has been %state% for all your apartments."
+    state_on: "enabled"
+    state_off: "disabled"
+
+notifications:
+  bill_new: "&e&l[Bill]&r &7A new tax bill of &f%amount% &7has appeared for &e%apartment%&7."
+  bill_reminder_day2: "&6&l[Reminder]&r &7A tax of &f%amount% &7is due tomorrow for &e%apartment%&7."
+  bill_overdue_day3: "&c&l[Overdue]&r &7Your taxes are overdue! Total arrears are now &f%total%&7."
+  apartment_inactive_day5: "&4&l[Inactive]&r &7Your apartment is now Inactive! Total arrears are &f%total%&7."
+  apartment_repossessed_day7: "&4&l[Repossessed]&r &7Your apartment &e%apartment% &7has been repossessed for failure to pay taxes."
+
+auction:
+  disabled: "&cAuction system is disabled!"
+  help_header: "&6=== Auction Commands ==="
+  not_found: "&cNo active auction found for this apartment!"
+  already_exists: "&cThis apartment is already being auctioned!"
+  cannot_bid_own: "&cYou cannot bid on your own auction!"
+  cannot_cancel_with_bids: "&cCannot cancel auction with existing bids!"
+  tax_arrears_block: "&cCannot auction apartments with unpaid taxes!"
+  cooldown: "&cYou must wait before creating another auction!"
+  invalid_bid_range: "&cStarting bid must be between &f%min% &cand &f%max%"
+  invalid_duration: "&cDuration must be between &f%min% &cand &f%max% &chours!"
+  insufficient_fee: "&cYou need &f%fee% &cto create an auction!"
+  bid_too_low: "&cBid must be at least &f%amount%"
+  insufficient_funds: "&cYou don't have enough money! Need: &f%amount%"
+  create:
+    success: "&aAuction created for &e%apartment% &awith starting bid &f%amount% &afor &f%duration% &ahours!"
+  bid:
+    success: "&aBid placed successfully! Your bid: &f%amount%"
+    outbid: "&eYou have been outbid on &e%apartment%&e! Your bid of &f%amount% &ehas been refunded."
+    new_bid_notification: "&aNew bid on your auction: &f%amount% &aby &e%player%"
+    extended: "&eAuction extended due to late bid!"
+  cancel:
+    success: "&aAuction cancelled successfully!"
+    refund_notification: "&eAuction for &e%apartment% &ehas been cancelled. Your bid has been refunded."
+  end:
+    winner_notification: "&aCongratulations! You won the auction for &e%apartment% &awith a bid of &f%amount%&a!"
+    seller_notification: "&aYour auction for &e%apartment% &ahas ended! You received &f%amount% &a(commission: &f%commission%&a)"
+    no_bids: "&eYour auction for &e%apartment% &ehas ended with no bids."
+    broadcast_winner: "&6[Auction] &a%winner% &6won the auction for &e%apartment% &6with a bid of &f%amount%&6!"
+    broadcast_new: "&6[Auction] &e%apartment% &6is now being auctioned! Starting bid: &f%amount%"
+  info:
+    header: "&6=== Auction Info: &e%apartment% &6==="
+    owner: "&eOwner: &f%owner%"
+    starting_bid: "&eStarting Bid: &f%amount%"
+    current_bid: "&eCurrent Bid: &f%amount%"
+    current_bidder: "&eCurrent Bidder: &f%bidder%"
+    total_bids: "&eTotal Bids: &f%count%"
+    time_remaining: "&eTime Remaining: &f%time%"
+    status_active: "&eStatus: &aActive"
+    status_ended: "&eStatus: &cEnded"
+  list:
+    empty: "&eNo auctions found for filter: &f%filter%"
+    header:
+      all: "&6=== Active Auctions ==="
+      mine: "&6=== Your Auctions ==="
+      ending: "&6=== Auctions Ending Soon ==="
+      nobids: "&6=== Auctions With No Bids ==="
+    entry_format: "&e%name% &7(&f%id%&7): &fCurrent: &7%amount%&f, Bidder: &7%bidder%&f, Time: &7%time%"
+
+admin:
+  must_be_player: "&cOnly players can use this command!"
+  create:
+    usage: "&cUsage: /apartmentcore admin create <region> <id> <price> <tax> <tax_days>"
+    exists: "&cApartment with this ID already exists!"
+    world_not_found: "&cWorld '%world%' not found!"
+    region_not_found: "&cRegion '%region%' not found in world '%world%'!"
+    invalid_number: "&cInvalid number format!"
+    success: "&aSuccessfully created apartment &e%id%"
+  remove:
+    usage: "&cUsage: /apartmentcore admin remove <apartment_id>"
+    not_found: "&cApartment not found!"
+    refund_owner: "&eYour apartment &e%apartment% &ewas removed by an admin. You received a refund of &f%amount%"
+    success: "&aSuccessfully removed apartment &e%id%"
+  set:
+    usage: "&cUsage: /apartmentcore admin set <property> <apartment_id> <value>"
+    unknown_property: "&cUnknown property. Use: owner, price, tax, tax_days, level, rate"
+    invalid_number: "&cInvalid number format for value!"
+    invalid_level: "&cInvalid level. Must be between 1 and %max_level%"
+    owner_none: "&aRemoved owner from apartment &e%apartment%"
+    owner_set: "&aSet owner of &e%apartment% &ato &e%player%"
+    price_set: "&aSet price for &e%apartment% &ato &f%amount%"
+    level_set: "&aSet level for &e%apartment% &ato &f%level%"
+    tax_set: "&aSet tax for &e%apartment% &ato &f%amount%"
+    tax_days_set: "&aSet tax days for &e%apartment% &ato &f%days%"
+    rating_set: "&aSet rating for &e%apartment% &ato &f%rating%"
+  teleport:
+    usage: "&cUsage: /apartmentcore admin teleport <apartment_id>"
+  list_all:
+    header: "&6=== All Apartments (%count%) ==="
+  backup:
+    usage: "&cUsage: /apartmentcore admin backup <create|list|restore> [filename]"
+    create_success: "&aManual backup created successfully!"
+    list_header: "&6=== Available Backups (%count%) ==="
+    none: "&eNo backups found."
+    restore_usage: "&cUsage: /apartmentcore admin backup restore <filename.yml>"
+    restore_invalid_filename: "&cInvalid backup filename."
+    restore_failed: "&cBackup file not found or restore failed."
+    restore_success: "&aBackup restored: &f%filename%&a. All data reloaded."
+
+economy:
+  insufficient: "&cYou don't have enough money! Need: &f%amount%"
+
+errors:
+  generic: "&cAn error occurred. Please try again."
+  invalid_number: "&cInvalid number format!"
+  invalid_player: "&cPlayer not found or has never played!"
+  invalid_property: "&cUnknown property. Use: owner, price, tax, tax_days, level, rate"
+
+debug:
+  # These are used for logging, not usually sent to players.
+  enabled_prefix: "[DEBUG] %message%"
+  messages:
+    config_loaded: "Configuration loaded successfully"
+    apartments_loaded: "Loaded %count% apartments from storage"
+    apartments_saved: "Saved %count% apartments to storage"
+    guestbooks_loaded: "Loaded %count% guestbooks."
+    guestbooks_saved: "Saved %count% guestbooks."
+    stats_loaded: "Loaded %count% apartment stats entries."
+    stats_saved: "Saved %count% apartment stats entries."
+    income_generated: "Generated %amount% income for apartment %id%"
+    day_changed: "Minecraft day changed. Processing daily updates..."
+    auto_saved: "Auto-saved all data."
+    missing_level_config: "Missing level config for level %level%"
+
+# End of messages.yml

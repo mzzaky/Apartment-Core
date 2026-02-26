@@ -1,0 +1,419 @@
+# =================================================================
+# ApartmentCore Configuration File
+# Version: 1.3.1
+# Author: Aithor
+#
+# This file contains all configuration options for the ApartmentCore plugin.
+# Each section is clearly marked with comments explaining the purpose and
+# valid values for each setting. Only modify values you understand.
+# =================================================================
+
+# =================================================================
+# DEBUG SETTINGS
+# =================================================================
+# Enable debug mode to show additional information in console
+# Useful for troubleshooting issues and monitoring plugin behavior
+# Values: true/false
+debug: false
+
+# =================================================================
+# STORAGE SETTINGS
+# =================================================================
+database:
+  # Database backend selection - CURRENTLY NOT IMPLEMENTED
+  # Plugin currently uses YAML file storage exclusively
+  # MySQL support is planned for future versions
+  # Values: true (MySQL) / false (YAML files)
+  use-mysql: false
+
+# =================================================================
+# GUI SETTINGS
+# =================================================================
+gui:
+  # Master switch for the entire GUI system
+  # Disable this to force players to use commands only
+  # Values: true/false
+  enabled: true
+
+  # How often GUI content refreshes automatically (in seconds)
+  # Lower values = more responsive but higher server load
+  # Higher values = less server load but slower updates
+  # Values: 10-300 seconds
+  refresh-interval: 30
+
+  # Enable sound effects when interacting with GUIs
+  # Provides audio feedback for user actions
+  # Values: true/false
+  sounds: true
+
+  # Enable animation effects in GUI interfaces
+  # Makes transitions smoother but may impact performance
+  # Values: true/false
+  animations: true
+
+# =================================================================
+# PERFORMANCE SETTINGS
+# =================================================================
+performance:
+  # Use asynchronous tasks for heavy operations
+  # Improves server responsiveness during intensive operations
+  # Values: true/false
+  use-async: true
+
+  # Cache frequently computed lists (apartment lists, etc.)
+  # Reduces computation time but uses more memory
+  # Values: true/false
+  use-cache: true
+
+  # How long cached data remains valid (in seconds)
+  # Balance between performance and data freshness
+  # Values: 60-3600 seconds (1 minute to 1 hour)
+  cache-expiry: 300
+
+# =================================================================
+# WORLDGUARD INTEGRATION
+# =================================================================
+worldguard:
+  # Automatically add apartment owner to WorldGuard region
+  # Grants building/usage rights in the apartment region
+  # Values: true/false
+  auto-add-owner: true
+
+  # Automatically remove previous owner when apartment is sold
+  # Cleans up region ownership to prevent conflicts
+  # Values: true/false
+  auto-remove-owner: true
+
+  # Validate WorldGuard region flags before apartment creation
+  # Ensures apartments meet security requirements
+  # Values: true/false
+  check-flags: true
+
+  # Required WorldGuard flags for apartment regions
+  # These flags must be set for apartment creation to succeed
+  # Format: "flag: value" (e.g., "build: deny", "pvp: deny")
+  required-flags:
+    - "build: deny"  # Prevents building by non-owners
+    - "pvp: deny"    # Disables PvP combat in apartments
+
+# =================================================================
+# AUCTION SETTINGS
+# =================================================================
+auction:
+  # Master switch for the auction system
+  # Disable to turn off all auction functionality
+  # Values: true/false
+  enabled: true
+
+  # Minimum starting bid for auctions (in currency units)
+  # Prevents auctions from starting too low
+  # Values: 1-1000000
+  min-starting-bid: 1000
+
+  # Maximum starting bid for auctions (in currency units)
+  # Prevents auctions from starting too high
+  # Values: 1000-999999999
+  max-starting-bid: 1000000
+
+  # Minimum auction duration in hours
+  # Shortest time an auction can run
+  # Values: 1-168 hours (1 hour to 1 week)
+  min-duration-hours: 1
+
+  # Maximum auction duration in hours
+  # Longest time an auction can run
+  # Values: 1-168 hours (1 hour to 1 week)
+  max-duration-hours: 168
+
+  # Minimum bid increment required
+  # Smallest amount by which bids must increase
+  # Values: 1-1000000
+  min-bid-increment: 100
+
+  # Fee charged to create an auction
+  # Cost to list an apartment for auction
+  # Values: 0-1000000
+  creation-fee: 500
+
+  # Commission percentage charged when auction completes
+  # Percentage of final bid taken as fee
+  # Values: 0.0-50.0 (0% to 50%)
+  commission-percentage: 5
+
+  # Cooldown period between auction creation (in seconds)
+  # Time players must wait before creating another auction
+  # Values: 0-86400 (0 seconds to 24 hours)
+  cooldown-seconds: 3600
+
+  # Broadcast auction events to all players
+  # Sends messages when auctions start/end
+  # Values: true/false
+  broadcast-enabled: true
+
+  # Minutes remaining when auction auto-extends
+  # If bid placed near end, auction extends
+  # Values: 1-60 minutes
+  extend-threshold-minutes: 5
+
+  # Extra time added when auction extends (in minutes)
+  # How much longer the auction runs after late bid
+  # Values: 1-60 minutes
+  extend-time-minutes: 10
+
+# =================================================================
+# ECONOMY SETTINGS
+# =================================================================
+economy:
+  # Currency symbol displayed in messages and GUIs
+  # Appears before all monetary amounts
+  # Values: Any string (e.g., "$", "€", "£", "Coins")
+  currency-symbol: "$"
+
+  # Percentage of original price returned when selling apartment
+  # How much of purchase price player gets back
+  # Values: 0.0-100.0 (0% to 100%)
+  sell-percentage: 70
+
+  # Legacy penalty percentage - NO LONGER USED
+  # This setting is deprecated and has no effect
+  # The new invoice-based tax system handles penalties differently
+  # Values: Ignored (kept for backward compatibility)
+  penalty-percentage: 25
+
+# =================================================================
+# APARTMENT LEVEL SETTINGS
+# =================================================================
+apartment-levels:
+  # Level 1 Configuration (Starter Level)
+  level-1:
+    # Minimum income this level can generate per hour
+    min-income: 10
+    # Maximum income this level can generate per hour
+    max-income: 100
+    # Cost to upgrade from this level (0 = free starter)
+    upgrade-cost: 0
+
+  # Level 2 Configuration
+  level-2:
+    min-income: 100
+    max-income: 200
+    upgrade-cost: 1000
+
+  # Level 3 Configuration
+  level-3:
+    min-income: 200
+    max-income: 300
+    upgrade-cost: 2000
+
+  # Level 4 Configuration
+  level-4:
+    min-income: 300
+    max-income: 400
+    upgrade-cost: 3000
+
+  # Level 5 Configuration (Maximum Level)
+  level-5:
+    min-income: 400
+    max-income: 500
+    upgrade-cost: 5000
+
+# =================================================================
+# TIME SETTINGS
+# =================================================================
+time:
+  # Minecraft ticks per in-game hour
+  # Controls how often rent income is generated
+  # Default: 1000 ticks = 1 Minecraft hour
+  # Values: 100-1000000 ticks (affects rent generation frequency)
+  ticks-per-hour: 1000
+
+  # Minecraft ticks per in-game day
+  # Controls how often taxes/invoices are processed
+  # Default: 24000 ticks = 1 Minecraft day
+  # Values: 1000-1000000 ticks (affects tax cycle timing)
+  ticks-per-day: 24000
+
+  # Days before apartment becomes inactive after non-payment
+  # Grace period before apartment ownership is affected
+  # Values: 1-30 days
+  inactive-grace-period: 3
+
+# =================================================================
+# AUTO-SAVE SETTINGS
+# =================================================================
+auto-save:
+  # Enable automatic saving of plugin data
+  # Prevents data loss during crashes
+  # Values: true/false
+  enabled: true
+
+  # Interval between automatic saves (in minutes)
+  # How often data is written to disk
+  # Values: 1-60 minutes (lower = safer but more disk I/O)
+  interval-minutes: 10
+
+# =================================================================
+# BACKUP SETTINGS
+# =================================================================
+backup:
+  # Enable automatic backup creation
+  # Creates backup files before major operations
+  # Values: true/false
+  enabled: true
+
+  # Maximum number of backup files to keep
+  # Older backups are automatically deleted
+  # Values: 1-100 (higher = more disk space used)
+  max-backups: 10
+
+# =================================================================
+# GUESTBOOK SETTINGS
+# =================================================================
+guestbook:
+  # Maximum messages allowed per apartment guestbook
+  # Limits memory usage and GUI load times
+  # Values: 10-500 messages
+  max-messages: 50
+
+  # Maximum character length per guestbook message
+  # Prevents spam and excessively long messages
+  # Values: 50-500 characters
+  max-message-length: 100
+
+  # Cooldown period between guestbook messages (in seconds)
+  # Time players must wait before leaving another message
+  # Values: 0-3600 seconds (0 = no cooldown)
+  leave-cooldown: 60
+
+# =================================================================
+# LOGGING SETTINGS
+# =================================================================
+logging:
+  # Log all economic transactions (purchases, sales, etc.)
+  # Useful for audit trails and debugging
+  # Values: true/false
+  log-transactions: true
+
+  # Log administrative actions (commands, configuration changes)
+  # Tracks admin usage for security monitoring
+  # Values: true/false
+  log-admin-actions: true
+
+  # Log file path relative to plugin folder
+  # Where log messages are written
+  # Values: Any valid file path
+  log-file: "logs/apartmentcore.log"
+
+  # Maximum log file size before rotation (in MB)
+  # Prevents log files from growing too large
+  # Values: 1-1000 MB
+  max-log-size: 10
+
+  # Keep old log files when rotating
+  # Maintains log history for analysis
+  # Values: true/false
+  keep-old-logs: true
+
+  # Maximum number of old log files to retain
+  # Older files are deleted when limit exceeded
+  # Values: 1-100 files
+  max-old-logs: 10
+
+# =================================================================
+# MESSAGES SETTINGS
+# =================================================================
+messages:
+  # Prefix added to all plugin messages
+  # Supports color codes (&6, &a, etc.)
+  # Values: Any string with valid color codes
+  prefix: "&6[ApartmentCore] &r"
+
+  # Enable color codes in plugin messages
+  # Allows colored text in chat and GUIs
+  # Values: true/false
+  use-colors: true
+
+  # Language file to use for plugin messages
+  # Looks for messages_<lang>.yml (e.g., messages_en_US.yml)
+  # Falls back to messages.yml if language file not found
+  # Values: Language code (e.g., "en_US", "es_ES", "fr_FR")
+  language: "en_US"
+
+# =================================================================
+# PLACEHOLDERAPI SETTINGS
+# =================================================================
+placeholderapi:
+  # Enable PlaceholderAPI integration
+  # Allows other plugins to access ApartmentCore data
+  # Values: true/false
+  enabled: true
+
+  # How often placeholder values update (in seconds)
+  # Balance between freshness and performance
+  # Values: 10-300 seconds
+  update-interval: 60
+
+# =================================================================
+# SECURITY SETTINGS
+# =================================================================
+security:
+  # Require confirmation for dangerous actions
+  # Players must type /apartmentcore confirm for risky operations
+  # Values: true/false
+  require-confirmation: true
+
+  # How long confirmation prompts remain valid (in seconds)
+  # Time window for players to confirm actions
+  # Values: 10-300 seconds
+  confirmation-timeout: 30
+
+  # Log suspicious player activities
+  # Records potentially malicious behavior
+  # Values: true/false
+  log-suspicious: true
+
+  # Minimum time between command executions (in milliseconds)
+  # Prevents command spam and abuse
+  # Values: 100-10000 milliseconds (0.1-10 seconds)
+  command-cooldown: 1000
+
+# =================================================================
+# FEATURE TOGGLES
+# =================================================================
+features:
+  # Enable apartment income generation system
+  # Allows apartments to generate money over time
+  # Values: true/false
+  income-generation: true
+
+  # Enable tax collection system
+  # Charges players for apartment ownership
+  # Values: true/false
+  tax-system: true
+
+  # Enable apartment leveling system
+  # Allows apartments to be upgraded for better income
+  # Values: true/false
+  level-system: true
+
+  # Enable teleportation to apartments
+  # Allows players to teleport to their properties
+  # Values: true/false
+  teleportation: true
+
+# =================================================================
+# LIMITS SETTINGS
+# =================================================================
+limits:
+  # Maximum apartments a single player can own
+  # Prevents monopolization of the apartment market
+  # Values: 0-1000 (0 = no limit)
+  max-apartments-per-player: 5
+
+# =================================================================
+# SYSTEM SETTINGS (DO NOT MODIFY)
+# =================================================================
+# Plugin configuration version - used for update compatibility
+# Changing this may cause configuration issues
+# Values: Integer (incremented with each major update)
+config-version: 3

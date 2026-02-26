@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Installation - ApartmentCore Wiki</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0a0c10 0%, #111316 50%, #1a1d23 100%);
+            color: #e4e6ea;
+            min-height: 100vh;
+        }
+
+        /* Header Utama */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 0;
+        }
+
+        .page-header h1 {
+            color: #ffffff;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(255, 217, 102, 0.3);
+        }
+
+        .page-header p {
+            color: #9ca3af;
+            font-size: 1.2rem;
+        }
+
+        /* Navigation Breadcrumb */
+        .breadcrumb {
+            max-width: 1400px;
+            margin: 0 auto 40px;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #ffd966;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: #f4d03f;
+            text-shadow: 0 0 10px rgba(255, 217, 102, 0.5);
+        }
+
+        .breadcrumb span {
+            color: #6b7280;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        /* Side Navigation */
+        .side-nav {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+        }
+
+        .nav-title {
+            color: #ffd966;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-list li {
+            margin-bottom: 8px;
+        }
+
+        .nav-list a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #e4e6ea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-list a:hover {
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.1) 0%, rgba(244, 208, 63, 0.1) 100%);
+            color: #ffd966;
+            transform: translateX(4px);
+        }
+
+        .nav-list a.active {
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.15) 0%, rgba(244, 208, 63, 0.15) 100%);
+            color: #ffd966;
+            border-left: 3px solid #ffd966;
+        }
+
+        .nav-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ffd966;
+            opacity: 0.6;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Section Styles */
+        .content-section {
+            padding: 32px;
+            border-bottom: 1px solid rgba(255, 217, 102, 0.05);
+            scroll-margin-top: 20px;
+        }
+
+        .content-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-title h2 {
+            color: #ffd966;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.2) 0%, rgba(244, 208, 63, 0.2) 100%);
+            color: #ffd966;
+            border: 1px solid rgba(255, 217, 102, 0.3);
+        }
+
+        /* Text Styles */
+        h3 {
+            color: #ffd966;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 28px;
+            margin-bottom: 16px;
+        }
+
+        p {
+            color: #d1d5db;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        /* Lists */
+        ul, ol {
+            color: #d1d5db;
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        li strong {
+            color: #ffd966;
+            font-weight: 600;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 217, 102, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        code {
+            font-family: 'Outfit', monospace;
+            font-size: 14px;
+            color: #ffd966;
+        }
+
+        p code, li code {
+            background: rgba(255, 217, 102, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: #ffd966;
+            font-weight: 500;
+            border: 1px solid rgba(255, 217, 102, 0.2);
+        }
+
+        /* Copy Button for Code Blocks */
+        .code-block-wrapper {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+            color: #111316;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .copy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 217, 102, 0.3);
+        }
+
+        .copy-button.copied {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: #ffffff;
+        }
+
+        /* Alert/Info Boxes */
+        .info-box {
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.1) 0%, rgba(244, 208, 63, 0.1) 100%);
+            border: 2px solid rgba(255, 217, 102, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .info-box-title {
+            color: #ffd966;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box-content {
+            color: #e4e6ea;
+            line-height: 1.7;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .warning-box-title {
+            color: #ef4444;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* Progress Steps */
+        .steps-container {
+            margin: 32px 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.01);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            background: rgba(255, 217, 102, 0.05);
+            transform: translateX(4px);
+            border-color: rgba(255, 217, 102, 0.3);
+        }
+
+        .step-number {
+            min-width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+            color: #111316;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            color: #ffd966;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step-description {
+            color: #d1d5db;
+            line-height: 1.7;
+        }
+
+        /* Dependencies Table */
+        .deps-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: transparent;
+        }
+
+        .deps-table thead th {
+            background: linear-gradient(135deg, #1a1d23 0%, #111316 100%);
+            color: #ffd966;
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(255, 217, 102, 0.2);
+        }
+
+        .deps-table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 217, 102, 0.05);
+        }
+
+        .deps-table tbody tr:hover {
+            background: rgba(255, 217, 102, 0.05);
+        }
+
+        .deps-table tbody td {
+            padding: 16px 20px;
+            color: #e4e6ea;
+            font-size: 14px;
+        }
+
+        .deps-table tbody td:first-child {
+            font-weight: 600;
+            color: #ffd966;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-container {
+                grid-template-columns: 1fr;
+            }
+
+            .side-nav {
+                position: static;
+                margin-bottom: 32px;
+            }
+
+            .nav-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .content-section {
+                padding: 24px;
+            }
+
+            .section-title h2 {
+                font-size: 1.5rem;
+            }
+
+            .deps-table {
+                font-size: 13px;
+            }
+
+            .deps-table thead th,
+            .deps-table tbody td {
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .content-section {
+                padding: 20px;
+            }
+
+            .step {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .step-number {
+                align-self: flex-start;
+            }
+        }
+
+        /* Scrollbar Customization */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+            border-radius: 6px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #f4d03f 0%, #ffd966 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>First Installation</h1>
+        <p>Complete guide to installing and configuring ApartmentCore</p>
+    </div>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb">
+        <a href="https://sites.google.com/view/apartment-core/homepage">Wiki Home</a>
+        <span>›</span>
+        <span style="color: #e4e6ea;">First Installation</span>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="content-container">
+        <!-- Side Navigation -->
+        <nav class="side-nav">
+            <div class="nav-title">On This Page</div>
+            <ul class="nav-list">
+                <li><a href="#dependencies" class="active"><span class="nav-dot"></span>Dependencies</a></li>
+                <li><a href="#installation"><span class="nav-dot"></span>Installation Steps</a></li>
+                <li><a href="#creating"><span class="nav-dot"></span>Creating Apartments</a></li>
+                <li><a href="#verification"><span class="nav-dot"></span>Verification</a></li>
+                <li><a href="#troubleshooting"><span class="nav-dot"></span>Troubleshooting</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dependencies Section -->
+            <section class="content-section" id="dependencies">
+                <div class="section-title">
+                    <h2>Dependencies</h2>
+                    <span class="section-badge">Required Setup</span>
+                </div>
+                
+                <p>Before installing ApartmentCore, ensure your server meets all the requirements below. The plugin requires specific dependencies to function properly.</p>
+                
+                <h3>Required Dependencies</h3>
+                <table class="deps-table">
+                    <thead>
+                        <tr>
+                            <th>Dependency</th>
+                            <th>Version</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Minecraft Server</td>
+                            <td>1.21.4</td>
+                            <td>Latest Minecraft version supported</td>
+                        </tr>
+                        <tr>
+                            <td>Spigot/Paper</td>
+                            <td>Latest for 1.21.4</td>
+                            <td>Paper is recommended for better performance</td>
+                        </tr>
+                        <tr>
+                            <td>Vault</td>
+                            <td>1.7+</td>
+                            <td>Economy API for transaction handling</td>
+                        </tr>
+                        <tr>
+                            <td>WorldGuard</td>
+                            <td>7.0+</td>
+                            <td>Region management for apartment areas</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Optional Dependencies</h3>
+                <table class="deps-table">
+                    <thead>
+                        <tr>
+                            <th>Dependency</th>
+                            <th>Version</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PlaceholderAPI</td>
+                            <td>2.11+</td>
+                            <td>Enables placeholder support for signs, scoreboards, etc.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <div class="info-box-title">
+                        💡 Pro Tip
+                    </div>
+                    <div class="info-box-content">
+                        We strongly recommend using Paper instead of Spigot for better performance and stability. Paper includes many optimizations that benefit plugins like ApartmentCore.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Installation Steps Section -->
+            <section class="content-section" id="installation">
+                <div class="section-title">
+                    <h2>Installation Steps</h2>
+                    <span class="section-badge">Step by Step</span>
+                </div>
+
+                <p>Follow these steps carefully to ensure a smooth installation process. Make sure you have completed all dependency requirements before proceeding.</p>
+
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Download ApartmentCore</div>
+                            <div class="step-description">
+                                Download the latest <code>ApartmentCore.jar</code> file from the official repository or SpigotMC page. Ensure you're downloading the version compatible with your server.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Install to Plugins Folder</div>
+                            <div class="step-description">
+                                Place the downloaded <code>ApartmentCore.jar</code> file in your server's <code>plugins</code> folder. Do not rename the file.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Install Required Dependencies</div>
+                            <div class="step-description">
+                                Ensure Vault and WorldGuard are installed in your plugins folder. Download them from their official sources if you haven't already.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Restart Your Server</div>
+                            <div class="step-description">
+                                Perform a complete server restart (not reload) to properly initialize the plugin and generate configuration files.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <div class="step-title">Configure the Plugin</div>
+                            <div class="step-description">
+                                Navigate to <code>plugins/ApartmentCore/config.yml</code> and adjust settings according to your server's needs. Default settings work for most servers.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-box-title">⚠️ Important Note</div>
+                    <div class="info-box-content">
+                        Always use server restarts instead of reloads when installing new plugins. Reloading can cause memory leaks and unexpected behavior.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Creating Apartments Section -->
+            <section class="content-section" id="creating">
+                <div class="section-title">
+                    <h2>Creating Your First Apartment</h2>
+                    <span class="section-badge">Admin Guide</span>
+                </div>
+
+                <p>Once ApartmentCore is installed and configured, you can start creating apartments. This process requires admin permissions and involves using WorldGuard regions.</p>
+
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>You must have operator permissions or the <code>apartmentcore.admin</code> permission</li>
+                    <li>WorldGuard must be properly installed and configured</li>
+                    <li>The economy system (through Vault) must be functioning</li>
+                </ul>
+
+                <h3>Step-by-Step Creation Process</h3>
+
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Create a WorldGuard Region</div>
+                            <div class="step-description">
+                                Use WorldGuard's wand tool to select the apartment area, then create a region:
+                                <div class="code-block-wrapper">
+                                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                                    <pre><code>//wand
+//pos1
+//pos2
+/region define apartment_region</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Use the Create Command</div>
+                            <div class="step-description">
+                                Execute the apartment creation command with the following syntax:
+                                <div class="code-block-wrapper">
+                                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                                    <pre><code>/apartmentcore admin create &lt;region_name&gt; &lt;apartment_id&gt; &lt;price&gt;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Example Creation</div>
+                            <div class="step-description">
+                                Here's a practical example of creating your first apartment:
+                                <div class="code-block-wrapper">
+                                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                                    <pre><code>/apartmentcore admin create apartment_region my_first_apartment 99999</code></pre>
+                                </div>
+                                This creates an apartment with ID "my_first_apartment" in the "apartment_region" WorldGuard region, priced at 99,999 currency units.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">
+                        💡 Naming Convention
+                    </div>
+                    <div class="info-box-content">
+                        Use descriptive IDs for your apartments (e.g., <code>downtown_suite_01</code>, <code>beachfront_villa_a</code>). This makes management easier as your apartment system grows.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Verification Section -->
+            <section class="content-section" id="verification">
+                <div class="section-title">
+                    <h2>Verification</h2>
+                    <span class="section-badge">Testing</span>
+                </div>
+
+                <p>After installation and creating your first apartment, verify everything is working correctly:</p>
+
+                <h3>Check Plugin Status</h3>
+                <div class="code-block-wrapper">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code>/apartmentcore info</code></pre>
+                </div>
+
+                <h3>List All Apartments</h3>
+                <div class="code-block-wrapper">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code>/apartmentcore admin list</code></pre>
+                </div>
+
+                <h3>Test Purchase System</h3>
+                <p>Have a test player attempt to purchase the apartment to ensure the economy integration is working:</p>
+                <div class="code-block-wrapper">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code>/apartmentcore buy my_first_apartment</code></pre>
+                </div>
+            </section>
+
+            <!-- Troubleshooting Section -->
+            <section class="content-section" id="troubleshooting">
+                <div class="section-title">
+                    <h2>Troubleshooting</h2>
+                    <span class="section-badge">Common Issues</span>
+                </div>
+
+                <h3>Plugin Not Loading</h3>
+                <ul>
+                    <li><strong>Check Java Version:</strong> Ensure you're using Java 21 or higher</li>
+                    <li><strong>Verify Dependencies:</strong> Check that Vault and WorldGuard are loaded before ApartmentCore</li>
+                    <li><strong>Review Console:</strong> Look for error messages during server startup</li>
+                </ul>
+
+                <h3>Cannot Create Apartments</h3>
+                <ul>
+                    <li><strong>Permissions:</strong> Verify you have <code>apartmentcore.admin</code> permission</li>
+                    <li><strong>Region Exists:</strong> Ensure the WorldGuard region is properly defined</li>
+                    <li><strong>Unique IDs:</strong> Check that the apartment ID isn't already in use</li>
+                </ul>
+
+                <h3>Economy Not Working</h3>
+                <ul>
+                    <li><strong>Vault Installation:</strong> Confirm Vault is properly installed</li>
+                    <li><strong>Economy Plugin:</strong> Ensure you have an economy plugin that supports Vault</li>
+                    <li><strong>Player Balance:</strong> Verify players have sufficient funds for purchases</li>
+                </ul>
+
+                <div class="warning-box">
+                    <div class="warning-box-title">⚠️ Still Having Issues?</div>
+                    <div class="info-box-content">
+                        If problems persist, check the plugin's error log at <code>plugins/ApartmentCore/logs/</code> and report issues on our GitHub repository with the full error message.
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+    // Hardened interactivity for Google Sites embedding
+    (function() {
+        // Robust clipboard copy with fallback for sandboxed iframes
+        function legacyCopy(text) {
+            try {
+                // Preserve UI state to prevent any scroll jumps
+                var prevFocus = document.activeElement;
+                var x = window.pageXOffset || window.scrollX || 0;
+                var y = window.pageYOffset || window.scrollY || 0;
+
+                var ta = document.createElement('textarea');
+                ta.value = text || '';
+                ta.setAttribute('readonly', '');
+                ta.setAttribute('aria-hidden', 'true');
+                // Style to avoid any layout/scroll impact
+                ta.style.position = 'fixed';
+                ta.style.top = '0';
+                ta.style.left = '0';
+                ta.style.width = '1px';
+                ta.style.height = '1px';
+                ta.style.opacity = '0';
+                ta.style.pointerEvents = 'none';
+                ta.style.zIndex = '-1';
+                ta.style.contain = 'strict';
+
+                document.body.appendChild(ta);
+                try { ta.focus({ preventScroll: true }); } catch (e) { try { ta.focus(); } catch (_) {} }
+                ta.select();
+
+                var ok = false;
+                try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+
+                document.body.removeChild(ta);
+
+                // Restore focus and scroll position
+                try {
+                    if (prevFocus && typeof prevFocus.focus === 'function') {
+                        try { prevFocus.focus({ preventScroll: true }); } catch (e) { prevFocus.focus(); }
+                    }
+                } catch (_) {}
+                try { window.scrollTo(x, y); } catch (_) {}
+
+                return ok ? Promise.resolve() : Promise.reject(new Error('execCommand failed'));
+            } catch (err) {
+                return Promise.reject(err);
+            }
+        }
+
+        function safeCopyText(text) {
+            if (!text) return Promise.reject(new Error('No text to copy'));
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                return navigator.clipboard.writeText(text).catch(function() {
+                    return legacyCopy(text);
+                });
+            }
+            return legacyCopy(text);
+        }
+
+        // Keep global for inline onclick while also supporting delegated clicks
+        window.copyCode = function(button) {
+            var wrapper = (button && button.closest) ? button.closest('.code-block-wrapper') : (button ? button.parentElement : null);
+            var codeEl = wrapper ? wrapper.querySelector('pre code') : null;
+            var text = codeEl ? codeEl.textContent : '';
+            var targetBtn = button || (wrapper ? wrapper.querySelector('.copy-button') : null);
+
+            safeCopyText(text).then(function() {
+                if (targetBtn) {
+                    targetBtn.textContent = 'Copied!';
+                    targetBtn.classList.add('copied');
+                    setTimeout(function() {
+                        targetBtn.textContent = 'Copy';
+                        targetBtn.classList.remove('copied');
+                    }, 2000);
+                }
+            });
+        };
+
+        // Ensure copy buttons are not treated as submit buttons in host context
+        try {
+            document.querySelectorAll('.copy-button').forEach(function(b){ b.setAttribute('type','button'); });
+        } catch (_) {}
+
+        // Event delegation for copy buttons (works even if Google Sites rewrites DOM)
+        document.addEventListener('click', function(e) {
+            var btn = e.target && e.target.closest ? e.target.closest('.copy-button') : null;
+            if (btn) {
+                // Ensure it's not a submit button and block any host handlers
+                if (!btn.getAttribute('type')) btn.setAttribute('type','button');
+                e.preventDefault();
+                e.stopPropagation();
+                if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+                window.copyCode(btn);
+            }
+        }, true); // capture to intercept before host handlers
+
+        // Prepare and harden side navigation behavior
+        var navContainer = document.querySelector('.nav-list');
+
+        if (navContainer) {
+            // Remove any target attributes that may cause new tab behavior
+            navContainer.querySelectorAll('a').forEach(function(a) {
+                a.removeAttribute('target');
+                a.setAttribute('rel', 'noopener');
+                a.setAttribute('role', 'button');
+            });
+
+            // Delegated smooth scrolling to prevent default navigation/new tab
+            navContainer.addEventListener('click', function(e) {
+                var link = e.target && e.target.closest ? e.target.closest('a') : null;
+                if (!link) return;
+
+                var href = link.getAttribute('href') || '';
+                if (href.charAt(0) === '#') {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var id = href.slice(1);
+                    var target = document.getElementById(id);
+                    if (target) {
+                        try {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } catch (err) {
+                            // Fallback smooth scroll
+                            var start = window.pageYOffset || document.documentElement.scrollTop || 0;
+                            var end = target.getBoundingClientRect().top + start - 10;
+                            var duration = 400, startTime = null;
+                            function step(ts) {
+                                if (!startTime) startTime = ts;
+                                var p = Math.min((ts - startTime) / duration, 1);
+                                var ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+                                window.scrollTo(0, start + (end - start) * ease);
+                                if (p < 1) requestAnimationFrame(step);
+                            }
+                            requestAnimationFrame(step);
+                        }
+
+                        // Update active state
+                        navContainer.querySelectorAll('a').forEach(function(a) { a.classList.remove('active'); });
+                        link.classList.add('active');
+                    }
+                }
+            }, true); // capture to cancel host default
+        }
+
+        // Active section highlight on scroll
+        var sections = Array.prototype.slice.call(document.querySelectorAll('.content-section'));
+        var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-list a'));
+
+        function highlightNav() {
+            var current = '';
+            for (var i = 0; i < sections.length; i++) {
+                var s = sections[i];
+                if ((window.scrollY || window.pageYOffset || 0) >= (s.offsetTop - 100)) {
+                    current = s.id;
+                }
+            }
+            navLinks.forEach(function(link) {
+                var href = link.getAttribute('href') || '';
+                var isActive = href.charAt(0) === '#' && href.slice(1) === current;
+                if (isActive) link.classList.add('active'); else link.classList.remove('active');
+            });
+        }
+
+        window.addEventListener('scroll', highlightNav, { passive: true });
+        highlightNav();
+    })();
+    </script>
+</body>
+</html>

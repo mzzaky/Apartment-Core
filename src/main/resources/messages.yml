@@ -1,0 +1,78 @@
+# ApartmentCore minimal messages
+# Note: Message prefix is configured in config.yml and overrides any messages.yml prefix setting
+
+general:
+  cooldown: "{prefix}&cPlease wait before using a command again!"
+  player_only: "{prefix}&cOnly players can use this command!"
+  no_permission: "{prefix}&cYou do not have permission to %action%!"
+  unknown_command: "{prefix}&cUnknown command. Use &e/apartmentcore help &cor &e/apartmentcore gui"
+  reloaded: "{prefix}&aConfiguration and messages have been successfully reloaded!"
+  version_header: "{prefix}&6=== ApartmentCore v%version% ==="
+  about_author: "{prefix}&eAuthor: &fAithor"
+  about_help_hint: "{prefix}&eUse &f/apartmentcore gui &efor an easy interface or &f/apartmentcore help &efor assistance"
+  help_header: "{prefix}&6=== ApartmentCore Command List ==="
+  admin_help_header: "{prefix}&6=== Admin Commands ==="
+  usage:
+    gui: "{prefix}&e/apartmentcore gui &7- Open the GUI interface"
+    buy: "{prefix}&e/apartmentcore buy <apartment_id>"
+    sell: "{prefix}&e/apartmentcore sell <apartment_id>"
+    teleport: "{prefix}&e/apartmentcore teleport <apartment_id>"
+    rent: "{prefix}&e/apartmentcore rent <claim|info> <apartment_id>"
+    tax_auto: "{prefix}&e/apartmentcore tax auto <on|off>"
+    upgrade: "{prefix}&e/apartmentcore upgrade <apartment_id>"
+    setname: "{prefix}&e/apartmentcore setname <apartment_id> <display_name>"
+    setwelcome: "{prefix}&e/apartmentcore setwelcome <apartment_id> <message>"
+    setteleport: "{prefix}&e/apartmentcore setteleport <apartment_id>"
+    rate: "{prefix}&e/apartmentcore rate <apartment_id> <0-10>"
+    list: "{prefix}&e/apartmentcore list [all|sale|mine|top]"
+    guestbook: "{prefix}&e/apartmentcore guestbook <leave|read|clear> <apartment_id> ..."
+    confirm: "{prefix}&e/apartmentcore confirm"
+    admin_create: "{prefix}&e/apartmentcore admin create <region> <id> <price>"
+    admin_remove: "{prefix}&e/apartmentcore admin remove <apartment_id>"
+    admin_set: "{prefix}&e/apartmentcore admin set <property> <apartment_id> <value>"
+    list_all: "{prefix}&e/apartmentcore admin apartment_list"
+    admin_backup: "{prefix}&e/apartmentcore admin backup <create|list|restore> [filename]"
+    admin_reload: "{prefix}&e/apartmentcore admin reload"
+
+gui:
+  opened: "{prefix}&aGUI interface opened! Click items to navigate."
+  closed: "{prefix}&7GUI interface closed."
+  error: "{prefix}&cAn error occurred while opening the GUI!"
+  disabled: "{prefix}&cThe GUI system is disabled."
+  updated: "{prefix}&aGUI updated with the latest data."
+
+guestbook:
+  usage: "{prefix}&cUsage: /apartmentcore guestbook &7<leave|read|clear> &f<apartment_id> &7..."
+  leave:
+    cooldown: "{prefix}&cYou must wait before leaving another message."
+    too_long: "{prefix}&cYour message is too long! Max &f%max_chars% &ccharacters."
+    success: "{prefix}&aYou left a message in the guestbook for &e%apartment%&a."
+  read:
+    empty: "{prefix}&eThe guestbook for &e%apartment% &eis empty."
+    header: "{prefix}&6--- Guestbook for &e%apartment% &6---"
+    line_format: "&7[%date%] &b%player%&7: &f%message%"
+  clear:
+    not_owner: "{prefix}&cOnly the owner can clear the guestbook."
+    confirm_line1: "{prefix}&eAre you sure you want to clear the guestbook for &e%apartment%&e?"
+    confirm_line2: "{prefix}&eType &f/apartmentcore confirm &eto confirm."
+
+notifications:
+  bill_new: "{prefix}&e&l[Bill]&r &7A new tax bill of &f%amount% &7for &e%apartment%&7."
+  auto_paid: "{prefix}&a&l[AutoPay]&r &7Automatically paid &f%amount% &7for &e%apartment%&7."
+  bill_reminder_day2: "{prefix}&6&l[Reminder]&r &7A tax of &f%amount% &7is due tomorrow for &e%apartment%&7."
+  bill_overdue_day3: "{prefix}&c&l[Overdue]&r &7Your tax is overdue! The total amount due is now &f%total%&7."
+  apartment_inactive_day5: "{prefix}&4&l[Inactive]&r &7Your apartment is now Inactive! Total amount due &f%total%&7."
+  apartment_repossessed_day7: "{prefix}&4&l[Repossessed]&r &7Apartment &e%apartment% &7has been repossessed due to tax non-payment."
+  rent_generated: "{prefix}&a&l[Rent]&r &7Your apartment &e%apartment% &7generated &f%amount% &7income!"
+  rent_generated_with_buff: "{prefix}&a&l[Rent]&r &7Your apartment &e%apartment% &7generated &f%amount% &7income &a(+&f%flat_buff% &aflat + &f%percentage_buff%% &apercentage from shop buffs)&7!"
+
+# Shop System Messages
+shop:
+  purchase_success: "{prefix}&a✅ Successfully purchased {item_name} tier {tier} for {cost}!"
+  purchase_failed_funds: "{prefix}&c❌ Insufficient funds! You need {cost} but have {balance}."
+  purchase_failed_max_tier: "{prefix}&c❌ This item is already at maximum tier!"
+  purchase_failed_no_permission: "{prefix}&c❌ You don't have permission to purchase shop items!"
+  purchase_failed_not_owner: "{prefix}&c❌ You don't own this apartment!"
+  refund: "{prefix}&a💰 You received {amount} refund from shop purchases for apartment {apartment}."
+  shop_disabled: "{prefix}&c❌ The shop system is currently disabled!"
+  no_apartments: "{prefix}&c❌ You need to own at least one apartment to access the shop!"

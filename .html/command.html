@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commands - ApartmentCore Wiki</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #0a0c10 0%, #111316 50%, #1a1d23 100%);
+        color: #e4e6ea;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Luxury background effects */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(255, 217, 102, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(244, 208, 63, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 40% 60%, rgba(255, 217, 102, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Floating particles effect */
+    .particle {
+        position: absolute;
+        background: rgba(255, 217, 102, 0.4);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100px) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    /* Header Utama */
+    .page-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding: 40px 0;
+        position: relative;
+    }
+
+    .page-header h1 {
+        color: #ffffff;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 4px 20px rgba(255, 217, 102, 0.3);
+        position: relative;
+    }
+
+    .page-header h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+        border-radius: 2px;
+        box-shadow: 0 0 20px rgba(255, 217, 102, 0.5);
+    }
+
+    .page-header p {
+        color: #9ca3af;
+        font-size: 1.2rem;
+        margin-top: 30px;
+    }
+
+    .page-header code {
+        background: rgba(255, 217, 102, 0.1);
+        padding: 8px 16px;
+        border-radius: 8px;
+        color: #ffd966;
+        border: 1px solid rgba(255, 217, 102, 0.2);
+        font-weight: 500;
+        box-shadow: 0 0 15px rgba(255, 217, 102, 0.1);
+    }
+
+    /* Navigation Breadcrumb */
+    .breadcrumb {
+        max-width: 1400px;
+        margin: 0 auto 40px;
+        padding: 16px 24px;
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 217, 102, 0.1);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .breadcrumb a {
+        color: #ffd966;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #f4d03f;
+        text-shadow: 0 0 10px rgba(255, 217, 102, 0.5);
+    }
+
+    .breadcrumb span {
+        color: #6b7280;
+    }
+
+    /* Content Container */
+    .content-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    /* Side Navigation */
+    .side-nav {
+        position: sticky;
+        top: 20px;
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 217, 102, 0.1);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 12px 25px rgba(0,0,0,0.35), 0 0 50px rgba(255, 217, 102, 0.05);
+    }
+
+    .nav-title {
+        color: #ffd966;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+        letter-spacing: 0.5px;
+    }
+
+    .nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-list li {
+        margin-bottom: 8px;
+    }
+
+    .nav-list a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        color: #e4e6ea;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-list a::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 217, 102, 0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    .nav-list a:hover::before {
+        left: 100%;
+    }
+
+    .nav-list a:hover {
+        background: linear-gradient(135deg, rgba(255, 217, 102, 0.1) 0%, rgba(244, 208, 63, 0.1) 100%);
+        color: #ffd966;
+        transform: translateX(4px);
+        box-shadow: 0 4px 15px rgba(255, 217, 102, 0.2);
+    }
+
+    .nav-list a.active {
+        background: linear-gradient(135deg, rgba(255, 217, 102, 0.15) 0%, rgba(244, 208, 63, 0.15) 100%);
+        color: #ffd966;
+        border-left: 3px solid #ffd966;
+        box-shadow: 0 4px 15px rgba(255, 217, 102, 0.2);
+    }
+
+    .nav-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #ffd966;
+        opacity: 0.6;
+        box-shadow: 0 0 8px rgba(255, 217, 102, 0.4);
+    }
+
+    /* Main Content */
+    .main-content {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 217, 102, 0.1);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 80px rgba(255, 217, 102, 0.05);
+    }
+
+    /* Section Styles */
+    .content-section {
+        padding: 32px;
+        border-bottom: 1px solid rgba(255, 217, 102, 0.05);
+        scroll-margin-top: 20px;
+        position: relative;
+    }
+
+    .content-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 217, 102, 0.3), transparent);
+    }
+
+    .content-section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .section-title h2 {
+        color: #ffd966;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+    }
+
+    /* Category Badges */
+    .category-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .category-badge::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .category-badge:hover::before {
+        left: 100%;
+    }
+
+    .badge-general {
+        background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+        color: #111316;
+        box-shadow: 0 4px 15px rgba(255, 217, 102, 0.3);
+    }
+
+    .badge-auction {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .badge-guestbook {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-owner {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .badge-admin {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Section Description */
+    .section-description {
+        color: #d1d5db;
+        line-height: 1.8;
+        margin-bottom: 24px;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 217, 102, 0.05);
+    }
+
+    .section-description code {
+        background: rgba(255, 217, 102, 0.1);
+        padding: 4px 8px;
+        border-radius: 6px;
+        color: #ffd966;
+        font-weight: 500;
+        border: 1px solid rgba(255, 217, 102, 0.2);
+    }
+
+    /* Modern Table */
+    .command-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 20px 0;
+        background: transparent;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .command-table thead th {
+        background: linear-gradient(135deg, #1a1d23 0%, #111316 100%);
+        color: #ffd966;
+        padding: 20px 24px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid rgba(255, 217, 102, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        text-shadow: 0 0 10px rgba(255, 217, 102, 0.3);
+    }
+
+    .command-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(255, 217, 102, 0.05);
+    }
+
+    .command-table tbody tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.01);
+    }
+
+    .command-table tbody tr:hover {
+        background: linear-gradient(135deg, rgba(255, 217, 102, 0.08) 0%, rgba(244, 208, 63, 0.08) 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 25px rgba(255, 217, 102, 0.1);
+        border-left: 4px solid #ffd966;
+    }
+
+    .command-table tbody td {
+        padding: 20px 24px;
+        color: #e4e6ea;
+        font-size: 14px;
+        line-height: 1.6;
+        vertical-align: top;
+    }
+
+    /* Command Code Block */
+    .command-code {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-family: 'Outfit', monospace;
+        font-size: 13px;
+        color: #ffd966;
+        border: 1px solid rgba(255, 217, 102, 0.2);
+        display: inline-block;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        user-select: all;
+        position: relative;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .command-code:hover {
+        background: rgba(255, 217, 102, 0.1);
+        border-color: #ffd966;
+        box-shadow: 0 4px 12px rgba(255, 217, 102, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .command-code::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #111316;
+        color: #ffd966;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        white-space: nowrap;
+        z-index: 1000;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .command-code:hover::after {
+        opacity: 1;
+    }
+
+    .command-code.copied {
+        background: rgba(34, 197, 94, 0.2) !important;
+        border-color: #22c55e !important;
+        color: #22c55e !important;
+    }
+
+    .command-code.copied::after {
+        content: 'Copied!' !important;
+        opacity: 1 !important;
+        background: #22c55e !important;
+        color: #ffffff !important;
+    }
+
+    /* Permission Badge */
+    .permission-badge {
+        background: rgba(255, 217, 102, 0.1);
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #ffd966;
+        border: 1px solid rgba(255, 217, 102, 0.2);
+        display: inline-block;
+        font-family: 'Outfit', monospace;
+        box-shadow: 0 0 10px rgba(255, 217, 102, 0.1);
+    }
+
+    /* Syntax Legend */
+    .syntax-legend {
+        background: linear-gradient(135deg, rgba(255, 217, 102, 0.1) 0%, rgba(244, 208, 63, 0.1) 100%);
+        border: 2px solid rgba(255, 217, 102, 0.3);
+        border-radius: 16px;
+        padding: 20px;
+        margin: 24px 0;
+        box-shadow: 0 8px 25px rgba(255, 217, 102, 0.1);
+    }
+
+    .syntax-legend h4 {
+        color: #ffd966;
+        margin-bottom: 12px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px rgba(255, 217, 102, 0.3);
+    }
+
+    .syntax-legend ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .syntax-legend li {
+        color: #e4e6ea;
+        margin-bottom: 8px;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .syntax-legend code {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 4px 8px;
+        border-radius: 4px;
+        color: #ffd966;
+        margin-right: 8px;
+        border: 1px solid rgba(255, 217, 102, 0.2);
+    }
+
+    /* Footer Note */
+    .footer-note {
+        text-align: center;
+        padding: 60px 40px;
+        color: #9ca3af;
+        background: rgba(0, 0, 0, 0.2);
+        margin-top: 60px;
+        border-radius: 16px;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px solid rgba(255, 217, 102, 0.1);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer-note p {
+        margin-bottom: 16px;
+        line-height: 1.7;
+    }
+
+    .footer-note strong {
+        color: #ffd966;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(255, 217, 102, 0.2);
+    }
+
+    .footer-note code {
+        background: rgba(255, 217, 102, 0.1);
+        padding: 4px 8px;
+        border-radius: 6px;
+        color: #ffd966;
+        font-weight: 500;
+    }
+
+    /* Column Width */
+    .command-table th:nth-child(1),
+    .command-table td:nth-child(1) { width: 45%; }
+    .command-table th:nth-child(2),
+    .command-table td:nth-child(2) { width: 35%; }
+    .command-table th:nth-child(3),
+    .command-table td:nth-child(3) { width: 20%; }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .content-container {
+            grid-template-columns: 1fr;
+        }
+
+        .side-nav {
+            position: static;
+            margin-bottom: 32px;
+        }
+
+        .nav-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2.2rem;
+        }
+
+        .content-section {
+            padding: 24px;
+        }
+
+        .section-title h2 {
+            font-size: 1.5rem;
+        }
+
+        .command-table thead th,
+        .command-table tbody td {
+            padding: 16px 20px;
+        }
+
+        .section-title {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .section-description {
+            padding: 16px;
+            margin: 0 -8px 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        body {
+            padding: 15px;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .content-section {
+            padding: 20px;
+        }
+
+        .command-table {
+            font-size: 13px;
+        }
+
+        .command-table thead th,
+        .command-table tbody td {
+            padding: 12px 16px;
+        }
+
+        .command-code {
+            font-size: 11px;
+            padding: 10px 12px;
+        }
+    }
+
+    /* Scrollbar Customization */
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+        border-radius: 6px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+        box-shadow: 0 0 10px rgba(255, 217, 102, 0.3);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #f4d03f 0%, #ffd966 100%);
+    }
+</style>
+</head>
+<body>
+<!-- Floating particles -->
+<div class="particle" style="left: 10%; width: 3px; height: 3px; animation-delay: 0s;"></div>
+<div class="particle" style="left: 20%; width: 2px; height: 2px; animation-delay: 2s;"></div>
+<div class="particle" style="left: 30%; width: 4px; height: 4px; animation-delay: 4s;"></div>
+<div class="particle" style="left: 40%; width: 2px; height: 2px; animation-delay: 6s;"></div>
+<div class="particle" style="left: 50%; width: 3px; height: 3px; animation-delay: 8s;"></div>
+<div class="particle" style="left: 60%; width: 2px; height: 2px; animation-delay: 10s;"></div>
+<div class="particle" style="left: 70%; width: 4px; height: 4px; animation-delay: 12s;"></div>
+<div class="particle" style="left: 80%; width: 3px; height: 3px; animation-delay: 14s;"></div>
+<div class="particle" style="left: 90%; width: 2px; height: 2px; animation-delay: 16s;"></div>
+
+<div class="page-header">
+    <h1>Commands - ApartmentCore</h1>
+    <p>Complete command reference for <code>ApartmentCore</code> plugin</p>
+</div>
+
+<div class="breadcrumb">
+    <a href="https://sites.google.com/view/apartment-core/homepage">Wiki Home</a>
+    <span>›</span>
+    <span style="color: #e4e6ea;">Commands</span>
+</div>
+
+<div class="content-container">
+    <nav class="side-nav">
+        <div class="nav-title">Command Categories</div>
+        <ul class="nav-list">
+            <li><a href="#general" class="active"><span class="nav-dot"></span>General Commands</a></li>
+            <li><a href="#guestbook"><span class="nav-dot"></span>Guestbook Commands</a></li>
+            <li><a href="#owner"><span class="nav-dot"></span>Owner Commands</a></li>
+            <li><a href="#auction"><span class="nav-dot"></span>Auction Commands</a></li>
+            <li><a href="#admin"><span class="nav-dot"></span>Admin Commands</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <section class="content-section" id="general">
+            <div class="section-title">
+                <h2>General Commands</h2>
+                <span class="category-badge badge-general">General</span>
+            </div>
+            <div class="section-description">
+                Essential commands available to all players for basic apartment interactions and information viewing.
+            </div>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Permission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore help</div>
+                        </td>
+                        <td>Shows a list of all available commands.</td>
+                        <td><span class="permission-badge">apartmentcore.use</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore info [id]</div>
+                        </td>
+                        <td>View plugin or apartment info</td>
+                        <td><span class="permission-badge">apartmentcore.use</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore gui</div>
+                        </td>
+                        <td>Opens the main GUI menu for easy feature access</td>
+                        <td><span class="permission-badge">apartmentcore.gui</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore buy &lt;id&gt;</div>
+                        </td>
+                        <td>Buy an apartment</td>
+                        <td><span class="permission-badge">apartmentcore.buy</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore sell &lt;id&gt;</div>
+                        </td>
+                        <td>Sell your apartment</td>
+                        <td><span class="permission-badge">apartmentcore.sell</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore confirm</div>
+                        </td>
+                        <td>Confirm pending action</td>
+                        <td><span class="permission-badge">apartmentcore.use</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore list [all/sale/mine/top]</div>
+                        </td>
+                        <td>List apartments</td>
+                        <td><span class="permission-badge">apartmentcore.list</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore version</div>
+                        </td>
+                        <td>Check plugin version</td>
+                        <td><span class="permission-badge">apartmentcore.use</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore rate &lt;id&gt; &lt;0-10&gt;</div>
+                        </td>
+                        <td>Rate an apartment</td>
+                        <td><span class="permission-badge">apartmentcore.use</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section" id="guestbook">
+            <div class="section-title">
+                <h2>Guestbook Commands</h2>
+                <span class="category-badge badge-guestbook">Guestbook</span>
+            </div>
+            <div class="section-description">
+                Commands for interacting with apartment guestbooks. Leave messages, read feedback, and manage your guestbook entries.
+            </div>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Permission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore guestbook leave &lt;id&gt; &lt;message&gt;</div>
+                        </td>
+                        <td>Leave a message in a guest book</td>
+                        <td><span class="permission-badge">apartmentcore.use</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore guestbook read &lt;id&gt;</div>
+                        </td>
+                        <td>Read your guest book messages</td>
+                        <td><span class="permission-badge">apartmentcore.use</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore guestbook clear &lt;id&gt;</div>
+                        </td>
+                        <td>Clear all messages from your guest book</td>
+                        <td><span class="permission-badge">Owner only</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section" id="owner">
+            <div class="section-title">
+                <h2>Owner Commands</h2>
+                <span class="category-badge badge-owner">Owner</span>
+            </div>
+            <div class="section-description">
+                Exclusive commands for apartment owners to manage their properties, including income collection, tax payment, and customization options.
+            </div>
+            
+            <div class="syntax-legend">
+                <h4>Command Syntax</h4>
+                <ul>
+                    <li><code>&lt;id&gt;</code> - Required apartment ID parameter</li>
+                    <li><code>&lt;name&gt;</code> - Custom name for your apartment</li>
+                    <li><code>&lt;message&gt;</code> - Custom welcome message text</li>
+                </ul>
+            </div>
+            
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Permission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore teleport &lt;id&gt;</div>
+                        </td>
+                        <td>Teleport to your apartment</td>
+                        <td><span class="permission-badge">apartmentcore.teleport</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore upgrade &lt;id&gt;</div>
+                        </td>
+                        <td>Upgrade apartment level</td>
+                        <td><span class="permission-badge">apartmentcore.upgrade</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore rent claim &lt;id&gt;</div>
+                        </td>
+                        <td>Claim generated income</td>
+                        <td><span class="permission-badge">apartmentcore.rent</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore rent info &lt;id&gt;</div>
+                        </td>
+                        <td>View income information</td>
+                        <td><span class="permission-badge">apartmentcore.rent</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore tax info</div>
+                        </td>
+                        <td>View tax information for all your apartments</td>
+                        <td><span class="permission-badge">apartmentcore.tax</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore tax pay</div>
+                        </td>
+                        <td>Pay all outstanding taxes for all your apartments</td>
+                        <td><span class="permission-badge">apartmentcore.tax</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore tax auto &lt;on|off&gt;</div>
+                        </td>
+                        <td>Enable or disable automatic tax payments</td>
+                        <td><span class="permission-badge">apartmentcore.tax</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore setname &lt;id&gt; &lt;name&gt;</div>
+                        </td>
+                        <td>Set apartment display name</td>
+                        <td><span class="permission-badge">Owner only</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore setwelcome &lt;id&gt; &lt;message&gt;</div>
+                        </td>
+                        <td>Set welcome message</td>
+                        <td><span class="permission-badge">Owner only</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore setteleport &lt;id&gt;</div>
+                        </td>
+                        <td>Set teleport location</td>
+                        <td><span class="permission-badge">apartmentcore.setteleport</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section" id="auction">
+            <div class="section-title">
+                <h2>Auction Commands</h2>
+                <span class="category-badge badge-auction">Auction</span>
+            </div>
+            <div class="section-description">
+                Commands for interacting with the apartment auction system. Create auctions, place bids, and view the market.
+            </div>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Permission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore auction create &lt;id&gt; &lt;bid&gt; &lt;hours&gt;</div>
+                        </td>
+                        <td>Create an auction for your apartment</td>
+                        <td><span class="permission-badge">apartmentcore.auction.create</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore auction bid &lt;id&gt; &lt;amount&gt;</div>
+                        </td>
+                        <td>Place a bid on an apartment auction</td>
+                        <td><span class="permission-badge">apartmentcore.auction.bid</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore auction list [filter]</div>
+                        </td>
+                        <td>List all active auctions (filters: mine, ending, nobids)</td>
+                        <td><span class="permission-badge">apartmentcore.auction.list</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore auction cancel &lt;id&gt;</div>
+                        </td>
+                        <td>Cancel your own auction (if no bids)</td>
+                        <td><span class="permission-badge">apartmentcore.auction.cancel</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section" id="admin">
+            <div class="section-title">
+                <h2>Admin Commands</h2>
+                <span class="category-badge badge-admin">Admin</span>
+            </div>
+            <div class="section-description">
+                Powerful administrative commands for server staff to manage all apartments, create new properties, modify settings, and maintain the plugin.
+            </div>
+            
+            <div class="syntax-legend">
+                <h4>Admin Command Parameters</h4>
+                <ul>
+                    <li><code>&lt;region&gt;</code> - WorldGuard region name for the apartment</li>
+                    <li><code>&lt;id&gt;</code> - Unique ID for the apartment</li>
+                    <li><code>&lt;player&gt;</code> - Target player name</li>
+                    <li><code>&lt;time&gt;</code> - Time period in seconds</li>
+                    <li><code>&lt;level&gt;</code> - Apartment level (1-10)</li>
+                    <li><code>&lt;filename&gt;</code> - Backup file name for restoration</li>
+                </ul>
+            </div>
+            
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Permission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin create &lt;region&gt; &lt;id&gt; &lt;price&gt;</div>
+                        </td>
+                        <td>Create an apartment from a WorldGuard region</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin remove &lt;id&gt;</div>
+                        </td>
+                        <td>Remove an apartment</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin set &lt;property&gt; &lt;id&gt; &lt;value&gt;</div>
+                        </td>
+                        <td>Set a property of an apartment (owner, price, level, rate)</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin status &lt;id&gt; &lt;active|inactive&gt;</div>
+                        </td>
+                        <td>Manually set an apartment's status</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin invoice &lt;add|remove&gt; &lt;id&gt; &lt;amount|invoice_id&gt;</div>
+                        </td>
+                        <td>Manage tax invoices for an apartment</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin apartment_list</div>
+                        </td>
+                        <td>List all apartments</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin teleport &lt;id&gt;</div>
+                        </td>
+                        <td>Teleport to any apartment</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin backup &lt;create|list|restore&gt; [filename]</div>
+                        </td>
+                        <td>Manage plugin data backups</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin reload</div>
+                        </td>
+                        <td>Reload the plugin's configuration</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin auction list [filter]</div>
+                        </td>
+                        <td>List all auctions with detailed admin info</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin auction cancel &lt;id&gt;</div>
+                        </td>
+                        <td>Force-cancel any auction and refund bidders</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="command-code" data-tooltip="Click to copy">/apartmentcore admin auction forceend &lt;id&gt;</div>
+                        </td>
+                        <td>Force-end an auction and process the winner</td>
+                        <td><span class="permission-badge">apartmentcore.admin</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+
+<div class="footer-note">
+    <p>
+        <strong>Note:</strong> Command parameters enclosed in <code>&lt;angle brackets&gt;</code> are required, while those in <code>[square brackets]</code> are optional.
+    </p>
+    <p>
+        Do not include the brackets when executing the commands.
+    </p>
+</div>
+
+<script>
+// Hardened interactivity for Google Sites embedding
+(function() {
+    // Robust clipboard copy with fallback for sandboxed iframes
+    function legacyCopy(text) {
+        try {
+            // Preserve UI state to prevent any scroll jumps
+            var prevFocus = document.activeElement;
+            var x = window.pageXOffset || window.scrollX || 0;
+            var y = window.pageYOffset || window.scrollY || 0;
+
+            var ta = document.createElement('textarea');
+            ta.value = text || '';
+            ta.setAttribute('readonly', '');
+            ta.setAttribute('aria-hidden', 'true');
+            // Style to avoid any layout/scroll impact
+            ta.style.position = 'fixed';
+            ta.style.top = '0';
+            ta.style.left = '0';
+            ta.style.width = '1px';
+            ta.style.height = '1px';
+            ta.style.opacity = '0';
+            ta.style.pointerEvents = 'none';
+            ta.style.zIndex = '-1';
+            ta.style.contain = 'strict';
+
+            document.body.appendChild(ta);
+            try { ta.focus({ preventScroll: true }); } catch (e) { try { ta.focus(); } catch (_) {} }
+            ta.select();
+
+            var ok = false;
+            try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+
+            document.body.removeChild(ta);
+
+            // Restore focus and scroll position
+            try {
+                if (prevFocus && typeof prevFocus.focus === 'function') {
+                    try { prevFocus.focus({ preventScroll: true }); } catch (e) { prevFocus.focus(); }
+                }
+            } catch (_) {}
+            try { window.scrollTo(x, y); } catch (_) {}
+
+            return ok ? Promise.resolve() : Promise.reject(new Error('execCommand failed'));
+        } catch (err) {
+            return Promise.reject(err);
+        }
+    }
+
+    function safeCopyText(text) {
+        if (!text) return Promise.reject(new Error('No text to copy'));
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            return navigator.clipboard.writeText(text).catch(function() {
+                return legacyCopy(text);
+            });
+        }
+        return legacyCopy(text);
+    }
+
+    // Click handler for command codes
+    document.addEventListener('click', function(e) {
+        var codeEl = e.target && e.target.closest ? e.target.closest('.command-code') : null;
+        if (codeEl) {
+            e.preventDefault();
+            e.stopPropagation();
+            var text = codeEl.textContent.trim();
+            
+            safeCopyText(text).then(function() {
+                codeEl.classList.add('copied');
+                var originalTooltip = codeEl.getAttribute('data-tooltip');
+                codeEl.setAttribute('data-tooltip', 'Copied!');
+                setTimeout(function() {
+                    codeEl.classList.remove('copied');
+                    codeEl.setAttribute('data-tooltip', originalTooltip);
+                }, 2000);
+            });
+        }
+    }, true);
+
+    // Accessibility support for keyboard
+    document.querySelectorAll('.command-code').forEach(function(el) {
+        el.setAttribute('role', 'button');
+        el.setAttribute('tabindex', '0');
+        
+        el.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                el.click();
+            }
+        });
+    });
+
+    // Side navigation behavior
+    var navContainer = document.querySelector('.nav-list');
+
+    if (navContainer) {
+        // Remove any target attributes that may cause new tab behavior
+        navContainer.querySelectorAll('a').forEach(function(a) {
+            a.removeAttribute('target');
+            a.setAttribute('rel', 'noopener');
+            a.setAttribute('role', 'button');
+        });
+
+        // Delegated smooth scrolling
+        navContainer.addEventListener('click', function(e) {
+            var link = e.target && e.target.closest ? e.target.closest('a') : null;
+            if (!link) return;
+
+            var href = link.getAttribute('href') || '';
+            if (href.charAt(0) === '#') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var id = href.slice(1);
+                var target = document.getElementById(id);
+                if (target) {
+                    try {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } catch (err) {
+                        // Fallback smooth scroll
+                        var start = window.pageYOffset || document.documentElement.scrollTop || 0;
+                        var end = target.getBoundingClientRect().top + start - 10;
+                        var duration = 400, startTime = null;
+                        function step(ts) {
+                            if (!startTime) startTime = ts;
+                            var p = Math.min((ts - startTime) / duration, 1);
+                            var ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+                            window.scrollTo(0, start + (end - start) * ease);
+                            if (p < 1) requestAnimationFrame(step);
+                        }
+                        requestAnimationFrame(step);
+                    }
+
+                    // Update active state
+                    navContainer.querySelectorAll('a').forEach(function(a) { a.classList.remove('active'); });
+                    link.classList.add('active');
+                }
+            }
+        }, true);
+    }
+
+    // Active section highlight on scroll
+    var sections = Array.prototype.slice.call(document.querySelectorAll('.content-section'));
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-list a'));
+
+    function highlightNav() {
+        var current = '';
+        var scrollPos = (window.scrollY || window.pageYOffset || 0) + 120;
+        for (var i = 0; i < sections.length; i++) {
+            var s = sections[i];
+            if (scrollPos >= s.offsetTop) {
+                current = s.id;
+            }
+        }
+        var hasActive = false;
+        navLinks.forEach(function(link) {
+            var href = link.getAttribute('href') || '';
+            var isActive = href.charAt(0) === '#' && href.slice(1) === current;
+            if (isActive) {
+                link.classList.add('active');
+                hasActive = true;
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        // If no section is active, activate the first link
+        if (!hasActive && navLinks.length > 0) {
+            navLinks[0].classList.add('active');
+            navLinks.slice(1).forEach(function(link) { link.classList.remove('active'); });
+        }
+    }
+    window.addEventListener('scroll', highlightNav, { passive: true });
+    // Initial call to set state on page load
+    setTimeout(highlightNav, 100);
+})();
+</script>
+</body>
+</html>

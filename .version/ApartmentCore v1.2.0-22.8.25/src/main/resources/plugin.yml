@@ -1,0 +1,98 @@
+name: ApartmentCore
+version: '1.2.0'
+main: com.aithor.apartmentcorei3.ApartmentCorei3
+api-version: '1.21'
+author: Aithor
+description: Advanced apartment management system for Minecraft
+depend: [Vault, WorldGuard]
+softdepend: [PlaceholderAPI]
+
+commands:
+  apartmentcore:
+    description: Main command for ApartmentCore
+    usage: /<command> [args]
+    aliases: [ac, apartment]
+
+permissions:
+  apartmentcore.use:
+    description: Allow basic use of apartment commands
+    default: true
+
+  apartmentcore.admin:
+    description: Allow use of admin commands
+    default: op
+    children:
+      apartmentcore.admin.create: true
+      apartmentcore.admin.remove: true
+      apartmentcore.admin.set: true
+      apartmentcore.admin.teleport: true
+      apartmentcore.admin.list: true
+      apartmentcore.admin.reload: true
+
+  apartmentcore.buy:
+    description: Allow buying apartments
+    default: true
+
+  apartmentcore.sell:
+    description: Allow selling apartments
+    default: true
+
+  apartmentcore.teleport:
+    description: Allow teleporting to owned apartments
+    default: true
+
+  apartmentcore.rent:
+    description: Allow claiming rent from apartments
+    default: true
+
+  apartmentcore.tax:
+    description: Allow paying taxes for apartments
+    default: true
+
+  apartmentcore.admin.create:
+    description: Allow creating new apartments
+    default: op
+
+  apartmentcore.admin.remove:
+    description: Allow removing apartments
+    default: op
+
+  apartmentcore.admin.set:
+    description: Allow modifying apartment properties
+    default: op
+
+  apartmentcore.admin.teleport:
+    description: Allow teleporting to any apartment
+    default: op
+
+  apartmentcore.admin.list:
+    description: Allow viewing all apartments
+    default: op
+
+  apartmentcore.admin.reload:
+    description: Allow reloading plugin configuration
+    default: op
+
+  apartmentcore.upgrade:
+    description: Allow upgrading apartments
+    default: true
+
+  apartmentcore.list:
+    description: Allow listing apartments
+    default: true
+
+  apartmentcore.confirm:
+    description: Allow confirming actions
+    default: true
+
+  apartmentcore.bypass.tax:
+    description: Bypass tax payments
+    default: false
+
+  apartmentcore.bypass.limit:
+    description: Bypass apartment ownership limits
+    default: false
+
+  apartmentcore.bypass.cooldown:
+    description: Bypass command cooldowns
+    default: false

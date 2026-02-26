@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<!-- 
+  Selamat datang di file kustomisasi PlaceholderAPI untuk ApartmentCore!
+  File ini memungkinkan Anda untuk melihat semua placeholder yang tersedia.
+  Anda dapat mengedit file ini untuk mengubah tampilan dan nuansa halaman.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Judul Halaman -->
+    <title>PlaceholderAPI - ApartmentCore</title>
+    <!-- Google Fonts: Anda bisa mengganti atau menambahkan font di sini -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Styling: Semua gaya untuk halaman ini ada di sini -->
+    <style>
+        /* 
+          -------------------------------------------------------------------
+          PANDUAN KUSTOMISASI CSS
+          -------------------------------------------------------------------
+          Selamat datang di bagian CSS! Di sini Anda dapat mengubah hampir semua aspek visual dari halaman ini.
+          Berikut adalah beberapa properti yang paling umum untuk diubah:
+
+          - `background`: Mengatur latar belakang elemen. Bisa berupa warna solid (`#000000`) atau gradien.
+          - `color`: Mengubah warna teks.
+          - `font-family`: Mengubah jenis font yang digunakan. Pastikan font tersebut diimpor (seperti Google Fonts di atas) atau merupakan font sistem yang umum.
+          - `font-size`: Mengubah ukuran teks.
+          - `padding`: Menambahkan ruang di dalam batas elemen.
+          - `margin`: Menambahkan ruang di luar batas elemen.
+          - `border-radius`: Membuat sudut elemen menjadi lebih bulat.
+          - `box-shadow`: Menambahkan bayangan di sekitar elemen untuk efek kedalaman.
+
+          Setiap kelas CSS di bawah ini diberi komentar untuk menjelaskan bagian mana dari halaman yang diaturnya.
+          Jangan ragu untuk bereksperimen dengan nilai-nilai yang ada!
+        */
+
+        /* Reset dasar untuk semua elemen */
+        * {
+            box-sizing: border-box; /* Memastikan padding dan border termasuk dalam total lebar dan tinggi elemen */
+        }
+
+        /* Pengaturan utama untuk seluruh halaman */
+        html {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* Jenis font utama */
+            line-height: 1.6; /* Jarak antar baris teks */
+            margin: 0; /* Menghapus margin default */
+            padding: 20px; /* Ruang di sekitar konten utama */
+            background: linear-gradient(135deg, #0a0c10 0%, #111316 50%, #1a1d23 100%);
+            color: #e4e6ea; /* Warna teks default */
+            height: 100vh; /* Tetap pada tinggi viewport */
+            overflow-y: auto; /* Scroll vertikal yang terkontrol */
+            overflow-x: hidden; /* Mencegah scroll horizontal */
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* Luxury background effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 217, 102, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(244, 208, 63, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255, 217, 102, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Floating particles effect */
+        .particle {
+            position: absolute;
+            background: rgba(255, 217, 102, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header Halaman Utama (Judul Besar) */
+        .page-header {
+            text-align: center; /* Teks di tengah */
+            margin-bottom: 30px; /* Jarak bawah dari header dikurangi */
+            padding: 30px 0; /* Ruang vertikal di dalam header dikurangi */
+        }
+
+        .page-header h1 {
+            color: #ffffff; /* Warna dasar teks judul */
+            font-size: 3rem; /* Ukuran font judul */
+            font-weight: 700; /* Ketebalan font */
+            margin-bottom: 16px;
+            /* Trik CSS untuk membuat teks memiliki latar belakang gradien */
+            background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+            -webkit-background-clip: text; /* Memotong latar belakang ke bentuk teks (untuk browser Webkit) */
+            -webkit-text-fill-color: transparent; /* Membuat warna teks transparan agar gradien terlihat */
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(255, 217, 102, 0.3); /* Bayangan teks untuk efek cahaya */
+        }
+
+        .page-header p {
+            color: #9ca3af; /* Warna teks subjudul */
+            font-size: 1.2rem;
+        }
+
+        /* Gaya untuk teks `code` di header */
+        .page-header code {
+            background: rgba(255, 217, 102, 0.1); /* Latar belakang semi-transparan */
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: #ffd966; /* Warna teks kode */
+            border: 1px solid rgba(255, 217, 102, 0.2);
+            font-weight: 500;
+        }
+
+        /* Navigation Breadcrumb */
+        .breadcrumb {
+            max-width: 1400px;
+            margin: 0 auto 40px;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #ffd966;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: #f4d03f;
+            text-shadow: 0 0 10px rgba(255, 217, 102, 0.5);
+        }
+
+        .breadcrumb span {
+            color: #6b7280;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 32px;
+            align-items: start;
+            max-height: calc(100vh - 140px); /* Batas tinggi untuk Google Sites */
+            overflow: visible;
+        }
+
+        /* Side Navigation */
+        .side-nav {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+        }
+
+        .nav-title {
+            color: #ffd966;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-list li {
+            margin-bottom: 8px;
+        }
+
+        .nav-list a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #e4e6ea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-list a:hover {
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.1) 0%, rgba(244, 208, 63, 0.1) 100%);
+            color: #ffd966;
+            transform: translateX(4px);
+        }
+
+        .nav-list a.active {
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.15) 0%, rgba(244, 208, 63, 0.15) 100%);
+            color: #ffd966;
+            border-left: 3px solid #ffd966;
+        }
+
+        .nav-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ffd966;
+            opacity: 0.6;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            max-height: calc(100vh - 200px); /* Batas tinggi untuk mencegah overflow */
+            overflow-y: auto;
+        }
+
+        /* Hindari bagian target tertutup saat smooth scroll */
+        .table-section {
+            scroll-margin-top: 90px;
+        }
+
+        /* Kontainer utama untuk setiap tabel placeholder (kartu) */
+        .table-section {
+            width: 100%;
+            max-width: 1400px; /* Lebar maksimum kontainer */
+            margin: 40px auto; /* Posisi di tengah dengan jarak vertikal */
+            background: rgba(255, 255, 255, 0.02); /* Latar belakang sangat transparan untuk efek kaca */
+            backdrop-filter: blur(20px); /* Efek blur pada elemen di belakangnya */
+            border: 1px solid rgba(255, 217, 102, 0.1); /* Garis tepi tipis */
+            border-radius: 24px; /* Sudut yang sangat bulat */
+            overflow: hidden; /* Memastikan konten di dalamnya tidak keluar dari sudut bulat */
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4), /* Bayangan utama untuk kedalaman */
+                0 0 0 1px rgba(255, 217, 102, 0.05), /* Garis tepi tipis sebagai highlight */
+                inset 0 1px 0 rgba(255, 255, 255, 0.05); /* Highlight di bagian dalam atas */
+        }
+
+        /* Header untuk setiap seksi tabel */
+        .section-header {
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.15) 0%, rgba(244, 208, 63, 0.15) 100%);
+            padding: 28px 32px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.4rem;
+            border-bottom: 1px solid rgba(255, 217, 102, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 16px; /* Jarak antara ikon/badge dan teks */
+        }
+
+        /* Area deskripsi di bawah header seksi */
+        .section-description {
+            padding: 24px 32px;
+            background: rgba(0, 0, 0, 0.2);
+            color: #9ca3af;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(255, 217, 102, 0.05);
+            line-height: 1.7;
+        }
+
+        .section-description code {
+            background: rgba(255, 217, 102, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: #ffd966;
+            font-weight: 500;
+            border: 1px solid rgba(255, 217, 102, 0.2);
+        }
+
+        /* Pengaturan dasar untuk tabel */
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse; /* Menghilangkan jarak antar sel tabel */
+            font-family: 'Outfit', sans-serif; /* Font khusus untuk tabel agar lebih rapi */
+            background: transparent;
+        }
+
+        /* Header kolom tabel (th) */
+        .modern-table thead th {
+            background: linear-gradient(135deg, #1a1d23 0%, #111316 100%);
+            color: #ffd966; /* Warna teks header tabel */
+            padding: 20px 24px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase; /* Teks menjadi huruf kapital */
+            letter-spacing: 1px; /* Jarak antar huruf */
+            border: none;
+            border-bottom: 2px solid rgba(255, 217, 102, 0.2);
+            position: sticky; /* Membuat header tabel tetap di atas saat scroll */
+            top: 0;
+            z-index: 10;
+        }
+
+        /* Baris pada body tabel (tr) */
+        .modern-table tbody tr {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi transisi saat hover */
+            border-bottom: 1px solid rgba(255, 217, 102, 0.05);
+            background: transparent;
+        }
+
+        /* Baris genap pada tabel untuk efek belang */
+        .modern-table tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        /* Efek saat cursor mouse di atas baris tabel */
+        .modern-table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.08) 0%, rgba(244, 208, 63, 0.08) 100%);
+            transform: translateY(-1px); /* Sedikit terangkat ke atas */
+            box-shadow: 0 8px 25px rgba(255, 217, 102, 0.1);
+            border-left: 4px solid #ffd966; /* Garis kuning di kiri saat hover */
+        }
+
+        /* Sel pada body tabel (td) */
+        .modern-table tbody td {
+            padding: 20px 24px;
+            color: #e4e6ea;
+            font-size: 14px;
+            line-height: 1.6;
+            vertical-align: top; /* Konten sel mulai dari atas */
+            font-weight: 400;
+        }
+
+        /* Gaya untuk blok kode placeholder yang bisa diklik */
+        .placeholder-code {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-family: 'Outfit', monospace; /* Font monospace untuk kode */
+            font-size: 13px;
+            color: #ffd966;
+            border: 1px solid rgba(255, 217, 102, 0.2);
+            word-break: break-all; /* Memastikan teks panjang tidak keluar dari kotak */
+            position: relative; /* Untuk menempatkan tooltip di dalamnya */
+            display: inline-block; /* Agar ukuran sesuai dengan konten */
+            transition: all 0.3s ease;
+            cursor: pointer; /* Mengubah cursor menjadi tangan saat di atasnya */
+            user-select: all; /* Memudahkan seleksi teks */
+        }
+
+        /* Efek hover pada blok kode placeholder */
+        .placeholder-code:hover {
+            background: rgba(255, 217, 102, 0.1);
+            border-color: #ffd966;
+            box-shadow: 0 4px 12px rgba(255, 217, 102, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Tooltip "Click to copy" yang muncul saat hover */
+        .placeholder-code::after {
+            content: 'Click to copy'; /* Teks tooltip */
+            position: absolute;
+            top: -30px; /* Posisi di atas elemen */
+            left: 50%;
+            transform: translateX(-50%); /* Posisi di tengah */
+            background: #111316;
+            color: #ffd966;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            opacity: 0; /* Sembunyi secara default */
+            pointer-events: none; /* Tidak bisa di-klik */
+            transition: opacity 0.3s ease; /* Animasi fade-in */
+            white-space: nowrap; /* Mencegah teks turun baris */
+            z-index: 1000;
+        }
+
+        /* Menampilkan tooltip saat hover */
+        .placeholder-code:hover::after {
+            opacity: 1;
+        }
+
+        /* Badge untuk kategori (Player, Apartment, Statistic) */
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 25px; /* Bentuk pil */
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efek kilatan cahaya pada badge saat hover */
+        .category-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .category-badge:hover::before {
+            left: 100%;
+        }
+
+        /* Warna spesifik untuk badge Player */
+        .badge-player {
+            background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+            color: #111316;
+            box-shadow: 0 4px 15px rgba(255, 217, 102, 0.3);
+        }
+
+        /* Warna spesifik untuk badge Apartment */
+        .badge-apartment {
+            background: linear-gradient(135deg, #111316 0%, #1a1d23 100%);
+            color: #ffd966;
+            border: 1px solid rgba(255, 217, 102, 0.3);
+        }
+
+        /* Warna spesifik untuk badge Statistic */
+        .badge-statistic {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+            color: #e4e6ea;
+            border: 1px solid rgba(255, 217, 102, 0.2);
+        }
+
+        /* Gaya untuk label tipe output (Number, Currency, etc) */
+        .output-type {
+            background: rgba(255, 217, 102, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #ffd966;
+            border: 1px solid rgba(255, 217, 102, 0.2);
+            display: inline-block;
+        }
+
+        /* Gaya untuk teks deskripsi di dalam tabel */
+        .description-text {
+            color: #d1d5db;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* Kustomisasi scrollbar (hanya untuk browser Webkit seperti Chrome/Safari) */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2); /* Latar belakang track scrollbar */
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%); /* Warna thumb scrollbar */
+            border-radius: 6px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #f4d03f 0%, #ffd966 100%); /* Warna saat hover */
+        }
+
+        /* ------------------------------------------------------------------- */
+        /* KUSTOMISASI LEBAR KOLOM (OPSIONAL)                                  */
+        /* ------------------------------------------------------------------- */
+        /* Secara default, lebar kolom diatur otomatis oleh browser. */
+        /* Jika Anda ingin mengaturnya secara manual, sesuaikan nilai persentasenya di bawah. */
+        /* Pastikan totalnya 100% agar pas. */
+        /* - nth-child(1): Kolom pertama (Placeholder/Stat Name) */
+        /* - nth-child(2): Kolom kedua (Description) */
+        /* - nth-child(3): Kolom ketiga (Output Type) */
+
+        .modern-table th:nth-child(1), .modern-table td:nth-child(1) { width: 40%; }
+        .modern-table th:nth-child(2), .modern-table td:nth-child(2) { width: 40%; }
+        .modern-table th:nth-child(3), .modern-table td:nth-child(3) { width: 20%; }
+
+        /* ------------------------------------------------------------------- */
+        /* DESAIN RESPONSIVE (MEDIA QUERIES)                                   */
+        /* ------------------------------------------------------------------- */
+        /* Penyesuaian untuk layar yang lebih kecil */
+
+        @media (max-width: 1024px) {
+            .content-container {
+                grid-template-columns: 1fr;
+            }
+
+            .side-nav {
+                position: static;
+                margin-bottom: 32px;
+            }
+
+            .nav-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 8px;
+            }
+        }
+
+        /* Untuk tablet dan layar desktop kecil */
+        @media (max-width: 1200px) {
+            .table-section {
+                margin: 30px 20px;
+            }
+        }
+
+        /* Untuk tablet potret dan mobile besar */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .table-section {
+                margin: 20px 10px;
+            }
+            
+            .modern-table thead th,
+            .modern-table tbody td {
+                padding: 16px 20px;
+            }
+            
+            .section-header {
+                font-size: 1.2rem;
+                padding: 24px 28px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .section-description {
+                padding: 20px 28px;
+            }
+        }
+
+        /* Untuk smartphone */
+        @media (max-width: 480px) {
+            .modern-table {
+                font-size: 13px;
+            }
+            
+            .modern-table thead th,
+            .modern-table tbody td {
+                padding: 12px 16px;
+            }
+            
+            .placeholder-code {
+                font-size: 11px;
+                padding: 10px 12px;
+            }
+            
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* ------------------------------------------------------------------- */
+        /* STATUS INTERAKTIF                                                   */
+        /* ------------------------------------------------------------------- */
+
+        /* Gaya saat placeholder berhasil disalin */
+        .placeholder-code.copied {
+            background: rgba(34, 197, 94, 0.2) !important; /* Warna hijau sebagai feedback */
+            border-color: #22c55e !important;
+            color: #22c55e !important;
+        }
+
+        /* Mengubah tooltip menjadi "Copied!" */
+        .placeholder-code.copied::after {
+            content: 'Copied!' !important;
+            opacity: 1 !important;
+            background: #22c55e !important;
+            color: #ffffff !important;
+        }
+
+        /* Gaya untuk catatan kaki di bagian bawah halaman */
+        .footer-note {
+            text-align: center;
+            padding: 40px 30px;
+            color: #9ca3af;
+            background: rgba(0, 0, 0, 0.2);
+            margin: 30px auto 20px;
+            border-radius: 16px;
+            max-width: 1000px;
+            border: 1px solid rgba(255, 217, 102, 0.1);
+        }
+
+        .footer-note p {
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .footer-note strong {
+            color: #ffd966;
+            font-weight: 600;
+        }
+
+        .footer-note code {
+            background: rgba(255, 217, 102, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: #ffd966;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<!-- Floating particles -->
+<div class="particle" style="left: 10%; width: 3px; height: 3px; animation-delay: 0s;"></div>
+<div class="particle" style="left: 20%; width: 2px; height: 2px; animation-delay: 2s;"></div>
+<div class="particle" style="left: 30%; width: 4px; height: 4px; animation-delay: 4s;"></div>
+<div class="particle" style="left: 40%; width: 2px; height: 2px; animation-delay: 6s;"></div>
+<div class="particle" style="left: 50%; width: 3px; height: 3px; animation-delay: 8s;"></div>
+<div class="particle" style="left: 60%; width: 2px; height: 2px; animation-delay: 10s;"></div>
+<div class="particle" style="left: 70%; width: 4px; height: 4px; animation-delay: 12s;"></div>
+<div class="particle" style="left: 80%; width: 3px; height: 3px; animation-delay: 14s;"></div>
+<div class="particle" style="left: 90%; width: 2px; height: 2px; animation-delay: 16s;"></div>
+
+    <!-- =============================================================================== -->
+    <!-- HEADER UTAMA                                                                    -->
+    <!-- Ganti judul dan deskripsi plugin di sini.                                       -->
+    <!-- =============================================================================== -->
+    <div class="page-header">
+        <h1>PlaceholderAPI - ApartmentCore</h1>
+        <p>Documented by Aithor</p>
+        <p>Identifier: <code>apartmentcore</code> • Version: 1.3.2</p>
+    </div>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb">
+        <a href="https://sites.google.com/view/apartment-core/homepage">Wiki Home</a>
+        <span>›</span>
+        <span style="color: #e4e6ea;">PlaceholderAPI</span>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="content-container">
+        <!-- Side Navigation -->
+        <nav class="side-nav">
+            <div class="nav-title">On This Page</div>
+            <ul class="nav-list">
+                <li><a href="#player" class="active"><span class="nav-dot"></span>Player</a></li>
+                <li><a href="#apartment"><span class="nav-dot"></span>Apartment</a></li>
+                <li><a href="#statistic"><span class="nav-dot"></span>Statistic</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- =============================================================================== -->
+            <!-- SEKSI PLACEHOLDER PLAYER                                                        -->
+            <!-- Placeholder yang berhubungan dengan data umum seorang pemain.                   -->
+            <!-- Anda bisa menambah baris (<tr>...</tr>) baru jika ada placeholder baru.         -->
+            <!-- =============================================================================== -->
+            <div class="table-section" id="player">
+                <div class="section-header">
+                    <span class="category-badge badge-player">Player</span>
+                    Player-Specific Placeholders
+                </div>
+                <div class="section-description">
+                    These placeholders provide information about specific players and their apartment ownership.
+                </div>
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Placeholder</th>
+                            <th>Description</th>
+                            <th>Output Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Contoh baris placeholder -->
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_owned_count%</div>
+                            </td>
+                            <td class="description-text">Returns the number of apartments owned by the player</td>
+                            <td><span class="output-type">Number</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_total_income%</div>
+                            </td>
+                            <td class="description-text">Returns total pending income from all apartments owned by the player</td>
+                            <td><span class="output-type">Currency Format</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_<apartment_id>_shop_total_investment%</div>
+                            </td>
+                            <td class="description-text">Total money spent on shop items for this apartment</td>
+                            <td><span class="output-type">Currency Format</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_<apartment_id>_shop_income_bonus%</div>
+                            </td>
+                            <td class="description-text">Total income bonus percentage from shop upgrades</td>
+                            <td><span class="output-type">Percentage</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_<apartment_id>_shop_base_income%</div>
+                            </td>
+                            <td class="description-text">Total flat income bonus from shop upgrades</td>
+                            <td><span class="output-type">Currency Format</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_<apartment_id>_shop_tax_reduction%</div>
+                            </td>
+                            <td class="description-text">Total tax reduction percentage from shop upgrades</td>
+                            <td><span class="output-type">Percentage</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_<apartment_id>_shop_income_speed%</div>
+                            </td>
+                            <td class="description-text">Income speed bonus (tick reduction) from shop upgrades</td>
+                            <td><span class="output-type">Number</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_<apartment_id>_shop_max_messages%</div>
+                            </td>
+                            <td class="description-text">Extra guestbook messages from shop upgrades</td>
+                            <td><span class="output-type">Number</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_<apartment_id>_shop_<item>_tier%</div>
+                            </td>
+                            <td class="description-text">Tier level of specific shop item (premium_kitchen, luxury_furniture, etc.)</td>
+                            <td><span class="output-type">Number / 0</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_<apartment_id>_shop_<item>_value%</div>
+                            </td>
+                            <td class="description-text">Buff value of specific shop item</td>
+                            <td><span class="output-type">Number / Currency / Percentage</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- =============================================================================== -->
+            <!-- SEKSI PLACEHOLDER APARTEMEN                                                     -->
+            <!-- Placeholder yang berhubungan dengan data spesifik sebuah apartemen.             -->
+            <!-- Ganti `<apartment_id>` dengan ID apartemen yang sebenarnya.                     -->
+            <!-- =============================================================================== -->
+            <div class="table-section" id="apartment">
+                <div class="section-header">
+                    <span class="category-badge badge-apartment">Apartment</span>
+                    Apartment-Specific Placeholders
+                </div>
+                <div class="section-description">
+                    Placeholders provide information about specific apartments attribute. Remember to replace <code>&lt;apartment_id&gt;</code> with a real apartment ID.
+                </div>
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Placeholder</th>
+                            <th>Description</th>
+                            <th>Output Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_owner%</div>
+                            </td>
+                            <td class="description-text">Name of the apartment Owner</td>
+                            <td><span class="output-type">Player Name / "For Sale"</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_displayname%</div>
+                            </td>
+                            <td class="description-text">Display name of the apartment</td>
+                            <td><span class="output-type">Text String</span></td>
+                        </tr>
+                        <!-- Tambahkan baris lain di sini sesuai dengan placeholder yang ada -->
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_price%</div>
+                            </td>
+                            <td class="description-text">Price of the apartment</td>
+                            <td><span class="output-type">Currency Format</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_tax%</div>
+                            </td>
+                            <td class="description-text">Legacy base tax amount for the apartment (invoice-based billing is reflected via <code>tax_status</code> and <code>next_invoice_in</code>)</td>
+                            <td><span class="output-type">Currency Format</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_level%</div>
+                            </td>
+                            <td class="description-text">Level/tier of the apartment</td>
+                            <td><span class="output-type">Number</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_income%</div>
+                            </td>
+                            <td class="description-text">Pending income for the apartment</td>
+                            <td><span class="output-type">Currency Format</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_status%</div>
+                            </td>
+                            <td class="description-text">Status of the apartment</td>
+                            <td><span class="output-type">Active / Inactive</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_rating%</div>
+                            </td>
+                            <td class="description-text">Average rating of the apartment (1 decimal)</td>
+                            <td><span class="output-type">Number / "N/A"</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_welcome%</div>
+                            </td>
+                            <td class="description-text">Welcome message for the apartment</td>
+                            <td><span class="output-type">Text String</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_tax_status%</div>
+                            </td>
+                            <td class="description-text">Tax status of the apartment</td>
+                            <td><span class="output-type">ACTIVE | OVERDUE | INACTIVE | REPOSSESSION | For Sale</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_income_in%</div>
+                            </td>
+                            <td class="description-text">Time until next income generation; returns N/A when not owned or inactive</td>
+                            <td><span class="output-type">Time Format / Now / N/A</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="placeholder-code">%apartmentcore_&lt;apartment_id&gt;_next_invoice_in%</div>
+                            </td>
+                            <td class="description-text">Time until next invoice; returns N/A when not owned</td>
+                            <td><span class="output-type">Time Format / N/A</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- =============================================================================== -->
+            <!-- SEKSI PLACEHOLDER STATISTIK                                                     -->
+            <!-- Placeholder untuk statistik spesifik per apartemen.                             -->
+            <!-- =============================================================================== -->
+            <div class="table-section" id="statistic">
+                <div class="section-header">
+                    <span class="category-badge badge-statistic">Statistic</span>
+                    Statistic Placeholders
+                </div>
+                <div class="section-description">
+                    Format: <code>%apartmentcore_statistic_&lt;apartment_id&gt;_&lt;stat_name&gt;%</code><br>
+                </div>
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Stat Name</th>
+                            <th>Description</th>
+                            <th>Output Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code style="color: #ffd966; background: rgba(255,217,102,0.1); padding: 4px 8px; border-radius: 4px;">total_tax_paid</code></td>
+                            <td class="description-text">Total tax paid for the apartment</td>
+                            <td><span class="output-type">Currency Format</span></td>
+                        </tr>
+                        <tr>
+                            <td><code style="color: #ffd966; background: rgba(255,217,102,0.1); padding: 4px 8px; border-radius: 4px;">total_income_generated</code></td>
+                            <td class="description-text">Total income generated for the apartment</td>
+                            <td><span class="output-type">Currency Format</span></td>
+                        </tr>
+                        <tr>
+                            <td><code style="color: #ffd966; background: rgba(255,217,102,0.1); padding: 4px 8px; border-radius: 4px;">ownership_age_days</code></td>
+                            <td class="description-text">Number of days since apartment ownership began</td>
+                            <td><span class="output-type">Number (Days)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- =============================================================================== -->
+    <!-- CATATAN KAKI                                                                    -->
+    <!-- Informasi tambahan atau catatan penting.                                        -->
+    <!-- =============================================================================== -->
+    <div class="footer-note">
+        <p><strong>Note:</strong> If a placeholder is invalid or data is unavailable, it may return fallbacks such as "N/A", "Invalid Placeholder", "Unknown Statistic", "For Sale", or "0".</p>
+        <p>Make sure to replace <code>&lt;apartment_id&gt;</code> with the actual apartment ID when using placeholders.</p>
+        <p>All currency values are formatted according to the server's economy plugin configuration.</p>
+    </div>
+
+    <!-- =============================================================================== -->
+    <!-- SCRIPT JAVASCRIPT                                                               -->
+    <!-- Fungsionalitas halaman seperti copy-to-clipboard.                             -->
+    <!-- Anda bisa menambahkan script kustom di sini.                                   -->
+    <!-- =============================================================================== -->
+    <script>
+        // Menunggu hingga seluruh konten halaman (DOM) selesai dimuat sebelum menjalankan script.
+        document.addEventListener('DOMContentLoaded', function() {
+            // Memilih semua elemen yang memiliki kelas .placeholder-code
+            const placeholderCodes = document.querySelectorAll('.placeholder-code');
+            
+            // Fungsi fallback untuk menyalin teks jika API modern (navigator.clipboard) gagal atau tidak tersedia.
+            // Ini memastikan fungsionalitas tetap berjalan di browser lama atau lingkungan terbatas (seperti beberapa iframe).
+            function fallbackCopyTextToClipboard(text, element, event) {
+                // Menyimpan state (elemen aktif, seleksi teks, posisi scroll) untuk mencegah pergeseran halaman yang tidak diinginkan.
+                const activeEl = document.activeElement;
+                const selection = window.getSelection ? window.getSelection() : null;
+                const prevRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+                const scrollX = window.pageXOffset || document.documentElement.scrollLeft || 0;
+                const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+                // Membuat elemen <textarea> sementara untuk menampung teks yang akan disalin.
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+
+                // Menerapkan berbagai gaya untuk membuat textarea tidak terlihat dan tidak memengaruhi layout halaman.
+                textArea.setAttribute('readonly', '');
+                textArea.setAttribute('aria-hidden', 'true');
+                textArea.style.position = 'fixed';
+                textArea.style.top = '0';
+                textArea.style.left = '0';
+                textArea.style.opacity = '0';
+                textArea.style.pointerEvents = 'none';
+
+                // Menambahkan textarea ke dalam body.
+                document.body.appendChild(textArea);
+
+                try {
+                    // Memberi fokus dan memilih teks di dalam textarea.
+                    textArea.focus({ preventScroll: true }); // `preventScroll` mencegah halaman melompat ke atas.
+                    textArea.select();
+
+                    // Menjalankan perintah 'copy' dari browser.
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        // Jika berhasil, tambahkan kelas 'copied' untuk memberikan feedback visual.
+                        element.classList.add('copied');
+                        setTimeout(() => {
+                            element.classList.remove('copied');
+                        }, 2000);
+                    }
+                } catch (err) {
+                    console.error('Gagal menyalin dengan metode fallback: ', err);
+                } finally {
+                    // Membersihkan dengan menghapus textarea dari body.
+                    document.body.removeChild(textArea);
+
+                    // Mengembalikan fokus dan seleksi ke keadaan semula untuk menjaga pengalaman pengguna.
+                    if (selection) {
+                        selection.removeAllRanges();
+                        if (prevRange) {
+                            selection.addRange(prevRange);
+                        }
+                    }
+                    if (activeEl && typeof activeEl.focus === 'function') {
+                        activeEl.focus({ preventScroll: true });
+                    }
+                    // Mengembalikan posisi scroll ke semula.
+                    window.scrollTo(scrollX, scrollY);
+                }
+            }
+
+            // Menambahkan event listener 'click' ke setiap elemen kode placeholder.
+            placeholderCodes.forEach(code => {
+                code.addEventListener('click', function(event) {
+                    event.preventDefault(); // Mencegah perilaku default (misalnya, jika kode ada di dalam link).
+                    event.stopPropagation(); // Menghentikan event agar tidak menyebar ke elemen induk.
+                    const textToCopy = this.textContent.trim(); // Mengambil teks dari elemen dan menghapus spasi ekstra.
+                    const element = this;
+
+                    // Memeriksa apakah API Clipboard modern tersedia.
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(textToCopy).then(() => {
+                            // Jika berhasil, berikan feedback visual.
+                            element.classList.add('copied');
+                            setTimeout(() => {
+                                element.classList.remove('copied');
+                            }, 2000); // Hapus feedback setelah 2 detik.
+                        }).catch(err => {
+                            // Jika API modern gagal, gunakan fungsi fallback.
+                            console.warn('API Clipboard gagal, mencoba fallback...', err);
+                            fallbackCopyTextToClipboard(textToCopy, element, event);
+                        });
+                    } else {
+                        // Jika API modern tidak ada, langsung gunakan fallback.
+                        fallbackCopyTextToClipboard(textToCopy, element, event);
+                    }
+                });
+            });
+
+            // Prepare and harden side navigation behavior
+            var navContainer = document.querySelector('.nav-list');
+
+            if (navContainer) {
+                // Remove any target attributes that may cause new tab behavior
+                navContainer.querySelectorAll('a').forEach(function(a) {
+                    a.removeAttribute('target');
+                    a.setAttribute('rel', 'noopener');
+                    a.setAttribute('role', 'button');
+                });
+
+                // Delegated smooth scrolling to prevent default navigation/new tab
+                navContainer.addEventListener('click', function(e) {
+                    var link = e.target && e.target.closest ? e.target.closest('a') : null;
+                    if (!link) return;
+
+                    var href = link.getAttribute('href') || '';
+                    if (href.charAt(0) === '#') {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        var id = href.slice(1);
+                        var target = document.getElementById(id);
+                        if (target) {
+                            try {
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            } catch (err) {
+                                // Fallback smooth scroll
+                                var start = window.pageYOffset || document.documentElement.scrollTop || 0;
+                                var end = target.getBoundingClientRect().top + start - 10;
+                                var duration = 400, startTime = null;
+                                function step(ts) {
+                                    if (!startTime) startTime = ts;
+                                    var p = Math.min((ts - startTime) / duration, 1);
+                                    var ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+                                    window.scrollTo(0, start + (end - start) * ease);
+                                    if (p < 1) requestAnimationFrame(step);
+                                }
+                                requestAnimationFrame(step);
+                            }
+
+                            // Update active state
+                            navContainer.querySelectorAll('a').forEach(function(a) { a.classList.remove('active'); });
+                            link.classList.add('active');
+                        }
+                    }
+                }, true); // capture to cancel host default
+            }
+
+            // Active section highlight on scroll
+            var sections = Array.prototype.slice.call(document.querySelectorAll('.table-section'));
+            var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-list a'));
+
+            function highlightNav() {
+                var current = '';
+                var scrollY = window.scrollY || window.pageYOffset || 0;
+                
+                for (var i = 0; i < sections.length; i++) {
+                    var s = sections[i];
+                    if (scrollY >= (s.offsetTop - 100)) {
+                        current = s.id;
+                    }
+                }
+                
+                navLinks.forEach(function(link) {
+                    var href = link.getAttribute('href') || '';
+                    var isActive = href.charAt(0) === '#' && href.slice(1) === current;
+                    if (isActive) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', highlightNav, { passive: true });
+            highlightNav(); // Initial call
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Changelog - ApartmentCore Wiki</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #0a0c10 0%, #111316 50%, #1a1d23 100%);
+        color: #e4e6ea;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Luxury background effects */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(255, 217, 102, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(244, 208, 63, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 40% 60%, rgba(255, 217, 102, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Floating particles effect */
+    .particle {
+        position: absolute;
+        background: rgba(255, 217, 102, 0.4);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100px) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    /* Header Utama */
+    .page-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding: 40px 0;
+        position: relative;
+    }
+
+    .page-header h1 {
+        color: #ffffff;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 4px 20px rgba(255, 217, 102, 0.3);
+        position: relative;
+    }
+
+    .page-header h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+        border-radius: 2px;
+        box-shadow: 0 0 20px rgba(255, 217, 102, 0.5);
+    }
+
+    .page-header p {
+        color: #9ca3af;
+        font-size: 1.2rem;
+        margin-top: 30px;
+    }
+
+    .current-version {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 20px;
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.2) 100%);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-radius: 30px;
+        margin-top: 20px;
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
+    }
+
+    .current-version span {
+        color: #22c55e;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Navigation Breadcrumb */
+    .breadcrumb {
+        max-width: 1400px;
+        margin: 0 auto 40px;
+        padding: 16px 24px;
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 217, 102, 0.1);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .breadcrumb a {
+        color: #ffd966;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #f4d03f;
+        text-shadow: 0 0 10px rgba(255, 217, 102, 0.5);
+    }
+
+    .breadcrumb span {
+        color: #6b7280;
+    }
+
+    /* Content Container */
+    .content-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    /* Side Navigation */
+    .side-nav {
+        position: sticky;
+        top: 20px;
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 217, 102, 0.1);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 12px 25px rgba(0,0,0,0.35), 0 0 50px rgba(255, 217, 102, 0.05);
+    }
+
+    .nav-title {
+        color: #ffd966;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+        letter-spacing: 0.5px;
+    }
+
+    .nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-list li {
+        margin-bottom: 8px;
+    }
+
+    .nav-list a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        color: #e4e6ea;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-list a::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 217, 102, 0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    .nav-list a:hover::before {
+        left: 100%;
+    }
+
+    .nav-list a:hover {
+        background: linear-gradient(135deg, rgba(255, 217, 102, 0.1) 0%, rgba(244, 208, 63, 0.1) 100%);
+        color: #ffd966;
+        transform: translateX(4px);
+        box-shadow: 0 4px 15px rgba(255, 217, 102, 0.2);
+    }
+
+    .nav-list a.active {
+        background: linear-gradient(135deg, rgba(255, 217, 102, 0.15) 0%, rgba(244, 208, 63, 0.15) 100%);
+        color: #ffd966;
+        border-left: 3px solid #ffd966;
+        box-shadow: 0 4px 15px rgba(255, 217, 102, 0.2);
+    }
+
+    .version-badge {
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 8px;
+        background: rgba(255, 217, 102, 0.1);
+        color: #ffd966;
+        font-weight: 600;
+    }
+
+    /* Main Content */
+    .main-content {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 217, 102, 0.1);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 80px rgba(255, 217, 102, 0.05);
+    }
+
+    /* Version Section */
+    .version-section {
+        padding: 32px;
+        border-bottom: 1px solid rgba(255, 217, 102, 0.05);
+        scroll-margin-top: 20px;
+        position: relative;
+    }
+
+    .version-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 217, 102, 0.3), transparent);
+    }
+
+    .version-section:last-child {
+        border-bottom: none;
+    }
+
+    .version-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.3s ease;
+        padding: 8px;
+        margin: -8px;
+        border-radius: 12px;
+    }
+
+    .version-header:hover {
+        background: rgba(255, 217, 102, 0.02);
+    }
+
+    /* Collapse/Expand Button */
+    .version-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, rgba(255, 217, 102, 0.1) 0%, rgba(244, 208, 63, 0.1) 100%);
+        border: 1px solid rgba(255, 217, 102, 0.3);
+        border-radius: 12px;
+        color: #ffd966;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 217, 102, 0.1);
+    }
+
+    .version-toggle:hover {
+        background: linear-gradient(135deg, rgba(255, 217, 102, 0.2) 0%, rgba(244, 208, 63, 0.2) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 217, 102, 0.2);
+    }
+
+    .version-toggle-icon {
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+    }
+
+    .version-section.collapsed .version-toggle-icon {
+        transform: rotate(180deg);
+    }
+
+    .version-toggle-text {
+        font-size: 11px;
+    }
+
+    /* Version Content */
+    .version-content {
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .version-section.collapsed .version-content {
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-20px);
+        margin-bottom: 0;
+        pointer-events: none;
+    }
+
+    .version-section:not(.collapsed) .version-content {
+        animation: slideDown 0.5s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Collapsed state indicator */
+    .version-section.collapsed {
+        padding-bottom: 24px;
+    }
+
+    .version-section.collapsed .version-header {
+        margin-bottom: 0;
+    }
+
+    /* Header Left Side */
+    .version-header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1;
+    }
+
+    .version-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .version-title h2 {
+        color: #ffd966;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+    }
+
+    .version-type {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .version-type.major {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1);
+    }
+
+    .version-type.feature {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+    }
+
+    .version-type.patch {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.2) 100%);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.1);
+    }
+
+    .version-type.update {
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
+        color: #a855f7;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        box-shadow: 0 4px 15px rgba(168, 85, 247, 0.1);
+    }
+
+    .release-date {
+        color: #9ca3af;
+        font-size: 14px;
+    }
+
+    /* Change Categories */
+    .change-category {
+        margin-bottom: 32px;
+    }
+
+    .category-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.01);
+        border-radius: 12px;
+        border-left: 3px solid;
+    }
+
+    .category-header.added {
+        border-color: #22c55e;
+    }
+
+    .category-header.fixed {
+        border-color: #ef4444;
+    }
+
+    .category-header.improved {
+        border-color: #3b82f6;
+    }
+
+    .category-header.enhanced {
+        border-color: #a855f7;
+    }
+
+    .category-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .category-icon.added {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+    }
+
+    .category-icon.fixed {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .category-icon.improved {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .category-icon.enhanced {
+        background: rgba(168, 85, 247, 0.2);
+        color: #a855f7;
+    }
+
+    .category-title {
+        color: #ffd966;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-shadow: 0 0 10px rgba(255, 217, 102, 0.2);
+    }
+
+    /* Change Items */
+    .change-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 0 40px;
+    }
+
+    .change-item {
+        margin-bottom: 16px;
+        color: #d1d5db;
+        line-height: 1.7;
+        position: relative;
+        padding-left: 24px;
+    }
+
+    .change-item::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: #ffd966;
+        font-weight: 700;
+    }
+
+    .change-item strong {
+        color: #ffd966;
+        font-weight: 600;
+    }
+
+    .sub-item {
+        margin-left: 24px;
+        margin-top: 8px;
+        color: #9ca3af;
+        font-size: 14px;
+        list-style: none;
+    }
+
+    .sub-item::before {
+        content: '→';
+        margin-right: 8px;
+        color: #6b7280;
+    }
+
+    /* Code Inline */
+    code {
+        background: rgba(255, 217, 102, 0.1);
+        padding: 3px 8px;
+        border-radius: 6px;
+        color: #ffd966;
+        font-family: 'Outfit', monospace;
+        font-size: 13px;
+        border: 1px solid rgba(255, 217, 102, 0.2);
+    }
+
+    /* Overview Box */
+    .overview-box {
+        background: linear-gradient(135deg, rgba(255, 217, 102, 0.05) 0%, rgba(244, 208, 63, 0.05) 100%);
+        border: 1px solid rgba(255, 217, 102, 0.2);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 32px;
+        box-shadow: 0 8px 25px rgba(255, 217, 102, 0.05);
+    }
+
+    .overview-title {
+        color: #ffd966;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 16px;
+        text-shadow: 0 0 10px rgba(255, 217, 102, 0.3);
+    }
+
+    .overview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .overview-stat {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 217, 102, 0.1);
+    }
+
+    .stat-label {
+        color: #9ca3af;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .stat-value {
+        color: #ffd966;
+        font-size: 1.3rem;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(255, 217, 102, 0.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .content-container {
+            grid-template-columns: 1fr;
+        }
+
+        .side-nav {
+            position: static;
+            margin-bottom: 32px;
+        }
+
+        .nav-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2.2rem;
+        }
+
+        .version-section {
+            padding: 24px;
+        }
+
+        .version-title h2 {
+            font-size: 1.5rem;
+        }
+
+        .version-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .version-header-left {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .change-list {
+            margin-left: 20px;
+        }
+
+        .overview-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        body {
+            padding: 15px;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .version-section {
+            padding: 20px;
+        }
+
+        .change-list {
+            margin-left: 10px;
+        }
+
+        .change-item {
+            padding-left: 16px;
+        }
+    }
+
+    /* Scrollbar Customization */
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #ffd966 0%, #f4d03f 100%);
+        border-radius: 6px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+        box-shadow: 0 0 10px rgba(255, 217, 102, 0.3);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #f4d03f 0%, #ffd966 100%);
+    }
+</style>
+</head>
+<body>
+<!-- Floating particles -->
+<div class="particle" style="left: 10%; width: 3px; height: 3px; animation-delay: 0s;"></div>
+<div class="particle" style="left: 20%; width: 2px; height: 2px; animation-delay: 2s;"></div>
+<div class="particle" style="left: 30%; width: 4px; height: 4px; animation-delay: 4s;"></div>
+<div class="particle" style="left: 40%; width: 2px; height: 2px; animation-delay: 6s;"></div>
+<div class="particle" style="left: 50%; width: 3px; height: 3px; animation-delay: 8s;"></div>
+<div class="particle" style="left: 60%; width: 2px; height: 2px; animation-delay: 10s;"></div>
+<div class="particle" style="left: 70%; width: 4px; height: 4px; animation-delay: 12s;"></div>
+<div class="particle" style="left: 80%; width: 3px; height: 3px; animation-delay: 14s;"></div>
+<div class="particle" style="left: 90%; width: 2px; height: 2px; animation-delay: 16s;"></div>
+
+<div class="page-header">
+    <h1>Changelog</h1>
+    <p>Track all updates, improvements, and bug fixes for ApartmentCore</p>
+    <div class="current-version">
+        <span>Latest Version: v1.3.2</span>
+    </div>
+</div>
+
+<div class="breadcrumb">
+    <a href="https://sites.google.com/view/apartment-core/homepage">Wiki Home</a>
+    <span>›</span>
+    <span style="color: #e4e6ea;">Changelog</span>
+</div>
+
+<div class="content-container">
+    <nav class="side-nav">
+        <div class="nav-title">Version History</div>
+        <ul class="nav-list">
+            <li><a href="#v1-3-2" class="active">v1.3.2 <span class="version-badge">Shop</span></a></li>
+            <li><a href="#v1-3-1">v1.3.1 <span class="version-badge">Stats</span></a></li>
+            <li><a href="#v1-3-0">v1.3.0 <span class="version-badge">GUI</span></a></li>
+            <li><a href="#v1-2-9">v1.2.9 <span class="version-badge">Auction</span></a></li>
+            <li><a href="#v1-2-8">v1.2.8</a></li>
+            <li><a href="#v1-2-7">v1.2.7 <span class="version-badge">Tax</span></a></li>
+            <li><a href="#v1-2-6">v1.2.6</a></li>
+            <li><a href="#v1-2-5">v1.2.5</a></li>
+            <li><a href="#v1-2-1">v1.2.1</a></li>
+            <li><a href="#v1-2-0">v1.2.0</a></li>
+            <li><a href="#v1-1-0">v1.1.0</a></li>
+            <li><a href="#v1-0-0">v1.0.0</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <!-- Version 1.3.2 (Latest - Open by default) -->
+        <section class="version-section" id="v1-3-2">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.3.2</h2>
+                        <span class="version-type feature">GUI Customization & Shop System</span>
+                    </div>
+                    <div class="release-date">October 1, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Minimize</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="overview-box">
+                    <div class="overview-title">Release Overview</div>
+                    <div class="overview-grid">
+                        <div class="overview-stat">
+                            <div class="stat-label">Features Added</div>
+                            <div class="stat-value">15+</div>
+                        </div>
+                        <div class="overview-stat">
+                            <div class="stat-label">GUI Menus</div>
+                            <div class="stat-value">9</div>
+                        </div>
+                        <div class="overview-stat">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Major</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Added - Complete GUI Customization System</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Fully Customizable GUI System</strong> - External YAML-driven configuration for all GUI elements
+                            <div class="sub-item">📁 <code>apartment_gui.yml</code> - External configuration file for complete GUI customization</div>
+                            <div class="sub-item">🎨 Custom materials, names, lore, slots, and layout for every GUI element</div>
+                            <div class="sub-item">🔄 Live-reload system - apply changes without server restart</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Custom Model Data Support</strong> - Resource pack integration for custom item textures
+                            <div class="sub-item">🎭 <code>custom-model-data</code> field in YAML for using custom textures from resource packs</div>
+                            <div class="sub-item">🖼️ Support for custom item models in all GUI elements</div>
+                            <div class="sub-item">⚡ Real-time application of custom model data on GUI reload</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Advanced Placeholder System</strong> - Dynamic content in GUI elements
+                            <div class="sub-item">📊 Real-time data placeholders: %owned%, %pending%, %tax_due%, %shop_investment%</div>
+                            <div class="sub-item">🎯 Context-aware placeholder resolution for each player</div>
+                            <div class="sub-item">🔢 Support for money formatting, counts, and status indicators</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Complete Menu Coverage</strong> - All GUI menus now fully configurable
+                            <div class="sub-item">🏠 Main Menu - Title, size, all button positions and properties</div>
+                            <div class="sub-item">🔍 Apartment Browser - Filter controls, sorting, layout customization</div>
+                            <div class="sub-item">❓ Help & Info - All help sections with custom content</div>
+                            <div class="sub-item">📋 Ready for: Details, MyApartments, Statistics, Tax, Auction, Guestbook, Shop</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header enhanced">
+                        <div class="category-icon enhanced">✨</div>
+                        <div class="category-title">Enhanced - User Experience & Interface</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Live Configuration Updates</strong> - Zero-downtime GUI customization
+                            <div class="sub-item">⚡ Instant application via <code>/apartmentcore admin reload</code></div>
+                            <div class="sub-item">🔄 Automatic refresh of all open GUIs with new configuration</div>
+                            <div class="sub-item">🛡️ Safe fallback to defaults if configuration is invalid</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Visual Customization Options</strong> - Complete control over GUI appearance
+                            <div class="sub-item">🎨 Custom materials for borders and decorative elements</div>
+                            <div class="sub-item">💫 Glow effects and enchantment visuals</div>
+                            <div class="sub-item">📝 Color codes and emoji support in all text elements</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Smart Layout System</strong> - Flexible and responsive GUI design
+                            <div class="sub-item">📐 Configurable inventory sizes (9-54 slots, multiples of 9)</div>
+                            <div class="sub-item">🎯 Custom slot positions for all interactive elements</div>
+                            <div class="sub-item">🔧 Dynamic border generation based on inventory size</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header enhanced">
+                        <div class="category-icon enhanced">⚙️</div>
+                        <div class="category-title">Enhanced - Configuration Management</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>External Configuration File</strong> - <code>apartment_gui.yml</code> for complete GUI control
+                            <div class="sub-item">📄 Auto-copied to plugin data folder on first run</div>
+                            <div class="sub-item">🛠️ Server admin can edit without touching plugin files</div>
+                            <div class="sub-item">🔒 Safe editing with validation and fallback defaults</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Comprehensive YAML Structure</strong> - Every aspect of GUIs is configurable
+                            <div class="sub-item">🏷️ Menu titles with color and emoji support</div>
+                            <div class="sub-item">📦 Inventory sizes and border materials</div>
+                            <div class="sub-item">🎛️ Control positions and properties for all interactive elements</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header improved">
+                        <div class="category-icon improved">⚡</div>
+                        <div class="category-title">Technical Improvements</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Modular Architecture</strong> - Clean separation of GUI configuration logic
+                            <div class="sub-item">🔧 <code>ConfigManager.java</code> - External config loading and menu section access</div>
+                            <div class="sub-item">🎮 <code>GUIManager.java</code> - Live-reload coordination and GUI lifecycle management</div>
+                            <div class="sub-item">🎨 Individual GUI classes - Configuration application and override handling</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Performance Optimizations</strong> - Efficient configuration loading and application
+                            <div class="sub-item">⚡ Lazy loading of external configuration file</div>
+                            <div class="sub-item">🔄 Cached configuration access with hot-reload capability</div>
+                            <div class="sub-item">🛡️ Error handling with graceful fallback to defaults</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Extensible Design</strong> - Easy to add new GUI menus and configuration options
+                            <div class="sub-item">📐 Consistent pattern for adding new configurable menus</div>
+                            <div class="sub-item">🔌 Plugin architecture for GUI configuration system</div>
+                            <div class="sub-item">🎯 Standardized configuration structure across all menus</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header enhanced">
+                        <div class="category-icon enhanced">🎨</div>
+                        <div class="category-title">Apartment Shop System (Previously Added)</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>5 Premium Upgrades</strong> - Comprehensive apartment enhancement system
+                            <div class="sub-item">🍳 Premium Kitchen - Income bonus percentage (10% - 30%) across 5 tiers</div>
+                            <div class="sub-item">🛋️ Luxury Furniture - Flat base income bonus ($50 - $400) across 5 tiers</div>
+                            <div class="sub-item">☀️ Solar Panel System - Tax reduction percentage (5% - 25%) across 5 tiers</div>
+                            <div class="sub-item">🌐 High Speed Internet - Faster income generation (1-5 tick reduction) across 5 tiers</div>
+                            <div class="sub-item">🏠 Extra Living Room - Increased max guestbook messages (+10 - +50) across 5 tiers</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Complete Integration</strong> - Shop system fully integrated with GUI and configuration
+                            <div class="sub-item">🛍️ "Apartment Shop" button in Main Menu GUI</div>
+                            <div class="sub-item">⚡ Right-click access in My Apartments GUI</div>
+                            <div class="sub-item">🏢 Per-apartment independent shop upgrades</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header enhanced">
+                        <div class="category-icon enhanced">📖</div>
+                        <div class="category-title">GUI Customization Guide</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Configuration File Location</strong>
+                            <div class="sub-item">📁 <code>plugins/apartmentcore/apartment_gui.yml</code> - Edit this file to customize GUIs</div>
+                            <div class="sub-item">🔄 Auto-generated on first server start if not present</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Basic Customization Example</strong>
+                            <div class="sub-item">
+                                <code>
+menus:<br>
+&nbsp;&nbsp;main-menu:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;title: "&2🏠 My Custom Main Menu"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;size: 54<br>
+&nbsp;&nbsp;&nbsp;&nbsp;items:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;my-apartments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;slot: 20<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;material: CHEST<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name: "&6My Properties"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;custom-model-data: 1001
+                                </code>
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Available Placeholders</strong>
+                            <div class="sub-item">📊 <code>%owned%</code>, <code>%pending%</code>, <code>%tax_due%</code>, <code>%shop_investment%</code></div>
+                            <div class="sub-item">🔢 <code>%available%</code>, <code>%cheapest%</code>, <code>%active_auctions%</code></div>
+                            <div class="sub-item">📈 <code>%lifetime_income%</code>, <code>%total_tax_paid%</code>, <code>%shop_upgrades%</code></div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Hot-Reload Command</strong>
+                            <div class="sub-item">⚡ <code>/apartmentcore admin reload</code> - Apply changes instantly</div>
+                            <div class="sub-item">🔄 All open GUIs automatically refresh with new configuration</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.3.1 -->
+        <section class="version-section collapsed" id="v1-3-1">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.3.1</h2>
+                        <span class="version-type feature">Statistics GUI</span>
+                    </div>
+                    <div class="release-date">September 26, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Minimize</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="overview-box">
+                    <div class="overview-title">Release Overview</div>
+                    <div class="overview-grid">
+                        <div class="overview-stat">
+                            <div class="stat-label">Features Added</div>
+                            <div class="stat-value">4</div>
+                        </div>
+                        <div class="overview-stat">
+                            <div class="stat-label">Fixes</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                        <div class="overview-stat">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Feature</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Added - New Features & Commands</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Statistics Overview GUI</strong> - A new GUI for a summary of player statistics.
+                            <div class="sub-item">Displays: Ownership age, Lifetime income, Total tax paid, Pending income, and Outstanding taxes.</div>
+                            <div class="sub-item">Quick Actions: Claim All Income, Pay All Taxes.</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Per-Apartment Statistics GUI</strong> - A detailed statistical GUI for each apartment.
+                            <div class="sub-item">Shows: Tax status, number of active invoices, age of the oldest bill, rating, and Guestbook access.</div>
+                            <div class="sub-item">Quick Actions: Claim apartment income, toggle Auto-Pay, and open Tax Management.</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>GUI Integration</strong>
+                            <div class="sub-item">The "Statistics" button on the Main Menu now opens the Statistics Overview.</div>
+                            <div class="sub-item">The "Statistics" button on the Apartment Details page opens the statistics for that specific apartment.</div>
+                            <div class="sub-item">New methods in GUI Manager: <code>openStatistics</code>, <code>openApartmentStatistics</code>.</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>New Admin Commands</strong>
+                            <div class="sub-item">Added: <code>/apartmentcore admin invoice add &lt;id&gt; &lt;amount&gt;</code> to add a new invoice.</div>
+                            <div class="sub-item">Added: <code>/apartmentcore admin invoice remove &lt;id&gt; &lt;invoice_id&gt;</code> to remove an existing invoice.</div>
+                            <div class="sub-item">Added: <code>/apartmentcore admin status &lt;id&gt; &lt;active|inactive&gt;</code> to change apartment status.</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header improved">
+                        <div class="category-icon improved">⚡</div>
+                        <div class="category-title">Improved</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Enriched Main Menu Statistics</strong>
+                            <div class="sub-item">The Statistics item now displays a global summary (lifetime income, total tax paid, pending income, outstanding taxes).</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Inventory Event Stability</strong>
+                            <div class="sub-item">GUI opening is now delayed to the next tick to prevent event conflicts.</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header fixed">
+                        <div class="category-icon fixed">🔧</div>
+                        <div class="category-title">Fixed</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Default Teleportation Location</strong>
+                            <div class="sub-item">Fixed an issue where the default teleportation location was set randomly. Now, the admin's location when creating an apartment is used as the default location.</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Version Command</strong>
+                            <div class="sub-item"><code>/apartmentcore version</code> now consistently displays the version from the plugin descriptor.</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header enhanced">
+                        <div class="category-icon enhanced">✨</div>
+                        <div class="category-title">Updated & Consistency</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Plugin Version</strong> updated to <code>1.3.1</code> in <code>pom.xml</code>, <code>plugin.yml</code>, and the <code>config.yml</code> header.
+                        </li>
+                        <li class="change-item">
+                            <strong>Removed Admin Commands</strong>
+                            <div class="sub-item">Removed: <code>/apartmentcore admin set tax</code></div>
+                            <div class="sub-item">Removed: <code>/apartmentcore admin set tax_days</code></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.3.0 -->
+        <section class="version-section collapsed" id="v1-3-0">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.3.0</h2>
+                        <span class="version-type major">GUI Update</span>
+                    </div>
+                    <div class="release-date">September 19, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="overview-box">
+                    <div class="overview-title">Release Overview</div>
+                    <div class="overview-grid">
+                        <div class="overview-stat">
+                            <div class="stat-label">Features Added</div>
+                            <div class="stat-value">15+</div>
+                        </div>
+                        <div class="overview-stat">
+                            <div class="stat-label">Performance</div>
+                            <div class="stat-value">+40%</div>
+                        </div>
+                        <div class="overview-stat">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Major</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Added - Complete GUI System</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Main Menu GUI</strong> - Central dashboard for all apartment functions
+                            <div class="sub-item">Easy-to-use graphical interface accessible via <code>/apartmentcore gui</code> or <code>/ac gui</code></div>
+                            <div class="sub-item">Visual apartment browser with advanced filtering and sorting options</div>
+                            <div class="sub-item">Quick access to all major apartment features through intuitive menus</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>My Apartments Dashboard</strong> - Streamlined property management
+                            <div class="sub-item">Overview of all owned apartments in one convenient location</div>
+                            <div class="sub-item">Quick actions for common tasks like teleporting and managing properties</div>
+                            <div class="sub-item">Real-time status updates and financial information</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Apartment Details View</strong> - Complete property information
+                            <div class="sub-item">Detailed apartment statistics including income, taxes, and ratings</div>
+                            <div class="sub-item">Visual status indicators using color-coded system</div>
+                            <div class="sub-item">Interactive guestbook with modern message viewing</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Enhanced Auction House Interface</strong>
+                            <div class="sub-item">Full-featured auction management through GUI</div>
+                            <div class="sub-item">Easy bidding and auction creation process</div>
+                            <div class="sub-item">Real-time auction status and countdown timers</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header enhanced">
+                        <div class="category-icon enhanced">✨</div>
+                        <div class="category-title">Enhanced User Experience</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Intuitive Navigation System</strong>
+                            <div class="sub-item">User-friendly interface layout designed for ease of use</div>
+                            <div class="sub-item">Right-click and shift-click options for advanced actions</div>
+                            <div class="sub-item">Quick navigation between different apartment functions</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Smart Features and Automation</strong>
+                            <div class="sub-item">Intelligent filtering for finding specific apartments</div>
+                            <div class="sub-item">Bulk operations for managing multiple properties efficiently</div>
+                            <div class="sub-item">One-click common operations for frequently used actions</div>
+                            <div class="sub-item">Automatic data refresh to keep information current</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Visual Improvements</strong>
+                            <div class="sub-item">Color-coded status indicators for easy understanding</div>
+                            <div class="sub-item">Progress tracking with visual indicators</div>
+                            <div class="sub-item">Sound effects for user action feedback</div>
+                            <div class="sub-item">Modern design with professional appearance</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header improved">
+                        <div class="category-icon improved">⚡</div>
+                        <div class="category-title">Performance Improvements</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Significant Speed Enhancements</strong>
+                            <div class="sub-item">30% faster apartment browsing compared to previous version</div>
+                            <div class="sub-item">50% reduction in command processing time</div>
+                            <div class="sub-item">40% better memory efficiency for improved server performance</div>
+                            <div class="sub-item">Real-time data updates without lag</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Optimized for Large Servers</strong>
+                            <div class="sub-item">Tested with up to 100 concurrent GUI users</div>
+                            <div class="sub-item">Efficient handling of servers with 1000+ apartments</div>
+                            <div class="sub-item">Minimal server resource usage</div>
+                            <div class="sub-item">Sub-second response times for all operations</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.2.9 (Collapsed by default) -->
+        <section class="version-section collapsed" id="v1-2-9">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.2.9</h2>
+                        <span class="version-type feature">Auction Feature</span>
+                    </div>
+                    <div class="release-date">September 17, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Added - Auction System</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Complete auction subsystem for apartments</strong>
+                            <div class="sub-item">Model: <code>ApartmentAuction</code> stores apartment-id, owner, bids, times, and flags</div>
+                            <div class="sub-item">Manager: <code>AuctionManager</code> handles all auction logic</div>
+                            <div class="sub-item">Persistence: Active auctions saved to the plugin data file</div>
+                            <div class="sub-item">Concurrency: Managed in a <code>ConcurrentHashMap</code> for safe access</div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Player commands</strong>
+                            <div class="sub-item"><code>/apartmentcore auction create &lt;id&gt; &lt;startingBid&gt; &lt;durationHours&gt;</code></div>
+                            <div class="sub-item"><code>/apartmentcore auction bid &lt;id&gt; &lt;amount&gt;</code></div>
+                            <div class="sub-item"><code>/apartmentcore auction list [&lt;filter&gt;]</code></div>
+                            <div class="sub-item"><code>/apartmentcore auction cancel &lt;id&gt;</code></div>
+                        </li>
+                        <li class="change-item">
+                            <strong>Admin auction management</strong>
+                            <div class="sub-item"><code>/apartmentcore admin auction list [filter]</code></div>
+                            <div class="sub-item"><code>/apartmentcore admin auction cancel &lt;id&gt;</code></div>
+                            <div class="sub-item"><code>/apartmentcore admin auction forceend &lt;id&gt;</code></div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header improved">
+                        <div class="category-icon improved">⚡</div>
+                        <div class="category-title">Messages & Localization</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Rebuilt the messages system to be minimal and focused</li>
+                        <li class="change-item"><code>messages.yml</code> now contains only essential text</li>
+                        <li class="change-item">Fallback behavior for missing message keys</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.2.8 (Collapsed by default) -->
+        <section class="version-section collapsed" id="v1-2-8">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.2.8</h2>
+                        <span class="version-type major">Major Update</span>
+                    </div>
+                    <div class="release-date">September 13, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="change-category">
+                    <div class="category-header fixed">
+                        <div class="category-icon fixed">🔧</div>
+                        <div class="category-title">Critical Bug Fixes</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Thread-Safety Improvements:</strong> Fixed critical thread-safety issue in auto-save system
+                        </li>
+                        <li class="change-item">
+                            <strong>UUID Parsing & Validation:</strong> Enhanced <code>loadApartments()</code> to validate owner string
+                        </li>
+                        <li class="change-item">
+                            <strong>Null Pointer Exception Prevention:</strong> Added additional null checks
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header improved">
+                        <div class="category-icon improved">⚡</div>
+                        <div class="category-title">Architecture Improvements</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Service Layer Extraction:</strong> Created <code>ApartmentCommandService.java</code>
+                        </li>
+                        <li class="change-item">
+                            <strong>Class Structure Reorganization:</strong> Moved inner classes to standalone files
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Admin Features</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Backup System Implementation:</strong> Added complete backup command system
+                        </li>
+                        <li class="change-item">
+                            <strong>Logging System:</strong> Implemented comprehensive logging via <code>LoggerManager.java</code>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.2.7 (Collapsed by default) -->
+        <section class="version-section collapsed" id="v1-2-7">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.2.7</h2>
+                        <span class="version-type major">Major Update</span>
+                    </div>
+                    <div class="release-date">September 9, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">New Tax System</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Invoice Creation & Calculation:</strong> A new invoice is created every 24 hours
+                        </li>
+                        <li class="change-item">
+                            <strong>Tax Status and Consequences:</strong> Active, Overdue, Inactive, Repossession stages
+                        </li>
+                        <li class="change-item">
+                            <strong>New Commands for Players:</strong>
+                            <div class="sub-item"><code>/apartmentcore tax info &lt;apartment_id&gt;</code></div>
+                            <div class="sub-item"><code>/apartmentcore tax pay &lt;apartment_id&gt;</code></div>
+                            <div class="sub-item"><code>/apartmentcore tax auto &lt;on|off&gt;</code></div>
+                        </li>
+                        <li class="change-item">
+                            <strong>New Placeholders:</strong> <code>%apartmentcore_tax_status%</code> and <code>%apartmentcore_next_invoice_in%</code>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.2.6 (Collapsed by default) -->
+        <section class="version-section collapsed" id="v1-2-6">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.2.6</h2>
+                        <span class="version-type patch">Minor Update</span>
+                    </div>
+                    <div class="release-date">September 7, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="change-category">
+                    <div class="category-header fixed">
+                        <div class="category-icon fixed">🔧</div>
+                        <div class="category-title">Fixed</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <strong>Admin Commands:</strong> Three admin set commands that previously did not work have now been fixed
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Added</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">New command: <code>/apartmentcore admin set rate &lt;id&gt; &lt;value&gt;</code></li>
+                        <li class="change-item">New statistics tracking system in <code>apartments-stats.yml</code></li>
+                        <li class="change-item">New PlaceholderAPI support for the new statistics</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.2.5 (Collapsed by default) -->
+        <section class="version-section collapsed" id="v1-2-5">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.2.5</h2>
+                        <span class="version-type feature">Feature Update</span>
+                    </div>
+                    <div class="release-date">September 6, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Added</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Manual Teleport Location system via <code>/ac setteleport</code></li>
+                        <li class="change-item">Guest Book system via <code>/ac guestbook</code> with <code>guestbook.yml</code></li>
+                        <li class="change-item">Real-time Countdowns for tax and income generation</li>
+                        <li class="change-item">New PlaceholderAPI placeholders</li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header fixed">
+                        <div class="category-icon fixed">🔧</div>
+                        <div class="category-title">Fixed</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Various bug fixes improving overall stability</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.2.1 (Collapsed by default) -->
+        <section class="version-section collapsed" id="v1-2-1">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.2.1</h2>
+                        <span class="version-type patch">Patch</span>
+                    </div>
+                    <div class="release-date">August 27, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="change-category">
+                    <div class="category-header improved">
+                        <div class="category-icon improved">⚡</div>
+                        <div class="category-title">Improved</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Refactored the code in the main plugin class into several classes for better maintainability</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.2.0 (Collapsed by default) -->
+        <section class="version-section collapsed" id="v1-2-0">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.2.0</h2>
+                        <span class="version-type feature">Major Feature Update</span>
+                    </div>
+                    <div class="release-date">August 22, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Added</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Apartment Display Names feature</li>
+                        <li class="change-item">Customizable Welcome Messages</li>
+                        <li class="change-item">Backup System (auto & manual)</li>
+                        <li class="change-item">Apartment Rating System</li>
+                        <li class="change-item">Full tab completion for all commands</li>
+                        <li class="change-item">New PlaceholderAPI placeholders</li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header improved">
+                        <div class="category-icon improved">⚡</div>
+                        <div class="category-title">Improved</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Enhanced Rent System with improved tracking</li>
+                        <li class="change-item">Error messages and data saving performance</li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header fixed">
+                        <div class="category-icon fixed">🔧</div>
+                        <div class="category-title">Fixed</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Tab completion and rent claim tracking bugs</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.1.0 (Collapsed by default) -->
+        <section class="version-section collapsed" id="v1-1-0">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.1.0</h2>
+                        <span class="version-type update">Stability Update</span>
+                    </div>
+                    <div class="release-date">August 20, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="change-category">
+                    <div class="category-header fixed">
+                        <div class="category-icon fixed">🔧</div>
+                        <div class="category-title">Fixed</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Critical NullPointerException and data persistence issues</li>
+                        <li class="change-item">Minecraft time calculations for tax system</li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Added</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Apartment upgrade system (levels 1-5)</li>
+                        <li class="change-item">Confirmation system for important actions</li>
+                        <li class="change-item">List command with filters</li>
+                        <li class="change-item">Command cooldown system</li>
+                        <li class="change-item">Enhanced PlaceholderAPI support</li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <div class="category-header improved">
+                        <div class="category-icon improved">⚡</div>
+                        <div class="category-title">Improved</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Teleportation with safe location finding</li>
+                        <li class="change-item">Better error handling and input validation</li>
+                        <li class="change-item">Performance optimizations and thread safety</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version 1.0.0 (Collapsed by default) -->
+        <section class="version-section collapsed" id="v1-0-0">
+            <div class="version-header">
+                <div class="version-header-left">
+                    <div class="version-title">
+                        <h2>Version 1.0.0</h2>
+                        <span class="version-type major">Initial Release</span>
+                    </div>
+                    <div class="release-date">August 19, 2025</div>
+                </div>
+                <div class="version-toggle">
+                    <span class="version-toggle-icon">▼</span>
+                    <span class="version-toggle-text">Expand</span>
+                </div>
+            </div>
+
+            <div class="version-content">
+                <div class="change-category">
+                    <div class="category-header added">
+                        <div class="category-icon added">+</div>
+                        <div class="category-title">Initial Features</div>
+                    </div>
+                    <ul class="change-list">
+                        <li class="change-item">Core apartment management system</li>
+                        <li class="change-item">WorldGuard region integration</li>
+                        <li class="change-item">Income generation system</li>
+                        <li class="change-item">Tax collection with penalties</li>
+                        <li class="change-item">5-level apartment system</li>
+                        <li class="change-item">PlaceholderAPI support</li>
+                        <li class="change-item">Admin commands for complete control</li>
+                        <li class="change-item">YAML data storage</li>
+                        <li class="change-item">Comprehensive permission system</li>
+                        <li class="change-item">Optimization for server performance</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+// Hardened interactivity for Google Sites embedding
+(function() {
+    // Version collapse/expand functionality
+    function initVersionToggles() {
+        var versionSections = document.querySelectorAll('.version-section');
+        
+        versionSections.forEach(function(section) {
+            var header = section.querySelector('.version-header');
+            var toggle = section.querySelector('.version-toggle');
+            var toggleIcon = section.querySelector('.version-toggle-icon');
+            var toggleText = section.querySelector('.version-toggle-text');
+            
+            function toggleSection(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                var isCollapsed = section.classList.contains('collapsed');
+                
+                if (isCollapsed) {
+                    section.classList.remove('collapsed');
+                    toggleText.textContent = 'Minimize';
+                    toggleIcon.textContent = '▼';
+                } else {
+                    section.classList.add('collapsed');
+                    toggleText.textContent = 'Expand';
+                    toggleIcon.textContent = '▼';
+                }
+                
+                // Update navigation active state if needed
+                var sectionId = section.id;
+                if (sectionId && !isCollapsed) {
+                    var navLink = document.querySelector('.nav-list a[href="#' + sectionId + '"]');
+                    if (navLink) {
+                        document.querySelectorAll('.nav-list a').forEach(function(a) { 
+                            a.classList.remove('active'); 
+                        });
+                        navLink.classList.add('active');
+                    }
+                }
+            }
+            
+            // Add click handler to both header and toggle button
+            if (header) {
+                header.addEventListener('click', toggleSection, true);
+            }
+            
+            // Prevent navigation link clicks from toggling
+            header.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        });
+    }
+    
+    // Initialize toggles on page load
+    initVersionToggles();
+    
+    // Prepare and harden side navigation behavior
+    var navContainer = document.querySelector('.nav-list');
+
+    if (navContainer) {
+        // Remove any target attributes that may cause new tab behavior
+        navContainer.querySelectorAll('a').forEach(function(a) {
+            a.removeAttribute('target');
+            a.setAttribute('rel', 'noopener');
+            a.setAttribute('role', 'button');
+        });
+
+        // Delegated smooth scrolling to prevent default navigation/new tab
+        navContainer.addEventListener('click', function(e) {
+            var link = e.target && e.target.closest ? e.target.closest('a') : null;
+            if (!link) return;
+
+            var href = link.getAttribute('href') || '';
+            if (href.charAt(0) === '#') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var id = href.slice(1);
+                var target = document.getElementById(id);
+                if (target) {
+                    // Expand the section if it's collapsed
+                    if (target.classList.contains('collapsed')) {
+                        target.classList.remove('collapsed');
+                        var toggleText = target.querySelector('.version-toggle-text');
+                        var toggleIcon = target.querySelector('.version-toggle-icon');
+                        if (toggleText) toggleText.textContent = 'Minimize';
+                        if (toggleIcon) toggleIcon.textContent = '▼';
+                    }
+                    
+                    try {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } catch (err) {
+                        // Fallback smooth scroll
+                        var start = window.pageYOffset || document.documentElement.scrollTop || 0;
+                        var end = target.getBoundingClientRect().top + start - 10;
+                        var duration = 400, startTime = null;
+                        function step(ts) {
+                            if (!startTime) startTime = ts;
+                            var p = Math.min((ts - startTime) / duration, 1);
+                            var ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+                            window.scrollTo(0, start + (end - start) * ease);
+                            if (p < 1) requestAnimationFrame(step);
+                        }
+                        requestAnimationFrame(step);
+                    }
+
+                    // Update active state
+                    navContainer.querySelectorAll('a').forEach(function(a) { a.classList.remove('active'); });
+                    link.classList.add('active');
+                }
+            }
+        }, true); // capture to cancel host default
+    }
+
+    // Active section highlight on scroll
+    var sections = Array.prototype.slice.call(document.querySelectorAll('.version-section'));
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-list a'));
+
+    function highlightNav() {
+        var current = '';
+        var scrollPos = (window.scrollY || window.pageYOffset || 0) + 120; // Adjusted offset
+        for (var i = 0; i < sections.length; i++) {
+            var s = sections[i];
+            if (scrollPos >= s.offsetTop) {
+                current = s.id;
+            }
+        }
+        var hasActive = false;
+        navLinks.forEach(function(link) {
+            var href = link.getAttribute('href') || '';
+            var isActive = href.charAt(0) === '#' && href.slice(1) === current;
+            if (isActive) {
+                link.classList.add('active');
+                hasActive = true;
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        // If no section is active (e.g., at the very top), activate the first link
+        if (!hasActive && navLinks.length > 0) {
+            navLinks[0].classList.add('active');
+             navLinks.slice(1).forEach(function(link) { link.classList.remove('active'); });
+        }
+    }
+    window.addEventListener('scroll', highlightNav, { passive: true });
+    // Initial call to set state on page load
+    setTimeout(highlightNav, 100);
+})();
+</script>
+</body>
+</html>
