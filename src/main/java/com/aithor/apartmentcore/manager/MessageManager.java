@@ -13,24 +13,23 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class MessageManager {
 
     private final ApartmentCore plugin;
-    private final ConfigManager configManager;
     private FileConfiguration messageConfig;
     private File messagesFile;
 
     public MessageManager(ApartmentCore plugin) {
         this.plugin = plugin;
-        this.configManager = plugin.getConfigManager();
         saveDefaultMessages();
     }
 
     public void reloadMessages() {
-        // Decide language file
+        // Decide language file (read from messages.yml)
         String lang = "en_US";
         try {
-            if (configManager != null) {
-                lang = configManager.getMessagesLanguage();
-            } else if (plugin.getConfig() != null) {
-                lang = plugin.getConfig().getString("messages.language", "en_US");
+            // Load base messages.yml first to read language setting
+            File baseFile = new File(plugin.getDataFolder(), "messages.yml");
+            if (baseFile.exists()) {
+                FileConfiguration base = YamlConfiguration.loadConfiguration(baseFile);
+                lang = base.getString("messages.language", "en_US");
             }
         } catch (Throwable ignored) {}
 
@@ -96,25 +95,14 @@ public class MessageManager {
             return ChatColor.RED + "Missing message: " + path;
         }
 
-        // Prefix from config.yml overrides any messages.yml format prefix
-        String prefix = "&6[ApartmentCore]&r ";
-        boolean useColors = true;
-        try {
-            if (configManager != null) {
-                prefix = configManager.getMessagesPrefix();
-                useColors = configManager.isMessagesUseColors();
-            } else if (plugin.getConfig() != null) {
-                prefix = plugin.getConfig().getString("messages.prefix", "&6[ApartmentCore]&r ");
-                useColors = plugin.getConfig().getBoolean("messages.use-colors", true);
-            }
-        } catch (Throwable ignored) {}
+        String prefix = getMessageConfig().getString("messages.prefix", "&6[ApartmentCore]&r ");
+        boolean useColors = getMessageConfig().getBoolean("messages.use-colors", true);
 
         String out = message.replace("{prefix}", prefix);
 
         if (useColors) {
             return ChatColor.translateAlternateColorCodes('&', out);
         } else {
-            // Strip common color codes if colors disabled
             return out.replaceAll("&[0-9A-FK-ORa-fk-or]", "");
         }
     }

@@ -316,13 +316,12 @@ public class AuctionHouseGUI extends PaginatedGUI {
         ApartmentAuction auction = item.getData(ApartmentAuction.class);
         if (auction == null) return;
         
-        ClickType clickType = event.getClick();
         boolean isOwner = auction.ownerId.equals(player.getUniqueId());
         
-        if (isOwner && clickType == ClickType.RIGHT) {
+        if (isOwner && event.isRightClick()) {
             // Cancel auction
             handleCancelAuction(auction);
-        } else if (!isOwner && clickType == ClickType.LEFT) {
+        } else if (!isOwner && event.isLeftClick()) {
             // Place bid
             handlePlaceBid(auction);
         } else {

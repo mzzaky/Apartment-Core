@@ -7,19 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.configuration.ConfigurationSection;
 
 import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.gui.GUIManager;
 import com.aithor.apartmentcore.gui.interfaces.GUI;
 import com.aithor.apartmentcore.gui.items.ItemBuilder;
 import com.aithor.apartmentcore.gui.utils.GUIUtils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Help & Information GUI - Provides helpful information about the plugin
@@ -29,64 +22,23 @@ public class HelpInfoGUI implements GUI {
     private final Player player;
     private final ApartmentCore plugin;
     private final GUIManager guiManager;
-    private String title;
-    private Inventory inventory;
+    private final String title;
+    private final Inventory inventory;
 
-    // YAML menu section and placeholder context
-    private ConfigurationSection menuSection;
-    private final Map<String, String> context = new HashMap<>();
-
-    // Default slot positions (can be overridden by apartment_gui.yml)
-    private static final int DEFAULT_COMMANDS_SLOT = 11;
-    private static final int DEFAULT_FAQ_SLOT = 13;
-    private static final int DEFAULT_FEATURES_SLOT = 15;
-    private static final int DEFAULT_SUPPORT_SLOT = 29;
-    private static final int DEFAULT_VERSION_SLOT = 31;
-    private static final int DEFAULT_BACK_SLOT = 40;
-
-    // Resolved per-instance slots (read from apartment_gui.yml when present)
-    private int commandsSlot = DEFAULT_COMMANDS_SLOT;
-    private int faqSlot = DEFAULT_FAQ_SLOT;
-    private int featuresSlot = DEFAULT_FEATURES_SLOT;
-    private int supportSlot = DEFAULT_SUPPORT_SLOT;
-    private int versionSlot = DEFAULT_VERSION_SLOT;
-    private int backSlot = DEFAULT_BACK_SLOT;
+    // Slot positions
+    private static final int COMMANDS_SLOT = 11;
+    private static final int FAQ_SLOT = 13;
+    private static final int FEATURES_SLOT = 15;
+    private static final int SUPPORT_SLOT = 29;
+    private static final int VERSION_SLOT = 31;
+    private static final int BACK_SLOT = 40;
 
     public HelpInfoGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         this.player = player;
         this.plugin = plugin;
         this.guiManager = guiManager;
-
-        // Load menu overrides from external GUI config (apartment_gui.yml)
-        this.menuSection = plugin.getConfigManager().getGuiMenuSection("help-info");
-
-        // Resolve title and size from YAML if available
-        String title = ChatColor.DARK_GREEN + "Help & Information";
-        int size = 45;
-
-        if (menuSection != null) {
-            title = ChatColor.translateAlternateColorCodes('&',
-                    menuSection.getString("title", title));
-            size = menuSection.getInt("size", size);
-            size = Math.max(9, Math.min(54, size));
-            if (size % 9 != 0) size = ((size / 9) + 1) * 9;
-        }
-
-        this.title = title;
-        this.inventory = Bukkit.createInventory(null, size, this.title);
-
-        // Resolve slot positions from config if provided
-        if (menuSection != null) {
-            ConfigurationSection items = menuSection.getConfigurationSection("items");
-            if (items != null) {
-                this.commandsSlot = items.getInt("commands.slot", DEFAULT_COMMANDS_SLOT);
-                this.faqSlot = items.getInt("faq.slot", DEFAULT_FAQ_SLOT);
-                this.featuresSlot = items.getInt("features.slot", DEFAULT_FEATURES_SLOT);
-                this.supportSlot = items.getInt("support.slot", DEFAULT_SUPPORT_SLOT);
-                this.versionSlot = items.getInt("version.slot", DEFAULT_VERSION_SLOT);
-                this.backSlot = items.getInt("back.slot", DEFAULT_BACK_SLOT);
-            }
-        }
+        this.title = ChatColor.DARK_GREEN + "Help & Information";
+        this.inventory = Bukkit.createInventory(null, 45, this.title);
     }
 
     @Override
@@ -166,10 +118,7 @@ public class HelpInfoGUI implements GUI {
                 .glow()
                 .build();
 
-        item = applyItemOverrides("commands", item);
-        if (item != null) {
-            inventory.setItem(commandsSlot, item);
-        }
+        inventory.setItem(COMMANDS_SLOT, item);
     }
 
     private void addFAQ() {
@@ -199,10 +148,7 @@ public class HelpInfoGUI implements GUI {
                 .glow()
                 .build();
 
-        item = applyItemOverrides("faq", item);
-        if (item != null) {
-            inventory.setItem(faqSlot, item);
-        }
+        inventory.setItem(FAQ_SLOT, item);
     }
 
     private void addFeatures() {
@@ -233,10 +179,7 @@ public class HelpInfoGUI implements GUI {
                 .glow()
                 .build();
 
-        item = applyItemOverrides("features", item);
-        if (item != null) {
-            inventory.setItem(featuresSlot, item);
-        }
+        inventory.setItem(FEATURES_SLOT, item);
     }
 
     private void addSupport() {
@@ -264,10 +207,7 @@ public class HelpInfoGUI implements GUI {
                 .glow()
                 .build();
 
-        item = applyItemOverrides("support", item);
-        if (item != null) {
-            inventory.setItem(supportSlot, item);
-        }
+        inventory.setItem(SUPPORT_SLOT, item);
     }
 
     private void addVersion() {
@@ -295,10 +235,7 @@ public class HelpInfoGUI implements GUI {
                 .glow()
                 .build();
 
-        item = applyItemOverrides("version", item);
-        if (item != null) {
-            inventory.setItem(versionSlot, item);
-        }
+        inventory.setItem(VERSION_SLOT, item);
     }
 
     private void addBackButton() {
@@ -311,10 +248,7 @@ public class HelpInfoGUI implements GUI {
                 )
                 .build();
 
-        item = applyItemOverrides("back", item);
-        if (item != null) {
-            inventory.setItem(backSlot, item);
-        }
+        inventory.setItem(BACK_SLOT, item);
     }
 
     @Override
@@ -324,32 +258,32 @@ public class HelpInfoGUI implements GUI {
 
         GUIUtils.playSound(player, GUIUtils.CLICK_SOUND);
 
-        if (slot == commandsSlot) {
+        if (slot == COMMANDS_SLOT) {
             showCommandsPage();
             return;
         }
 
-        if (slot == faqSlot) {
+        if (slot == FAQ_SLOT) {
             showFAQPage();
             return;
         }
 
-        if (slot == featuresSlot) {
+        if (slot == FEATURES_SLOT) {
             showFeaturesPage();
             return;
         }
 
-        if (slot == supportSlot) {
+        if (slot == SUPPORT_SLOT) {
             showSupportPage();
             return;
         }
 
-        if (slot == versionSlot) {
+        if (slot == VERSION_SLOT) {
             GUIUtils.sendMessage(player, "&6📋 ApartmentCore v" + plugin.getDescription().getVersion() + " - Made with ❤️ by Aithor");
             return;
         }
 
-        if (slot == backSlot) {
+        if (slot == BACK_SLOT) {
             plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openMainMenu(player));
             return;
         }
@@ -369,7 +303,7 @@ public class HelpInfoGUI implements GUI {
         GUIUtils.sendMessage(player, "&7• Q: How often do apartments generate income?");
         GUIUtils.sendMessage(player, "&7  A: Every " + plugin.getConfig().getInt("income.interval-minutes", 30) + " minutes");
         GUIUtils.sendMessage(player, "&7• Q: Can I own multiple apartments?");
-        GUIUtils.sendMessage(player, "&7  A: Yes, up to " + plugin.getConfig().getInt("limits.max-apartments-per-player", 5) + " apartments");
+        GUIUtils.sendMessage(player, "&7  A: Yes, up to " + plugin.getConfig().getInt("settings.max-apartments-per-player", 5) + " apartments");
         GUIUtils.sendMessage(player, "&7• Q: What affects apartment ratings?");
         GUIUtils.sendMessage(player, "&7  A: Location, upgrades, maintenance, and guestbook activity");
         GUIUtils.playSound(player, GUIUtils.SUCCESS_SOUND);
@@ -424,85 +358,4 @@ public class HelpInfoGUI implements GUI {
         // Nothing special needed on close
     }
 
-    // ======================
-    // Helpers for YAML config
-    // ======================
-    private void buildContext() {
-        context.clear();
-        context.put("%version%", plugin.getDescription().getVersion());
-        context.put("%economy%", plugin.getEconomy() != null ? plugin.getEconomy().getName() : "N/A");
-    }
-
-    private ItemStack applyItemOverrides(String key, ItemStack defaultItem) {
-        if (menuSection == null) return defaultItem;
-        ConfigurationSection items = menuSection.getConfigurationSection("items");
-        if (items == null) return defaultItem;
-        ConfigurationSection sec = items.getConfigurationSection(key);
-        if (sec == null) return defaultItem;
-
-        boolean enabled = sec.getBoolean("enabled", true);
-        if (!enabled) return null;
-
-        String materialName = sec.getString("material", null);
-        Material mat = materialName != null ? parseMaterial(materialName, defaultItem.getType()) : defaultItem.getType();
-
-        String name = sec.getString("name", null);
-        List<String> lore = sec.isList("lore") ? sec.getStringList("lore") : null;
-        boolean glow = sec.getBoolean("glow", false);
-        int customModelData = sec.getInt("custom-model-data", 0);
-
-        // Allow partial overrides - if name/lore not provided, use default but still apply other properties
-        ItemBuilder builder = new ItemBuilder(mat);
-
-        if (name != null) {
-            builder.name(colorize(replacePlaceholders(name)));
-        } else {
-            // Keep default name - we can't easily extract it from defaultItem, so return as-is
-            return defaultItem;
-        }
-
-        if (lore != null) {
-            List<String> colored = new ArrayList<>();
-            for (String line : lore) {
-                colored.add(colorize(replacePlaceholders(line)));
-            }
-            builder.lore(colored.toArray(new String[0]));
-        } else {
-            // Keep default lore - same limitation as name
-            return defaultItem;
-        }
-
-        if (customModelData > 0) {
-            builder.modelData(customModelData);
-        }
-        List<String> colored = new ArrayList<>();
-        for (String line : lore) {
-            colored.add(colorize(replacePlaceholders(line)));
-        }
-        builder.lore(colored.toArray(new String[0]));
-        if (glow) builder.glow();
-        return builder.build();
-    }
-
-    private String replacePlaceholders(String s) {
-        if (s == null) return null;
-        String out = s;
-        for (Map.Entry<String, String> e : context.entrySet()) {
-            out = out.replace(e.getKey(), e.getValue());
-        }
-        return out;
-    }
-
-    private String colorize(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
-    }
-
-    private Material parseMaterial(String name, Material fallback) {
-        if (name == null) return fallback;
-        try {
-            return Material.valueOf(name.trim().toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException ex) {
-            return fallback;
-        }
-    }
 }

@@ -1,0 +1,19 @@
+- Menghapus item "Settings", "Apartment Shop", dan "Guestbook" dari Main Menu GUI.
+- Merapikan ulang posisi letak item yang tersisa di Main Menu GUI agar lebih simetris.
+- Memindahkan file data konfigurasi dan backup (`apartments.yml`, `guestbook.yml`, `apartments-stats.yml`, `shop_data.yml`, dan list backup) ke dalam subfolder baru `/data/` agar struktur direktori _plugin_ lebih rapi.
+- Menghapus konfigurasi `animations` pada bagian GUI di `config.yml` karena sudah tidak digunakan.
+- Memindahkan blok konfigurasi pesan/language dari `config.yml` ke `messages.yml` agar lebih tertata.
+- Menyederhanakan komentar-komentar panduan (help comments) di dalam `config.yml` agar file konfigurasi menjadi lebih ringkas dan mudah dibaca.
+- Memperbaiki isu klik kanan yang tidak terdeteksi pada menu GUI (seperti membuka Shop, Instant Buy, dan Cancel Auction) untuk mendukung klien berbagai versi.
+- Menambahkan pengaturan `income.generation-interval` di `config.yml` untuk mengatur seberapa sering pendapatan baru dihasilkan (dalam satuan *tick*).
+- Menambahkan informasi *real-time* sisa waktu (*countdown*) kapan pendapatan/income apartemen berikutnya akan tiba pada menu GUI `MyApartmentsGUI`.
+- Menambahkan informasi *real-time* sisa waktu (*countdown*) kapan pajak/tax apartemen berikutnya akan digenerate pada menu GUI `MyApartmentsGUI`.
+- Memperbaiki `shop.yml` yang tidak ter-load atau tidak muncul di folder plugin saat server dinyalakan, dengan menambahkan method `loadShopConfig()` pada `ConfigManager.java` yang otomatis meng-copy `shop.yml` dari bundled resource ke folder plugin (serupa dengan mekanisme `apartment_gui.yml`).
+- Melakukan audit komprehensif pada `config.yml` dan menghapus berbagai atribut yang tidak memiliki implementasi (seperti `penalty-percentage`, `ticks-per-hour`, `placeholderapi.update-interval`, dll) serta menghapus bagian `database` yang belum digunakan.
+- Mengatur ulang struktur `config.yml` dengan menggabungkan bagian `limits`, `income`, dan `time` ke dalam kategori utama `settings` untuk kemudahan navigasi.
+- Mengubah nama parameter `ticks-per-day` menjadi `tax-generation-interval` agar lebih selaras dengan fungsinya dan memindahkannya ke kategori `settings`.
+- Memperbarui `ConfigManager.java` dan `MessageManager.java` untuk mendukung pemisahan konfigurasi pesan sepenuhnya ke `messages.yml` dan struktur kategori `settings` yang baru.
+- memperbarui seluruh referensi kode pada komponen GUI dan Command agar sesuai dengan jalur (*path*) konfigurasi yang telah diperbarui.
+- mengganti item material factory (status aktif) pada menu myfactory dari emerald_block menjadi diamond
+- Menambahkan efek sound, title message, dan toast (action bar) saat apartemen berhasil di-upgrade levelnya.
+- Menghapus file apartment_gui.yml dan seluruh logika kode yang menggunakan file tersebut; GUI kini menggunakan pengaturan default internal.

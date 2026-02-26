@@ -14,14 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -32,53 +28,23 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
     private final ApartmentCore plugin;
     private final GUIManager guiManager;
 
-    // YAML menu section and placeholder context
-    private ConfigurationSection menuSection;
-    private final Map<String, String> context = new HashMap<>();
-
     // Filter states
     private FilterType currentFilter = FilterType.ALL;
     private SortType currentSort = SortType.PRICE_LOW;
 
-    // Default slots (can be overridden by apartment_gui.yml)
-    private static final int DEFAULT_FILTER_ALL_SLOT = 1;
-    private static final int DEFAULT_FILTER_CHEAP_SLOT = 2;
-    private static final int DEFAULT_FILTER_EXPENSIVE_SLOT = 3;
-    private static final int DEFAULT_FILTER_RATED_SLOT = 5;
-    private static final int DEFAULT_FILTER_LEVEL_SLOT = 6;
-    private static final int DEFAULT_SORT_SLOT = 7;
-    private static final int DEFAULT_BACK_SLOT = 0;
-
-    // Resolved per-instance slots (read from apartment_gui.yml when present)
-    private int filterAllSlot = DEFAULT_FILTER_ALL_SLOT;
-    private int filterCheapSlot = DEFAULT_FILTER_CHEAP_SLOT;
-    private int filterExpensiveSlot = DEFAULT_FILTER_EXPENSIVE_SLOT;
-    private int filterRatedSlot = DEFAULT_FILTER_RATED_SLOT;
-    private int filterLevelSlot = DEFAULT_FILTER_LEVEL_SLOT;
-    private int sortSlot = DEFAULT_SORT_SLOT;
-    private int backSlot = DEFAULT_BACK_SLOT;
+    // Slot IDs
+    private static final int FILTER_ALL_SLOT = 1;
+    private static final int FILTER_CHEAP_SLOT = 2;
+    private static final int FILTER_EXPENSIVE_SLOT = 3;
+    private static final int FILTER_RATED_SLOT = 5;
+    private static final int FILTER_LEVEL_SLOT = 6;
+    private static final int SORT_SLOT = 7;
+    private static final int BACK_SLOT = 0;
     
     public ApartmentBrowserGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         super(player, ChatColor.DARK_BLUE + "Browse Apartments", 54, 28);
         this.plugin = plugin;
         this.guiManager = guiManager;
-
-        // Load menu overrides from external GUI config (apartment_gui.yml)
-        this.menuSection = plugin.getConfigManager().getGuiMenuSection("apartment-browser");
-
-        // Resolve slot positions from config if provided
-        if (menuSection != null) {
-            ConfigurationSection controls = menuSection.getConfigurationSection("controls");
-            if (controls != null) {
-                this.backSlot = controls.getInt("back.slot", DEFAULT_BACK_SLOT);
-                this.filterAllSlot = controls.getInt("filter-all.slot", DEFAULT_FILTER_ALL_SLOT);
-                this.filterCheapSlot = controls.getInt("filter-cheap.slot", DEFAULT_FILTER_CHEAP_SLOT);
-                this.filterExpensiveSlot = controls.getInt("filter-expensive.slot", DEFAULT_FILTER_EXPENSIVE_SLOT);
-                this.filterRatedSlot = controls.getInt("filter-rated.slot", DEFAULT_FILTER_RATED_SLOT);
-                this.filterLevelSlot = controls.getInt("filter-level.slot", DEFAULT_FILTER_LEVEL_SLOT);
-                this.sortSlot = controls.getInt("sort.slot", DEFAULT_SORT_SLOT);
-            }
-        }
     }
     
     @Override
@@ -105,7 +71,6 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
     @Override
     protected void setupInventory() {
         super.setupInventory();
-        buildContext();
         addFilterAndSortOptions();
     }
     
@@ -115,10 +80,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                 .name("&c◀ Back to Main Menu")
                 .lore("&7Return to the main menu")
                 .build();
-        backItem = applyControlOverrides("back", backItem);
-        if (backItem != null) {
-            inventory.setItem(backSlot, backItem);
-        }
+        inventory.setItem(BACK_SLOT, backItem);
         
         // Filter: All
         Material allMaterial = currentFilter == FilterType.ALL ? Material.LIME_CONCRETE : Material.WHITE_CONCRETE;
@@ -130,11 +92,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                     currentFilter == FilterType.ALL ? "&a✓ Active filter" : "&7Click to activate"
                 )
                 .build();
-        allFilter = applyControlOverrides("filter-all", allFilter);
-        if (allFilter != null) {
-            inventory.setItem(filterAllSlot, allFilter);
-        }
-        
+        inventory.setItem(FILTER_ALL_SLOT, allFilter);
         // Filter: Cheap (under median price)
         Material cheapMaterial = currentFilter == FilterType.CHEAP ? Material.LIME_CONCRETE : Material.YELLOW_CONCRETE;
         ItemStack cheapFilter = new ItemBuilder(cheapMaterial)
@@ -146,10 +104,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                     currentFilter == FilterType.CHEAP ? "&a✓ Active filter" : "&7Click to activate"
                 )
                 .build();
-        cheapFilter = applyControlOverrides("filter-cheap", cheapFilter);
-        if (cheapFilter != null) {
-            inventory.setItem(filterCheapSlot, cheapFilter);
-        }
+        inventory.setItem(FILTER_CHEAP_SLOT, cheapFilter);
         
         // Filter: Expensive (above median price)
         Material expensiveMaterial = currentFilter == FilterType.EXPENSIVE ? Material.LIME_CONCRETE : Material.ORANGE_CONCRETE;
@@ -162,10 +117,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                     currentFilter == FilterType.EXPENSIVE ? "&a✓ Active filter" : "&7Click to activate"
                 )
                 .build();
-        expensiveFilter = applyControlOverrides("filter-expensive", expensiveFilter);
-        if (expensiveFilter != null) {
-            inventory.setItem(filterExpensiveSlot, expensiveFilter);
-        }
+        inventory.setItem(FILTER_EXPENSIVE_SLOT, expensiveFilter);
         
         // Filter: Top Rated
         Material ratedMaterial = currentFilter == FilterType.TOP_RATED ? Material.LIME_CONCRETE : Material.GOLD_BLOCK;
@@ -178,10 +130,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                     currentFilter == FilterType.TOP_RATED ? "&a✓ Active filter" : "&7Click to activate"
                 )
                 .build();
-        ratedFilter = applyControlOverrides("filter-rated", ratedFilter);
-        if (ratedFilter != null) {
-            inventory.setItem(filterRatedSlot, ratedFilter);
-        }
+        inventory.setItem(FILTER_RATED_SLOT, ratedFilter);
         
         // Filter: High Level
         Material levelMaterial = currentFilter == FilterType.HIGH_LEVEL ? Material.LIME_CONCRETE : Material.DIAMOND_BLOCK;
@@ -194,10 +143,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                     currentFilter == FilterType.HIGH_LEVEL ? "&a✓ Active filter" : "&7Click to activate"
                 )
                 .build();
-        levelFilter = applyControlOverrides("filter-level", levelFilter);
-        if (levelFilter != null) {
-            inventory.setItem(filterLevelSlot, levelFilter);
-        }
+        inventory.setItem(FILTER_LEVEL_SLOT, levelFilter);
         
         // Sort options
         ItemStack sortItem = new ItemBuilder(Material.HOPPER)
@@ -214,10 +160,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                     "&a▶ Click to change"
                 )
                 .build();
-        sortItem = applyControlOverrides("sort", sortItem);
-        if (sortItem != null) {
-            inventory.setItem(sortSlot, sortItem);
-        }
+        inventory.setItem(SORT_SLOT, sortItem);
     }
     
     private List<Apartment> applyFilter(List<Apartment> apartments) {
@@ -334,14 +277,12 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
         Apartment apartment = item.getData(Apartment.class);
         if (apartment == null) return;
         
-        ClickType clickType = event.getClick();
-        
-        if (clickType == ClickType.RIGHT) {
-            // Instant buy
-            handleInstantBuy(apartment);
-        } else if (clickType == ClickType.SHIFT_LEFT || clickType == ClickType.SHIFT_RIGHT) {
+        if (event.isShiftClick()) {
             // Teleport to preview
             handlePreview(apartment);
+        } else if (event.isRightClick()) {
+            // Instant buy
+            handleInstantBuy(apartment);
         } else {
             // View details
             guiManager.openApartmentDetails(player, apartment.id);
@@ -353,47 +294,47 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
         // Handle filter/sort clicks first
         int slot = event.getSlot();
         
-        if (slot == backSlot) {
+        if (slot == BACK_SLOT) {
             guiManager.openMainMenu(player);
             return;
         }
 
-        if (slot == filterAllSlot) {
+        if (slot == FILTER_ALL_SLOT) {
             currentFilter = FilterType.ALL;
             refresh();
             GUIUtils.playSound(player, GUIUtils.CLICK_SOUND);
             return;
         }
 
-        if (slot == filterCheapSlot) {
+        if (slot == FILTER_CHEAP_SLOT) {
             currentFilter = FilterType.CHEAP;
             refresh();
             GUIUtils.playSound(player, GUIUtils.CLICK_SOUND);
             return;
         }
 
-        if (slot == filterExpensiveSlot) {
+        if (slot == FILTER_EXPENSIVE_SLOT) {
             currentFilter = FilterType.EXPENSIVE;
             refresh();
             GUIUtils.playSound(player, GUIUtils.CLICK_SOUND);
             return;
         }
 
-        if (slot == filterRatedSlot) {
+        if (slot == FILTER_RATED_SLOT) {
             currentFilter = FilterType.TOP_RATED;
             refresh();
             GUIUtils.playSound(player, GUIUtils.CLICK_SOUND);
             return;
         }
 
-        if (slot == filterLevelSlot) {
+        if (slot == FILTER_LEVEL_SLOT) {
             currentFilter = FilterType.HIGH_LEVEL;
             refresh();
             GUIUtils.playSound(player, GUIUtils.CLICK_SOUND);
             return;
         }
 
-        if (slot == sortSlot) {
+        if (slot == SORT_SLOT) {
             // Cycle through sort types
             currentSort = currentSort.next();
             refresh();
@@ -449,84 +390,4 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
         }
     }
 
-    // ======================
-    // Helpers for YAML config
-    // ======================
-    private ItemStack applyControlOverrides(String key, ItemStack defaultItem) {
-        if (menuSection == null) return defaultItem;
-        ConfigurationSection controls = menuSection.getConfigurationSection("controls");
-        if (controls == null) return defaultItem;
-        ConfigurationSection sec = controls.getConfigurationSection(key);
-        if (sec == null) return defaultItem;
-
-        boolean enabled = sec.getBoolean("enabled", true);
-        if (!enabled) return null;
-
-        String materialName = sec.getString("material", null);
-        Material mat = materialName != null ? parseMaterial(materialName, defaultItem.getType()) : defaultItem.getType();
-
-        String name = sec.getString("name", null);
-        List<String> lore = sec.isList("lore") ? sec.getStringList("lore") : null;
-        boolean glow = sec.getBoolean("glow", false);
-        int customModelData = sec.getInt("custom-model-data", 0);
-
-        // Allow partial overrides - if name/lore not provided, use default but still apply other properties
-        ItemBuilder builder = new ItemBuilder(mat);
-
-        if (name != null) {
-            builder.name(colorize(replacePlaceholders(name)));
-        } else {
-            // Keep default name - we can't easily extract it from defaultItem, so return as-is
-            return defaultItem;
-        }
-
-        if (lore != null) {
-            List<String> colored = new ArrayList<>();
-            for (String line : lore) {
-                colored.add(colorize(replacePlaceholders(line)));
-            }
-            builder.lore(colored.toArray(new String[0]));
-        } else {
-            // Keep default lore - same limitation as name
-            return defaultItem;
-        }
-
-        if (customModelData > 0) {
-            builder.modelData(customModelData);
-        }
-        List<String> colored = new ArrayList<>();
-        for (String line : lore) {
-            colored.add(colorize(replacePlaceholders(line)));
-        }
-        builder.lore(colored.toArray(new String[0]));
-        if (glow) builder.glow();
-        return builder.build();
-    }
-
-    private String replacePlaceholders(String s) {
-        if (s == null) return null;
-        String out = s;
-        for (Map.Entry<String, String> e : context.entrySet()) {
-            out = out.replace(e.getKey(), e.getValue());
-        }
-        return out;
-    }
-
-    private String colorize(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
-    }
-
-    private Material parseMaterial(String name, Material fallback) {
-        if (name == null) return fallback;
-        try {
-            return Material.valueOf(name.trim().toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException ex) {
-            return fallback;
-        }
-    }
-
-    private void buildContext() {
-        context.clear();
-        context.put("%current_sort%", currentSort.getDisplayName());
-    }
 }

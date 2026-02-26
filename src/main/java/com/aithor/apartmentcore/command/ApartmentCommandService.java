@@ -257,7 +257,7 @@ public class ApartmentCommandService {
 
         // Check apartment limit
         if (!player.hasPermission("apartmentcore.bypass.limit")) {
-            int maxApartments = plugin.getConfig().getInt("limits.max-apartments-per-player", 5);
+            int maxApartments = plugin.getConfig().getInt("settings.max-apartments-per-player", 5);
             if (maxApartments > 0) {
                 long owned = apartmentManager.getApartments().values().stream()
                         .filter(a -> player.getUniqueId().equals(a.owner))
@@ -832,6 +832,15 @@ public class ApartmentCommandService {
         player.sendMessage(ChatColor.YELLOW + "New income range: " +
                 configManager.formatMoney(configManager.getLevelConfig(apt.level).minIncome) + " - " +
                 configManager.formatMoney(configManager.getLevelConfig(apt.level).maxIncome) + " per hour");
+
+        // UI Effects
+        try {
+            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+            player.sendTitle(ChatColor.GREEN + "UPGRADE BERHASIL!", ChatColor.YELLOW + apt.displayName + " ➔ Level " + apt.level, 10, 70, 20);
+            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, new net.md_5.bungee.api.chat.TextComponent(ChatColor.AQUA + "Apartment berhasil di upgrade ke level " + apt.level + "!"));
+        } catch (Exception ignored) {
+            // Ignore if server version doesn't support some of these features
+        }
 
         return true;
     }

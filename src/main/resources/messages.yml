@@ -1,6 +1,26 @@
 # ApartmentCore minimal messages
 # Note: Message prefix is configured in config.yml and overrides any messages.yml prefix setting
 
+# =================================================================
+# MESSAGES SETTINGS
+# =================================================================
+messages:
+  # Prefix added to all plugin messages
+  # Supports color codes (&6, &a, etc.)
+  # Values: Any string with valid color codes
+  prefix: "&6[ApartmentCore] &r"
+
+  # Enable color codes in plugin messages
+  # Allows colored text in chat and GUIs
+  # Values: true/false
+  use-colors: true
+
+  # Language file to use for plugin messages
+  # Looks for messages_<lang>.yml (e.g., messages_en_US.yml)
+  # Falls back to messages.yml if language file not found
+  # Values: Language code (e.g., "en_US", "es_ES", "fr_FR")
+  language: "en_US"
+
 general:
   cooldown: "{prefix}&cPlease wait before using a command again!"
   player_only: "{prefix}&cOnly players can use this command!"

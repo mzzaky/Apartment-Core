@@ -810,7 +810,7 @@ public class CommandHandler implements TabCompleter {
 
         // Check apartment limit
         if (!player.hasPermission("apartmentcore.bypass.limit")) {
-            int maxApartments = plugin.getConfig().getInt("limits.max-apartments-per-player", 5);
+            int maxApartments = plugin.getConfig().getInt("settings.max-apartments-per-player", 5);
             if (maxApartments > 0) {
                 long owned = apartmentManager.getApartments().values().stream()
                         .filter(a -> player.getUniqueId().equals(a.owner))

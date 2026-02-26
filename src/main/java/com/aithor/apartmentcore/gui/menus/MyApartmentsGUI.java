@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,43 +26,43 @@ import java.util.stream.Collectors;
  * GUI for managing player's owned apartments
  */
 public class MyApartmentsGUI extends PaginatedGUI {
-    
+
     private final ApartmentCore plugin;
     private final GUIManager guiManager;
-    
+
     // Action slots
     private static final int BACK_SLOT = 0;
     private static final int CLAIM_ALL_SLOT = 1;
     private static final int PAY_ALL_TAXES_SLOT = 2;
     private static final int TOGGLE_AUTO_PAY_SLOT = 7;
-    
+
     public MyApartmentsGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         super(player, ChatColor.DARK_GREEN + "My Apartments", 54, 28);
         this.plugin = plugin;
         this.guiManager = guiManager;
     }
-    
+
     @Override
     protected List<GUIItem> loadItems() {
         List<Apartment> apartments = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .sorted(Comparator.comparing(a -> a.displayName))
                 .collect(Collectors.toList());
-        
+
         List<GUIItem> items = new ArrayList<>();
         for (Apartment apartment : apartments) {
             items.add(createApartmentItem(apartment));
         }
-        
+
         return items;
     }
-    
+
     @Override
     protected void setupInventory() {
         super.setupInventory();
         addActionButtons();
     }
-    
+
     private void addActionButtons() {
         // Back button
         ItemStack backItem = new ItemBuilder(Material.ARROW)
@@ -69,81 +70,79 @@ public class MyApartmentsGUI extends PaginatedGUI {
                 .lore("&7Return to the main menu")
                 .build();
         inventory.setItem(BACK_SLOT, backItem);
-        
+
         // Claim all income button
         double totalPendingIncome = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .mapToDouble(a -> a.pendingIncome)
                 .sum();
-        
+
         Material claimMaterial = totalPendingIncome > 0 ? Material.EMERALD_BLOCK : Material.GRAY_CONCRETE;
         ItemStack claimAllItem = new ItemBuilder(claimMaterial)
                 .name("&a💰 Claim All Income")
                 .lore(
-                    "&7Claim income from all apartments",
-                    "",
-                    "&7Total Pending: &a" + plugin.getConfigManager().formatMoney(totalPendingIncome),
-                    "",
-                    totalPendingIncome > 0 ? "&a▶ Click to claim all" : "&7No income to claim"
-                )
+                        "&7Claim income from all apartments",
+                        "",
+                        "&7Total Pending: &a" + plugin.getConfigManager().formatMoney(totalPendingIncome),
+                        "",
+                        totalPendingIncome > 0 ? "&a▶ Click to claim all" : "&7No income to claim")
                 .build();
         inventory.setItem(CLAIM_ALL_SLOT, claimAllItem);
-        
+
         // Pay all taxes button
         double totalUnpaidTaxes = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .mapToDouble(a -> a.getTotalUnpaid())
                 .sum();
-        
+
         Material taxMaterial = totalUnpaidTaxes > 0 ? Material.RED_CONCRETE : Material.GREEN_CONCRETE;
         ItemStack payAllTaxesItem = new ItemBuilder(taxMaterial)
                 .name("&c📋 Pay All Taxes")
                 .lore(
-                    "&7Pay all outstanding tax bills",
-                    "",
-                    "&7Total Due: &c" + plugin.getConfigManager().formatMoney(totalUnpaidTaxes),
-                    "&7Your Balance: &a" + plugin.getConfigManager().formatMoney(plugin.getEconomy().getBalance(player)),
-                    "",
-                    totalUnpaidTaxes > 0 ? "&a▶ Click to pay all" : "&7No taxes due"
-                )
+                        "&7Pay all outstanding tax bills",
+                        "",
+                        "&7Total Due: &c" + plugin.getConfigManager().formatMoney(totalUnpaidTaxes),
+                        "&7Your Balance: &a"
+                                + plugin.getConfigManager().formatMoney(plugin.getEconomy().getBalance(player)),
+                        "",
+                        totalUnpaidTaxes > 0 ? "&a▶ Click to pay all" : "&7No taxes due")
                 .build();
         inventory.setItem(PAY_ALL_TAXES_SLOT, payAllTaxesItem);
-        
+
         // Auto-pay toggle
         boolean hasAutoPayEnabled = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .anyMatch(a -> a.autoTaxPayment);
-        
+
         Material autoPayMaterial = hasAutoPayEnabled ? Material.LIME_CONCRETE : Material.RED_CONCRETE;
         ItemStack autoPayItem = new ItemBuilder(autoPayMaterial)
                 .name("&6⚙️ Auto-Pay Taxes")
                 .lore(
-                    "&7Toggle auto-payment for all apartments",
-                    "",
-                    "&7Status: " + (hasAutoPayEnabled ? "&aEnabled" : "&cDisabled"),
-                    "&7Auto-pay will attempt to pay taxes",
-                    "&7automatically when they are due",
-                    "",
-                    "&a▶ Click to toggle"
-                )
+                        "&7Toggle auto-payment for all apartments",
+                        "",
+                        "&7Status: " + (hasAutoPayEnabled ? "&aEnabled" : "&cDisabled"),
+                        "&7Auto-pay will attempt to pay taxes",
+                        "&7automatically when they are due",
+                        "",
+                        "&a▶ Click to toggle")
                 .build();
         inventory.setItem(TOGGLE_AUTO_PAY_SLOT, autoPayItem);
     }
-    
+
     private GUIItem createApartmentItem(Apartment apartment) {
         long now = System.currentTimeMillis();
         TaxStatus taxStatus = apartment.computeTaxStatus(now);
         double totalUnpaid = apartment.getTotalUnpaid();
-        
+
         // Determine status display
         String statusDisplay;
         Material statusMaterial;
         List<String> statusLore = new ArrayList<>();
-        
+
         switch (taxStatus) {
             case ACTIVE:
                 statusDisplay = "&a✅ Active";
-                statusMaterial = Material.EMERALD_BLOCK;
+                statusMaterial = Material.DIAMOND;
                 statusLore.add("&7This apartment is fully functional");
                 break;
             case OVERDUE:
@@ -169,13 +168,13 @@ public class MyApartmentsGUI extends PaginatedGUI {
                 statusMaterial = Material.STONE;
                 break;
         }
-        
+
         // Get rating info
         ApartmentRating rating = plugin.getApartmentManager().getRating(apartment.id);
-        String ratingDisplay = rating != null && rating.ratingCount > 0 
-            ? String.format("%.1f⭐ (%d reviews)", rating.getAverageRating(), rating.ratingCount)
-            : "No ratings yet";
-        
+        String ratingDisplay = rating != null && rating.ratingCount > 0
+                ? String.format("%.1f⭐ (%d reviews)", rating.getAverageRating(), rating.ratingCount)
+                : "No ratings yet";
+
         // Get shop info
         var shopData = plugin.getShopManager().getShopData(apartment.id);
         int activeUpgrades = 0;
@@ -184,7 +183,23 @@ public class MyApartmentsGUI extends PaginatedGUI {
                 activeUpgrades++;
             }
         }
-        
+
+        long intervalMs = plugin.getConfigManager().getIncomeGenerationInterval() * 50L;
+        long nextIncomeMs = plugin.getLastIncomeGenerationTime() + intervalMs;
+        long remainingMs = nextIncomeMs - now;
+        String nextIncomeDisplay = remainingMs > 0 ? GUIUtils.formatTime(remainingMs) : "Soon...";
+
+        String nextTaxDisplay = "Unknown";
+        World mainWorld = plugin.getServer().getWorlds().isEmpty() ? null : plugin.getServer().getWorlds().get(0);
+        if (mainWorld != null) {
+            long ticksPerDay = Math.max(1, plugin.getConfigManager().getTaxGenerationInterval());
+            long currentTick = mainWorld.getFullTime();
+            long nextDayTick = ((currentTick / ticksPerDay) + 1) * ticksPerDay;
+            long remainingTicks = nextDayTick - currentTick;
+            long remainingTaxMs = remainingTicks * 50L;
+            nextTaxDisplay = remainingTaxMs > 0 ? GUIUtils.formatTime(remainingTaxMs) : "Soon...";
+        }
+
         // Build item lore
         List<String> lore = new ArrayList<>();
         lore.add("&7ID: &f" + apartment.id);
@@ -192,6 +207,8 @@ public class MyApartmentsGUI extends PaginatedGUI {
         lore.add("");
         lore.add("&e💰 Financial Info:");
         lore.add("&7• Pending Income: &a" + plugin.getConfigManager().formatMoney(apartment.pendingIncome));
+        lore.add("&7• Next Income In: &a" + nextIncomeDisplay);
+        lore.add("&7• Next Tax In: &c" + nextTaxDisplay);
         lore.add("&7• Outstanding Taxes: &c" + plugin.getConfigManager().formatMoney(totalUnpaid));
         lore.add("&7• Auto-pay: " + (apartment.autoTaxPayment ? "&aEnabled" : "&cDisabled"));
         lore.add("");
@@ -207,73 +224,74 @@ public class MyApartmentsGUI extends PaginatedGUI {
         lore.add("&a▶ Left-click for details");
         lore.add("&a▶ Right-click for shop");
         lore.add("&a▶ Shift+click to teleport");
-        
+
         ItemStack item = new ItemBuilder(statusMaterial)
                 .name("&6🏠 " + apartment.displayName)
                 .lore(lore)
                 .build();
-        
+
         return new GUIItem(item, apartment.id, apartment);
     }
-    
+
     @Override
     protected void handleItemClick(GUIItem item, InventoryClickEvent event) {
         Apartment apartment = item.getData(Apartment.class);
-        if (apartment == null) return;
-        
-        ClickType clickType = event.getClick();
-        
-        if (clickType == ClickType.SHIFT_LEFT || clickType == ClickType.SHIFT_RIGHT) {
+        if (apartment == null)
+            return;
+
+        if (event.isShiftClick()) {
             // Teleport to apartment
             handleTeleport(apartment);
-        } else if (clickType == ClickType.RIGHT) {
+        } else if (event.isRightClick()) {
             // Open shop for this apartment
             handleShopAccess(apartment);
         } else {
-            // View details (open next tick to avoid inventory modification during click processing)
-            plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openApartmentDetails(player, apartment.id));
+            // View details (open next tick to avoid inventory modification during click
+            // processing)
+            plugin.getServer().getScheduler().runTask(plugin,
+                    () -> guiManager.openApartmentDetails(player, apartment.id));
         }
     }
-    
+
     @Override
     public void handleClick(InventoryClickEvent event) {
         int slot = event.getSlot();
-        
+
         if (slot == BACK_SLOT) {
             guiManager.openMainMenu(player);
             return;
         }
-        
+
         if (slot == CLAIM_ALL_SLOT) {
             handleClaimAll();
             return;
         }
-        
+
         if (slot == PAY_ALL_TAXES_SLOT) {
             handlePayAllTaxes();
             return;
         }
-        
+
         if (slot == TOGGLE_AUTO_PAY_SLOT) {
             handleToggleAutoPay();
             return;
         }
-        
+
         // Handle pagination and items
         super.handleClick(event);
     }
-    
+
     private void handleTeleport(Apartment apartment) {
         if (apartment.inactive && !apartment.canGenerateIncome(System.currentTimeMillis())) {
             GUIUtils.sendMessage(player, "&cThis apartment is inactive and cannot be used!");
             GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
             return;
         }
-        
+
         player.closeInventory();
         plugin.getApartmentManager().teleportToApartment(player, apartment.id, false);
     }
-    
+
     private void handleShopAccess(Apartment apartment) {
         // Check permissions
         if (!player.hasPermission("apartmentcore.shop.view")) {
@@ -281,27 +299,26 @@ public class MyApartmentsGUI extends PaginatedGUI {
             GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
             return;
         }
-        
+
         // Open shop GUI for this apartment
-        plugin.getServer().getScheduler().runTask(plugin, () ->
-            guiManager.openApartmentShop(player, apartment.id));
+        plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openApartmentShop(player, apartment.id));
     }
-    
+
     private void handleClaimAll() {
         player.closeInventory();
-        
+
         // Calculate total income to claim
         double totalIncome = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .mapToDouble(a -> a.pendingIncome)
                 .sum();
-        
+
         if (totalIncome <= 0) {
             GUIUtils.sendMessage(player, "&cNo income to claim!");
             GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
             return;
         }
-        
+
         // Claim income from all apartments
         int claimedCount = 0;
         for (Apartment apartment : plugin.getApartmentManager().getApartments().values()) {
@@ -311,27 +328,27 @@ public class MyApartmentsGUI extends PaginatedGUI {
                 claimedCount++;
             }
         }
-        
+
         plugin.getApartmentManager().saveApartments();
-        
-        GUIUtils.sendMessage(player, "&aClaimed &f" + plugin.getConfigManager().formatMoney(totalIncome) + 
+
+        GUIUtils.sendMessage(player, "&aClaimed &f" + plugin.getConfigManager().formatMoney(totalIncome) +
                 " &afrom &f" + claimedCount + " &aapartments!");
         GUIUtils.playSound(player, GUIUtils.SUCCESS_SOUND);
     }
-    
+
     private void handlePayAllTaxes() {
         player.closeInventory();
-        
+
         // Use existing tax pay command
         plugin.getServer().dispatchCommand(player, "apartmentcore tax pay");
     }
-    
+
     private void handleToggleAutoPay() {
         // Toggle auto-pay for all apartments
         boolean newState = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .noneMatch(a -> a.autoTaxPayment); // If none have auto-pay, enable for all
-        
+
         int changedCount = 0;
         for (Apartment apartment : plugin.getApartmentManager().getApartments().values()) {
             if (player.getUniqueId().equals(apartment.owner)) {
@@ -339,13 +356,13 @@ public class MyApartmentsGUI extends PaginatedGUI {
                 changedCount++;
             }
         }
-        
+
         plugin.getApartmentManager().saveApartments();
-        
+
         String status = newState ? "enabled" : "disabled";
         GUIUtils.sendMessage(player, "&aAuto-pay has been &f" + status + " &afor &f" + changedCount + " &aapartments!");
         GUIUtils.playSound(player, GUIUtils.SUCCESS_SOUND);
-        
+
         refresh(); // Refresh the GUI to show updated status
     }
 }

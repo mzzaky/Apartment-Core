@@ -43,11 +43,12 @@ public class DataManager {
      */
     public void loadDataFile() {
         try {
-            if (!plugin.getDataFolder().exists()) {
-                plugin.getDataFolder().mkdirs();
+            File dataDir = new File(plugin.getDataFolder(), "data");
+            if (!dataDir.exists()) {
+                dataDir.mkdirs();
             }
 
-            dataFile = new File(plugin.getDataFolder(), "apartments.yml");
+            dataFile = new File(dataDir, "apartments.yml");
             if (!dataFile.exists()) {
                 dataFile.createNewFile();
                 plugin.debug("Created new apartments.yml file");
@@ -74,10 +75,11 @@ public class DataManager {
      */
     public void loadGuestBookFile() {
         try {
-            if (!plugin.getDataFolder().exists()) {
-                plugin.getDataFolder().mkdirs();
+            File dataDir = new File(plugin.getDataFolder(), "data");
+            if (!dataDir.exists()) {
+                dataDir.mkdirs();
             }
-            guestBookFile = new File(plugin.getDataFolder(), "guestbook.yml");
+            guestBookFile = new File(dataDir, "guestbook.yml");
             if (!guestBookFile.exists()) {
                 guestBookFile.createNewFile();
                 plugin.debug("Created new guestbook.yml file");
@@ -94,10 +96,11 @@ public class DataManager {
      */
     public void loadStatsFile() {
         try {
-            if (!plugin.getDataFolder().exists()) {
-                plugin.getDataFolder().mkdirs();
+            File dataDir = new File(plugin.getDataFolder(), "data");
+            if (!dataDir.exists()) {
+                dataDir.mkdirs();
             }
-            statsFile = new File(plugin.getDataFolder(), "apartments-stats.yml");
+            statsFile = new File(dataDir, "apartments-stats.yml");
             if (!statsFile.exists()) {
                 statsFile.createNewFile();
                 plugin.debug("Created new apartments-stats.yml file");
@@ -163,7 +166,8 @@ public class DataManager {
      * Setup backup system
      */
     private void setupBackupSystem() {
-        backupFolder = new File(plugin.getDataFolder(), "backups");
+        File dataDir = new File(plugin.getDataFolder(), "data");
+        backupFolder = new File(dataDir, "backups");
         if (!backupFolder.exists()) {
             backupFolder.mkdirs();
         }

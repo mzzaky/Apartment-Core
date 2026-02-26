@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+// Note: the above imports are still needed for shop.yml loading
 /**
  * Manages all configuration values and settings
  */
@@ -23,19 +24,17 @@ public class ConfigManager {
 
     // Configuration values
     private boolean debugMode;
-    private boolean useMySQL;
     private String currencySymbol;
     private boolean autoSaveEnabled;
     private int autoSaveInterval;
     private double sellPercentage;
-    private double penaltyPercentage;
     private int inactiveGracePeriod;
     private long commandCooldown;
     private boolean backupEnabled;
     private int maxBackups;
     private Map<Integer, LevelConfig> levelConfigs;
 
-    // New GuestBook settings
+    // GuestBook settings
     private int guestBookMaxMessages;
     private int guestBookMaxMessageLength;
     private int guestBookLeaveCooldown;
@@ -69,12 +68,9 @@ public class ConfigManager {
     private boolean guiEnabled;
     private int guiRefreshInterval;
     private boolean guiSounds;
-    private boolean guiAnimations;
 
     // Performance settings
     private boolean performanceUseAsync;
-    private boolean performanceUseCache;
-    private int performanceCacheExpiry;
 
     // WorldGuard settings
     private boolean wgAutoAddOwner;
@@ -82,27 +78,16 @@ public class ConfigManager {
     private boolean wgCheckFlags;
     private java.util.List<String> wgRequiredFlags;
 
-    // Messages settings
-    private String messagesPrefix;
-    private boolean messagesUseColors;
-    private String messagesLanguage;
-
     // Feature toggles
     private boolean featureIncomeGeneration;
     private boolean featureTaxSystem;
-    private boolean featureLevelSystem;
     private boolean featureTeleportation;
 
-    // Time tick settings
-    private int ticksPerHour;
-    private int ticksPerDay;
+    // Income & Tax settings
+    private int taxGenerationInterval;
 
-    // PlaceholderAPI
-    private int placeholderUpdateInterval;
-
-    // Security extras
-    private boolean securityRequireConfirmation;
-    private boolean securityLogSuspicious;
+    // Income settings
+    private int incomeGenerationInterval;
 
 
     public ConfigManager(ApartmentCore plugin) {
@@ -120,13 +105,11 @@ public class ConfigManager {
         config = plugin.getConfig(); // Re-assign
 
         debugMode = config.getBoolean("debug", false);
-        useMySQL = config.getBoolean("database.use-mysql", false);
         currencySymbol = config.getString("economy.currency-symbol", "$");
         autoSaveEnabled = config.getBoolean("auto-save.enabled", true);
         autoSaveInterval = config.getInt("auto-save.interval-minutes", 10);
         sellPercentage = config.getDouble("economy.sell-percentage", 70) / 100.0;
-        penaltyPercentage = config.getDouble("economy.penalty-percentage", 25) / 100.0;
-        inactiveGracePeriod = config.getInt("time.inactive-grace-period", 3);
+        inactiveGracePeriod = config.getInt("settings.inactive-grace-period", 3);
         commandCooldown = config.getLong("security.command-cooldown", 1000);
         backupEnabled = config.getBoolean("backup.enabled", true);
         maxBackups = config.getInt("backup.max-backups", 10);
@@ -179,12 +162,9 @@ public class ConfigManager {
         guiEnabled = config.getBoolean("gui.enabled", true);
         guiRefreshInterval = config.getInt("gui.refresh-interval", 30);
         guiSounds = config.getBoolean("gui.sounds", true);
-        guiAnimations = config.getBoolean("gui.animations", true);
 
         // Load Performance settings
         performanceUseAsync = config.getBoolean("performance.use-async", true);
-        performanceUseCache = config.getBoolean("performance.use-cache", true);
-        performanceCacheExpiry = config.getInt("performance.cache-expiry", 300);
 
         // Load WorldGuard settings
         wgAutoAddOwner = config.getBoolean("worldguard.auto-add-owner", true);
@@ -192,35 +172,25 @@ public class ConfigManager {
         wgCheckFlags = config.getBoolean("worldguard.check-flags", false);
         wgRequiredFlags = config.getStringList("worldguard.required-flags");
 
-        // Load Messages settings
-        messagesPrefix = config.getString("messages.prefix", "&6[ApartmentCore] &r");
-        messagesUseColors = config.getBoolean("messages.use-colors", true);
-        messagesLanguage = config.getString("messages.language", "en_US");
 
         // Load Feature toggles
         featureIncomeGeneration = config.getBoolean("features.income-generation", true);
         featureTaxSystem = config.getBoolean("features.tax-system", true);
-        featureLevelSystem = config.getBoolean("features.level-system", true);
         featureTeleportation = config.getBoolean("features.teleportation", true);
 
-        // Load time tick settings
-        ticksPerHour = config.getInt("time.ticks-per-hour", 1000);
-        ticksPerDay = config.getInt("time.ticks-per-day", 24000);
+        // Load income & tax settings
+        taxGenerationInterval = config.getInt("settings.tax-generation-interval", 24000);
 
-        // Placeholder API settings
-        placeholderUpdateInterval = config.getInt("placeholderapi.update-interval", 60);
+        // Load income settings
+        incomeGenerationInterval = config.getInt("settings.income-generation-interval", 24000);
 
-        // Security extras
-        securityRequireConfirmation = config.getBoolean("security.require-confirmation", true);
-        securityLogSuspicious = config.getBoolean("security.log-suspicious", true);
- 
         plugin.debug("Configuration loaded successfully");
- 
-        // Load external GUI configuration (apartment_gui.yml) so GUIs can use custom menus/items
+
+        // Load external Shop configuration (shop.yml)
         try {
-            loadGuiConfig();
+            loadShopConfig();
         } catch (Throwable t) {
-            plugin.getLogger().warning("Failed to load external GUI config: " + t.getMessage());
+            plugin.getLogger().warning("Failed to load external Shop config: " + t.getMessage());
         }
  
         // Notify GUI manager (if present) so GUIs immediately reflect configuration changes
@@ -249,12 +219,10 @@ public class ConfigManager {
 
     // Getters
     public boolean isDebugMode() { return debugMode; }
-    public boolean isUseMySQL() { return useMySQL; }
     public String getCurrencySymbol() { return currencySymbol; }
     public boolean isAutoSaveEnabled() { return autoSaveEnabled; }
     public int getAutoSaveInterval() { return autoSaveInterval; }
     public double getSellPercentage() { return sellPercentage; }
-    public double getPenaltyPercentage() { return penaltyPercentage; }
     public int getInactiveGracePeriod() { return inactiveGracePeriod; }
     public long getCommandCooldown() { return commandCooldown; }
     public boolean isBackupEnabled() { return backupEnabled; }
@@ -292,12 +260,9 @@ public class ConfigManager {
     public boolean isGuiEnabled() { return guiEnabled; }
     public int getGuiRefreshInterval() { return guiRefreshInterval; }
     public boolean isGuiSounds() { return guiSounds; }
-    public boolean isGuiAnimations() { return guiAnimations; }
 
     // Performance getters
     public boolean isPerformanceUseAsync() { return performanceUseAsync; }
-    public boolean isPerformanceUseCache() { return performanceUseCache; }
-    public int getPerformanceCacheExpiry() { return performanceCacheExpiry; }
 
     // WorldGuard getters
     public boolean isWgAutoAddOwner() { return wgAutoAddOwner; }
@@ -305,84 +270,70 @@ public class ConfigManager {
     public boolean isWgCheckFlags() { return wgCheckFlags; }
     public java.util.List<String> getWgRequiredFlags() { return wgRequiredFlags; }
 
-    // Messages getters
-    public String getMessagesPrefix() { return messagesPrefix; }
-    public boolean isMessagesUseColors() { return messagesUseColors; }
-    public String getMessagesLanguage() { return messagesLanguage; }
-
     // Feature getters
     public boolean isFeatureIncomeGeneration() { return featureIncomeGeneration; }
     public boolean isFeatureTaxSystem() { return featureTaxSystem; }
-    public boolean isFeatureLevelSystem() { return featureLevelSystem; }
     public boolean isFeatureTeleportation() { return featureTeleportation; }
 
-    // Time getters
-    public int getTicksPerHour() { return ticksPerHour; }
-    public int getTicksPerDay() { return ticksPerDay; }
+    // Income & Tax getters
+    public int getTaxGenerationInterval() { return taxGenerationInterval; }
 
-    // PlaceholderAPI
-    public int getPlaceholderUpdateInterval() { return placeholderUpdateInterval; }
+    // Income getters
+    public int getIncomeGenerationInterval() { return incomeGenerationInterval; }
  
-    // Security extras
-    public boolean isSecurityRequireConfirmation() { return securityRequireConfirmation; }
-    public boolean isSecurityLogSuspicious() { return securityLogSuspicious; }
- 
-    // External GUI configuration file (apartment_gui.yml)
-    private File guiConfigFile;
-    private FileConfiguration guiConfig;
+    // External Shop configuration file (shop.yml)
+    private File shopConfigFile;
+    private FileConfiguration shopConfig;
  
     /**
-     * Load or reload the external GUI configuration file (apartment_gui.yml).
+     * Load or reload the external Shop configuration file (shop.yml).
      * If the file doesn't exist in plugin data folder, attempt to copy bundled resource.
      */
-    public void loadGuiConfig() {
+    public void loadShopConfig() {
         try {
             if (!plugin.getDataFolder().exists()) {
                 if (!plugin.getDataFolder().mkdirs()) {
-                    plugin.getLogger().warning("Could not create plugin data folder to store apartment_gui.yml");
+                    plugin.getLogger().warning("Could not create plugin data folder to store shop.yml");
                 }
             }
- 
-            this.guiConfigFile = new File(plugin.getDataFolder(), "apartment_gui.yml");
-            if (!this.guiConfigFile.exists()) {
-                // Try to copy bundled resource if available
-                try (InputStream in = plugin.getResource("apartment_gui.yml")) {
+
+            this.shopConfigFile = new File(plugin.getDataFolder(), "shop.yml");
+            if (!this.shopConfigFile.exists()) {
+                try (InputStream in = plugin.getResource("shop.yml")) {
                     if (in != null) {
-                        Files.copy(in, this.guiConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        Files.copy(in, this.shopConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        plugin.getLogger().info("shop.yml created from default resource.");
                     } else {
-                        // create an empty file so the server admin can edit it
-                        this.guiConfigFile.createNewFile();
+                        this.shopConfigFile.createNewFile();
+                        plugin.getLogger().warning("shop.yml resource not found in jar! Created empty file.");
                     }
                 } catch (IOException ioe) {
-                    plugin.getLogger().warning("Failed to create/copy apartment_gui.yml: " + ioe.getMessage());
+                    plugin.getLogger().warning("Failed to create/copy shop.yml: " + ioe.getMessage());
                 }
             }
- 
-            this.guiConfig = YamlConfiguration.loadConfiguration(this.guiConfigFile);
-            plugin.debug("GUI configuration loaded from " + this.guiConfigFile.getName());
+
+            this.shopConfig = YamlConfiguration.loadConfiguration(this.shopConfigFile);
+            plugin.debug("Shop configuration loaded from " + this.shopConfigFile.getName());
         } catch (Throwable t) {
-            plugin.getLogger().warning("Failed to load GUI config: " + t.getMessage());
+            plugin.getLogger().warning("Failed to load Shop config: " + t.getMessage());
         }
     }
- 
+
     /**
-     * Get the raw GUI FileConfiguration. Loads it lazily if needed.
+     * Get the raw Shop FileConfiguration. Loads it lazily if needed.
      */
-    public FileConfiguration getGuiConfig() {
-        if (this.guiConfig == null) {
-            loadGuiConfig();
+    public FileConfiguration getShopConfig() {
+        if (this.shopConfig == null) {
+            loadShopConfig();
         }
-        return this.guiConfig;
+        return this.shopConfig;
     }
- 
+
     /**
-     * Get a ConfigurationSection for a named menu under 'menus.<menuId>' in apartment_gui.yml
-     * Example: getGuiMenuSection("main-menu") => configuration section at menus.main-menu
+     * Get the shop.yml File instance.
      */
-    public ConfigurationSection getGuiMenuSection(String menuId) {
-        FileConfiguration cfg = getGuiConfig();
-        if (cfg == null) return null;
-        return cfg.getConfigurationSection("menus." + menuId);
+    public File getShopConfigFile() {
+        return this.shopConfigFile;
     }
- 
+
 }

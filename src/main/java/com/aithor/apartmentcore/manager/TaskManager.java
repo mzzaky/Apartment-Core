@@ -40,14 +40,14 @@ public class TaskManager {
      * Respects:
      * - features.income-generation
      * - performance.use-async
-     * - time.ticks-per-hour
+     * - income.generation-interval
      */
     private void startIncomeTask() {
         if (!configManager.isFeatureIncomeGeneration()) {
             plugin.debug("Income generation disabled via features.income-generation");
             return;
         }
-        long period = Math.max(1L, configManager.getTicksPerHour()); // ticks
+        long period = Math.max(1L, configManager.getIncomeGenerationInterval()); // ticks
         BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -68,7 +68,7 @@ public class TaskManager {
      * Start tax collection and daily update task
      * Respects:
      * - features.tax-system
-     * - time.ticks-per-day
+     * - settings.tax-generation-interval
      */
     private void startDailyUpdateTask() {
         // Check every 100 ticks (5 seconds) for day changes
@@ -81,7 +81,7 @@ public class TaskManager {
                 World mainWorld = plugin.getServer().getWorlds().isEmpty() ? null : plugin.getServer().getWorlds().get(0);
                 if (mainWorld == null) return;
 
-                long ticksPerDay = Math.max(1, configManager.getTicksPerDay());
+                long ticksPerDay = Math.max(1, configManager.getTaxGenerationInterval());
                 long currentDay = mainWorld.getFullTime() / ticksPerDay;
                 long lastMinecraftDay = plugin.getLastMinecraftDay();
 
