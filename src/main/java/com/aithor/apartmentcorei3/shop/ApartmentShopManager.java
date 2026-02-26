@@ -1,10 +1,10 @@
 package com.aithor.apartmentcorei3.shop;
 
-import com.aithor.apartmentcorei3.Apartment;
+import com.aithor.apartmentcorei3.model.Apartment;
 import com.aithor.apartmentcorei3.ApartmentCorei3;
-import com.aithor.apartmentcorei3.ApartmentManager;
-import com.aithor.apartmentcorei3.ConfigManager;
-import com.aithor.apartmentcorei3.DataManager;
+import com.aithor.apartmentcorei3.manager.ApartmentManager;
+import com.aithor.apartmentcorei3.manager.ConfigManager;
+import com.aithor.apartmentcorei3.manager.DataManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;

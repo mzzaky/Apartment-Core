@@ -1,4 +1,7 @@
-package com.aithor.apartmentcorei3;
+package com.aithor.apartmentcorei3.manager;
+
+import com.aithor.apartmentcorei3.ApartmentCorei3;
+import com.aithor.apartmentcorei3.model.LevelConfig;
 
 import java.util.HashMap;
 import java.util.Map;

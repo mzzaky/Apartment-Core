@@ -1,4 +1,4 @@
-package com.aithor.apartmentcorei3;
+package com.aithor.apartmentcorei3.model;
 
 /**
  * Public level configuration model used across the plugin

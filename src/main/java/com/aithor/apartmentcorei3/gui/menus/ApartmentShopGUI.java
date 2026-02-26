@@ -1,6 +1,6 @@
 package com.aithor.apartmentcorei3.gui.menus;
 
-import com.aithor.apartmentcorei3.Apartment;
+import com.aithor.apartmentcorei3.model.Apartment;
 import com.aithor.apartmentcorei3.ApartmentCorei3;
 import com.aithor.apartmentcorei3.gui.GUIManager;
 import com.aithor.apartmentcorei3.gui.interfaces.GUI;

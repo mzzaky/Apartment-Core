@@ -1,4 +1,4 @@
-package com.aithor.apartmentcorei3;
+package com.aithor.apartmentcorei3.model;
 
 /**
  * Represents the overall tax status of an apartment based on unpaid invoices and time elapsed.

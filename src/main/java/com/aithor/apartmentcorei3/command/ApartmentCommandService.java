@@ -1,4 +1,20 @@
-package com.aithor.apartmentcorei3;
+package com.aithor.apartmentcorei3.command;
+
+import com.aithor.apartmentcorei3.ApartmentCorei3;
+import com.aithor.apartmentcorei3.manager.ApartmentManager;
+import com.aithor.apartmentcorei3.manager.AuctionManager;
+import com.aithor.apartmentcorei3.manager.ConfigManager;
+import com.aithor.apartmentcorei3.manager.DataManager;
+import com.aithor.apartmentcorei3.manager.MessageManager;
+import com.aithor.apartmentcorei3.model.Apartment;
+import com.aithor.apartmentcorei3.model.ApartmentAuction;
+import com.aithor.apartmentcorei3.model.ApartmentRating;
+import com.aithor.apartmentcorei3.model.ApartmentStats;
+import com.aithor.apartmentcorei3.model.ConfirmationAction;
+import com.aithor.apartmentcorei3.model.GuestBookEntry;
+import com.aithor.apartmentcorei3.model.LevelConfig;
+import com.aithor.apartmentcorei3.model.TaxInvoice;
+import com.aithor.apartmentcorei3.model.TaxStatus;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;

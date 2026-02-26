@@ -1,6 +1,11 @@
 package com.aithor.apartmentcorei3.gui.menus;
 
-import com.aithor.apartmentcorei3.*;
+import com.aithor.apartmentcorei3.ApartmentCorei3;
+import com.aithor.apartmentcorei3.manager.AuctionManager;
+import com.aithor.apartmentcorei3.model.Apartment;
+import com.aithor.apartmentcorei3.model.ApartmentAuction;
+import com.aithor.apartmentcorei3.model.ApartmentRating;
+import com.aithor.apartmentcorei3.model.LevelConfig;
 import com.aithor.apartmentcorei3.gui.GUIManager;
 import com.aithor.apartmentcorei3.gui.interfaces.PaginatedGUI;
 import com.aithor.apartmentcorei3.gui.items.GUIItem;

@@ -1,4 +1,12 @@
-package com.aithor.apartmentcorei3;
+package com.aithor.apartmentcorei3.placeholder;
+
+import com.aithor.apartmentcorei3.ApartmentCorei3;
+import com.aithor.apartmentcorei3.manager.ApartmentManager;
+import com.aithor.apartmentcorei3.manager.ConfigManager;
+import com.aithor.apartmentcorei3.model.Apartment;
+import com.aithor.apartmentcorei3.model.ApartmentRating;
+import com.aithor.apartmentcorei3.model.ApartmentStats;
+import com.aithor.apartmentcorei3.model.TaxStatus;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;

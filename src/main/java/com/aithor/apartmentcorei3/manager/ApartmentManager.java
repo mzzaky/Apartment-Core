@@ -1,4 +1,12 @@
-package com.aithor.apartmentcorei3;
+package com.aithor.apartmentcorei3.manager;
+
+import com.aithor.apartmentcorei3.ApartmentCorei3;
+import com.aithor.apartmentcorei3.model.Apartment;
+import com.aithor.apartmentcorei3.model.ApartmentRating;
+import com.aithor.apartmentcorei3.model.ApartmentStats;
+import com.aithor.apartmentcorei3.model.GuestBookEntry;
+import com.aithor.apartmentcorei3.model.TaxInvoice;
+import com.aithor.apartmentcorei3.model.TaxStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,6 @@
-package com.aithor.apartmentcorei3;
+package com.aithor.apartmentcorei3.manager;
+
+import com.aithor.apartmentcorei3.ApartmentCorei3;
 
 import java.io.*;
 import java.nio.file.*;

@@ -366,7 +366,7 @@ public class MainMenuGUI implements GUI {
 
         double totalIncomeGenerated = 0.0;
         double totalTaxPaid = 0.0;
-        for (com.aithor.apartmentcorei3.Apartment a : plugin.getApartmentManager().getApartments().values()) {
+        for (com.aithor.apartmentcorei3.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
             if (!player.getUniqueId().equals(a.owner)) continue;
             var st = plugin.getApartmentManager().getStats(a.id);
             if (st != null) {
@@ -429,7 +429,7 @@ public class MainMenuGUI implements GUI {
         double totalInvestment = 0.0;
         int totalUpgrades = 0;
         
-        for (com.aithor.apartmentcorei3.Apartment a : plugin.getApartmentManager().getApartments().values()) {
+        for (com.aithor.apartmentcorei3.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
             if (!player.getUniqueId().equals(a.owner)) continue;
             var shopData = plugin.getShopManager().getShopData(a.id);
             totalInvestment += shopData.getTotalMoneySpent();
@@ -629,7 +629,7 @@ public class MainMenuGUI implements GUI {
 
         double totalIncomeGenerated = 0.0;
         double totalTaxPaid = 0.0;
-        for (com.aithor.apartmentcorei3.Apartment a : plugin.getApartmentManager().getApartments().values()) {
+        for (com.aithor.apartmentcorei3.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
             if (!player.getUniqueId().equals(a.owner)) continue;
             var st = plugin.getApartmentManager().getStats(a.id);
             if (st != null) {
@@ -640,7 +640,7 @@ public class MainMenuGUI implements GUI {
 
         double shopInvestment = 0.0;
         int shopUpgrades = 0;
-        for (com.aithor.apartmentcorei3.Apartment a : plugin.getApartmentManager().getApartments().values()) {
+        for (com.aithor.apartmentcorei3.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
             if (!player.getUniqueId().equals(a.owner)) continue;
             var shopData = plugin.getShopManager().getShopData(a.id);
             shopInvestment += shopData.getTotalMoneySpent();

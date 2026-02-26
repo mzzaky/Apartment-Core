@@ -1,6 +1,16 @@
 package com.aithor.apartmentcorei3;
 
+import com.aithor.apartmentcorei3.command.CommandHandler;
 import com.aithor.apartmentcorei3.gui.GUIManager;
+import com.aithor.apartmentcorei3.manager.ApartmentManager;
+import com.aithor.apartmentcorei3.manager.AuctionManager;
+import com.aithor.apartmentcorei3.manager.ConfigManager;
+import com.aithor.apartmentcorei3.manager.DataManager;
+import com.aithor.apartmentcorei3.manager.LoggerManager;
+import com.aithor.apartmentcorei3.manager.MessageManager;
+import com.aithor.apartmentcorei3.manager.TaskManager;
+import com.aithor.apartmentcorei3.model.ConfirmationAction;
+import com.aithor.apartmentcorei3.placeholder.ApartmentPlaceholder;
 import com.aithor.apartmentcorei3.shop.ApartmentShopManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.Command;
