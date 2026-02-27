@@ -8,6 +8,7 @@ import com.aithor.apartmentcore.gui.interfaces.PaginatedGUI;
 import com.aithor.apartmentcore.gui.items.GUIItem;
 import com.aithor.apartmentcore.gui.items.ItemBuilder;
 import com.aithor.apartmentcore.gui.utils.GUIUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -50,21 +51,21 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
     @Override
     protected List<GUIItem> loadItems() {
         List<Apartment> apartments = plugin.getApartmentManager().getApartments().values().stream()
-                .filter(a -> a.owner == null) // Only available apartments
+                .filter(a -> a.owner == null || a.marketListing) // Government + market listings
                 .collect(Collectors.toList());
-        
+
         // Apply filters
         apartments = applyFilter(apartments);
-        
+
         // Apply sorting
         apartments = applySort(apartments);
-        
+
         // Convert to GUI items
         List<GUIItem> items = new ArrayList<>();
         for (Apartment apartment : apartments) {
             items.add(createApartmentItem(apartment));
         }
-        
+
         return items;
     }
     
@@ -163,28 +164,32 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
         inventory.setItem(SORT_SLOT, sortItem);
     }
     
+    private double getEffectivePrice(Apartment a) {
+        return (a.marketListing && a.owner != null) ? a.marketPrice : a.price;
+    }
+
     private List<Apartment> applyFilter(List<Apartment> apartments) {
         switch (currentFilter) {
             case CHEAP:
                 double medianPrice = apartments.stream()
-                        .mapToDouble(a -> a.price)
+                        .mapToDouble(this::getEffectivePrice)
                         .sorted()
                         .skip(apartments.size() / 2)
                         .findFirst()
                         .orElse(0);
                 return apartments.stream()
-                        .filter(a -> a.price <= medianPrice)
+                        .filter(a -> getEffectivePrice(a) <= medianPrice)
                         .collect(Collectors.toList());
-                        
+
             case EXPENSIVE:
                 double medianPrice2 = apartments.stream()
-                        .mapToDouble(a -> a.price)
+                        .mapToDouble(this::getEffectivePrice)
                         .sorted()
                         .skip(apartments.size() / 2)
                         .findFirst()
                         .orElse(0);
                 return apartments.stream()
-                        .filter(a -> a.price > medianPrice2)
+                        .filter(a -> getEffectivePrice(a) > medianPrice2)
                         .collect(Collectors.toList());
                         
             case TOP_RATED:
@@ -209,12 +214,12 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
         switch (currentSort) {
             case PRICE_LOW:
                 return apartments.stream()
-                        .sorted(Comparator.comparingDouble(a -> a.price))
+                        .sorted(Comparator.comparingDouble(this::getEffectivePrice))
                         .collect(Collectors.toList());
-                        
+
             case PRICE_HIGH:
                 return apartments.stream()
-                        .sorted(Comparator.comparingDouble((Apartment a) -> a.price).reversed())
+                        .sorted(Comparator.comparingDouble((Apartment a) -> getEffectivePrice(a)).reversed())
                         .collect(Collectors.toList());
                         
             case RATING:
@@ -241,34 +246,71 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
     private GUIItem createApartmentItem(Apartment apartment) {
         ApartmentRating rating = plugin.getApartmentManager().getRating(apartment.id);
         double avgRating = rating != null ? rating.getAverageRating() : 0;
-        String ratingDisplay = rating != null && rating.ratingCount > 0 
+        String ratingDisplay = rating != null && rating.ratingCount > 0
             ? String.format("%.1f⭐ (%d reviews)", avgRating, rating.ratingCount)
             : "No ratings yet";
-        
+
         // Get level config for income display
         var levelConfig = plugin.getConfigManager().getLevelConfig(apartment.level);
-        String incomeRange = levelConfig != null 
+        String incomeRange = levelConfig != null
             ? plugin.getConfigManager().formatMoney(levelConfig.minIncome) + " - " + plugin.getConfigManager().formatMoney(levelConfig.maxIncome)
             : "Unknown";
-        
-        ItemStack item = new ItemBuilder(Material.DARK_OAK_DOOR)
+
+        boolean isMarketListing = apartment.marketListing && apartment.owner != null;
+        boolean isGovernment = apartment.owner == null;
+
+        // Determine owner/seller display
+        String ownerDisplay;
+        if (isGovernment) {
+            ownerDisplay = "&6Government";
+        } else {
+            ownerDisplay = "&f" + Bukkit.getOfflinePlayer(apartment.owner).getName();
+        }
+
+        // Determine price display
+        double displayPrice = isMarketListing ? apartment.marketPrice : apartment.price;
+
+        // Determine material based on listing type
+        Material itemMaterial = isMarketListing ? Material.OAK_DOOR : Material.DARK_OAK_DOOR;
+
+        // Build lore
+        List<String> lore = new ArrayList<>();
+        lore.add("&7ID: &f" + apartment.id);
+        lore.add("&7Location: &f" + apartment.worldName);
+        lore.add("");
+
+        // Owner/seller info
+        if (isMarketListing) {
+            lore.add("&d📢 Market Listing");
+            lore.add("&7Seller: " + ownerDisplay);
+        } else {
+            lore.add("&b🏛 Government Property");
+            lore.add("&7Owner: " + ownerDisplay);
+        }
+        lore.add("");
+
+        // Property details
+        lore.add("&e💰 Price: &f" + plugin.getConfigManager().formatMoney(displayPrice));
+        lore.add("&e📊 Level: &f" + apartment.level + "/5");
+        lore.add("&e💸 Income: &f" + incomeRange + "/hour");
+        lore.add("&e⭐ Rating: &f" + ratingDisplay);
+        lore.add("");
+
+        // Actions
+        lore.add("&a▶ Left-click to view details");
+        if (isMarketListing) {
+            lore.add("&a▶ Right-click to buy from seller");
+        } else {
+            lore.add("&a▶ Right-click to buy instantly");
+        }
+        lore.add("&a▶ Shift+click to teleport & preview");
+
+        ItemStack item = new ItemBuilder(itemMaterial)
                 .name("&6🏠 " + apartment.displayName)
-                .lore(
-                    "&7ID: &f" + apartment.id,
-                    "&7Location: &f" + apartment.worldName,
-                    "",
-                    "&e💰 Price: &f" + plugin.getConfigManager().formatMoney(apartment.price),
-                    "&e📊 Level: &f" + apartment.level + "/5",
-                    "&e💸 Income: &f" + incomeRange + "/hour",
-                    "&e⭐ Rating: &f" + ratingDisplay,
-                    "",
-                    "&a▶ Left-click to view details",
-                    "&a▶ Right-click to buy instantly",
-                    "&a▶ Shift+click to teleport & preview"
-                )
+                .lore(lore)
                 .glow()
                 .build();
-        
+
         return new GUIItem(item, apartment.id, apartment);
     }
     
@@ -348,9 +390,14 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
     
     private void handleInstantBuy(Apartment apartment) {
         player.closeInventory();
-        
-        // Use existing buy command logic
-        plugin.getServer().dispatchCommand(player, "apartmentcore buy " + apartment.id);
+
+        if (apartment.marketListing && apartment.owner != null) {
+            // Market buy - ownership transfer from seller
+            plugin.getServer().dispatchCommand(player, "apartmentcore marketbuy " + apartment.id);
+        } else {
+            // Regular buy from government
+            plugin.getServer().dispatchCommand(player, "apartmentcore buy " + apartment.id);
+        }
     }
     
     private void handlePreview(Apartment apartment) {

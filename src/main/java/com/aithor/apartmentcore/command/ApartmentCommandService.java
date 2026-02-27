@@ -359,6 +359,163 @@ public class ApartmentCommandService {
         return true;
     }
 
+    /**
+     * Handle market sell command - list apartment on the market for other players to buy
+     */
+    public boolean handleMarketSellCommand(Player player, String apartmentId) {
+        Apartment apt = apartmentManager.getApartment(apartmentId);
+        if (apt == null) {
+            player.sendMessage(ChatColor.RED + "Apartment not found!");
+            return true;
+        }
+
+        if (apt.owner == null || !apt.owner.equals(player.getUniqueId())) {
+            player.sendMessage(ChatColor.RED + "You don't own this apartment!");
+            return true;
+        }
+
+        // Block if already listed on market
+        if (apt.marketListing) {
+            player.sendMessage(ChatColor.RED + "This apartment is already listed on the market!");
+            player.sendMessage(ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/apartmentcore sell cancel " + apartmentId
+                    + ChatColor.YELLOW + " to remove the listing.");
+            return true;
+        }
+
+        // Block selling if there are unpaid tax invoices
+        if (apt.getTotalUnpaid() > 0) {
+            player.sendMessage(ChatColor.RED + "Apartments with tax arrears cannot be listed. Pay all taxes first.");
+            return true;
+        }
+
+        // Block selling if apartment is being auctioned
+        AuctionManager am = plugin.getAuctionManager();
+        if (am != null && am.getAuction(apartmentId) != null) {
+            player.sendMessage(ChatColor.RED + "This apartment is currently being auctioned and cannot be listed.");
+            return true;
+        }
+
+        // Block if upgrade in progress
+        if (apt.upgradeInProgress) {
+            player.sendMessage(ChatColor.RED + "Cannot list an apartment that is currently being upgraded.");
+            return true;
+        }
+
+        // List on market at the apartment's current price
+        apt.marketListing = true;
+        apt.marketPrice = apt.price;
+        apt.marketListedAt = System.currentTimeMillis();
+
+        apartmentManager.saveApartments();
+
+        player.sendMessage(ChatColor.GREEN + "Your apartment " + ChatColor.YELLOW + apt.displayName
+                + ChatColor.GREEN + " has been listed on the market for "
+                + ChatColor.WHITE + configManager.formatMoney(apt.marketPrice) + ChatColor.GREEN + "!");
+        player.sendMessage(ChatColor.GRAY + "Other players can now purchase it from the apartment browser.");
+        player.sendMessage(ChatColor.YELLOW + "To cancel the listing, use: " + ChatColor.WHITE
+                + "/apartmentcore sell cancel " + apartmentId);
+
+        plugin.logTransaction(player.getName() + " listed apartment " + apartmentId + " on market for "
+                + configManager.formatMoney(apt.marketPrice));
+
+        return true;
+    }
+
+    /**
+     * Handle cancel market listing
+     */
+    public boolean handleCancelMarketCommand(Player player, String apartmentId) {
+        Apartment apt = apartmentManager.getApartment(apartmentId);
+        if (apt == null) {
+            player.sendMessage(ChatColor.RED + "Apartment not found!");
+            return true;
+        }
+
+        if (apt.owner == null || !apt.owner.equals(player.getUniqueId())) {
+            player.sendMessage(ChatColor.RED + "You don't own this apartment!");
+            return true;
+        }
+
+        if (!apt.marketListing) {
+            player.sendMessage(ChatColor.RED + "This apartment is not listed on the market.");
+            return true;
+        }
+
+        apt.marketListing = false;
+        apt.marketPrice = 0;
+        apt.marketListedAt = 0;
+
+        apartmentManager.saveApartments();
+
+        player.sendMessage(ChatColor.GREEN + "Market listing for " + ChatColor.YELLOW + apt.displayName
+                + ChatColor.GREEN + " has been cancelled.");
+
+        plugin.logTransaction(player.getName() + " cancelled market listing for apartment " + apartmentId);
+
+        return true;
+    }
+
+    /**
+     * Handle buying an apartment from the market (ownership transfer)
+     */
+    public boolean handleMarketBuyCommand(Player player, String apartmentId) {
+        Apartment apt = apartmentManager.getApartment(apartmentId);
+        if (apt == null) {
+            player.sendMessage(ChatColor.RED + "Apartment not found!");
+            return true;
+        }
+
+        if (!apt.marketListing) {
+            player.sendMessage(ChatColor.RED + "This apartment is not listed on the market.");
+            return true;
+        }
+
+        // Can't buy own apartment
+        if (apt.owner != null && apt.owner.equals(player.getUniqueId())) {
+            player.sendMessage(ChatColor.RED + "You cannot buy your own apartment!");
+            return true;
+        }
+
+        // Check apartment limit
+        int maxApartments = plugin.getConfig().getInt("settings.max-apartments-per-player", 5);
+        if (maxApartments > 0 && !player.hasPermission("apartmentcore.bypass.limit")) {
+            long ownedCount = apartmentManager.getApartments().values().stream()
+                    .filter(a -> player.getUniqueId().equals(a.owner))
+                    .count();
+            if (ownedCount >= maxApartments) {
+                player.sendMessage(ChatColor.RED + "You already own the maximum number of apartments (" + maxApartments + ")!");
+                return true;
+            }
+        }
+
+        double marketPrice = apt.marketPrice;
+
+        // Check if buyer can afford
+        if (!economy.has(player, marketPrice)) {
+            player.sendMessage(ChatColor.RED + "You cannot afford this apartment! Price: "
+                    + configManager.formatMoney(marketPrice) + ", Balance: "
+                    + configManager.formatMoney(economy.getBalance(player)));
+            return true;
+        }
+
+        // Check for pending confirmation
+        ConfirmationAction pending = plugin.getPendingConfirmations().get(player.getUniqueId());
+        if (pending == null || !pending.type.equals("market_buy") || !pending.data.equals(apartmentId)) {
+            player.sendMessage(ChatColor.YELLOW + "You are about to buy " + ChatColor.WHITE + apt.displayName
+                    + ChatColor.YELLOW + " from " + ChatColor.WHITE
+                    + Bukkit.getOfflinePlayer(apt.owner).getName()
+                    + ChatColor.YELLOW + " for " + ChatColor.WHITE + configManager.formatMoney(marketPrice));
+            player.sendMessage(ChatColor.YELLOW + "Type " + ChatColor.WHITE + "/apartmentcore confirm"
+                    + ChatColor.YELLOW + " to confirm the purchase.");
+
+            plugin.getPendingConfirmations().put(player.getUniqueId(),
+                    new ConfirmationAction("market_buy", apartmentId, System.currentTimeMillis()));
+            return true;
+        }
+
+        return true;
+    }
+
     public boolean handleSetTeleportCommand(Player player, String apartmentId) {
         if (!player.hasPermission("apartmentcore.setteleport")) {
             player.sendMessage(ChatColor.RED + "You don't have permission to set a teleport location.");
@@ -583,6 +740,9 @@ public class ApartmentCommandService {
                 aptToSell.inactive = false;
                 aptToSell.penalty = 0;
                 aptToSell.inactiveSince = 0;
+                aptToSell.marketListing = false;
+                aptToSell.marketPrice = 0;
+                aptToSell.marketListedAt = 0;
                 aptToSell.setCustomTeleportLocation(null); // Clear custom teleport
 
                 // Reset ratings, guestbook, and stats
@@ -606,6 +766,91 @@ public class ApartmentCommandService {
                 plugin.logTransaction(player.getName() + " sold apartment " + aptToSell.id +
                         " for " + configManager.formatMoney(sellPrice) +
                         (shopRefund > 0 ? " + shop refund " + configManager.formatMoney(shopRefund) : ""));
+                break;
+
+            case "market_buy":
+                Apartment aptToBuy = apartmentManager.getApartment(action.data);
+                if (aptToBuy == null || !aptToBuy.marketListing) {
+                    player.sendMessage(ChatColor.RED + "This apartment is no longer available on the market.");
+                    return true;
+                }
+
+                // Verify buyer is not the owner
+                if (aptToBuy.owner != null && aptToBuy.owner.equals(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You cannot buy your own apartment!");
+                    return true;
+                }
+
+                double mktPrice = aptToBuy.marketPrice;
+
+                // Check funds
+                if (!economy.has(player, mktPrice)) {
+                    player.sendMessage(ChatColor.RED + "Insufficient funds! You need "
+                            + configManager.formatMoney(mktPrice));
+                    return true;
+                }
+
+                // Re-check apartment limit
+                int maxApt = plugin.getConfig().getInt("settings.max-apartments-per-player", 5);
+                if (maxApt > 0 && !player.hasPermission("apartmentcore.bypass.limit")) {
+                    long owned = apartmentManager.getApartments().values().stream()
+                            .filter(a -> player.getUniqueId().equals(a.owner))
+                            .count();
+                    if (owned >= maxApt) {
+                        player.sendMessage(ChatColor.RED + "You already own the maximum number of apartments!");
+                        return true;
+                    }
+                }
+
+                // Process the transfer
+                UUID previousOwner = aptToBuy.owner;
+                String previousOwnerName = previousOwner != null
+                        ? Bukkit.getOfflinePlayer(previousOwner).getName() : "Unknown";
+
+                // Withdraw from buyer
+                economy.withdrawPlayer(player, mktPrice);
+
+                // Pay the seller
+                if (previousOwner != null) {
+                    OfflinePlayer seller = Bukkit.getOfflinePlayer(previousOwner);
+                    economy.depositPlayer(seller, mktPrice);
+
+                    // Notify seller if online
+                    if (seller.isOnline() && seller.getPlayer() != null) {
+                        seller.getPlayer().sendMessage(ChatColor.GREEN + "Your apartment "
+                                + ChatColor.YELLOW + aptToBuy.displayName + ChatColor.GREEN
+                                + " has been sold to " + ChatColor.WHITE + player.getName()
+                                + ChatColor.GREEN + " for " + ChatColor.WHITE
+                                + configManager.formatMoney(mktPrice) + ChatColor.GREEN + "!");
+                    }
+
+                    // Remove previous owner from WorldGuard region
+                    apartmentManager.removeOwnerUuidFromRegion(aptToBuy, previousOwner);
+                }
+
+                // Transfer ownership
+                aptToBuy.owner = player.getUniqueId();
+                aptToBuy.marketListing = false;
+                aptToBuy.marketPrice = 0;
+                aptToBuy.marketListedAt = 0;
+
+                // Keep existing apartment data (level, pending income, etc.) - ownership transfer
+                // Reset stats for new owner
+                apartmentManager.removeStats(aptToBuy.id);
+
+                // Add new owner to WorldGuard region
+                apartmentManager.addPlayerToRegion(player, aptToBuy);
+
+                apartmentManager.saveApartments();
+
+                player.sendMessage(ChatColor.GREEN + "Successfully purchased " + ChatColor.YELLOW
+                        + aptToBuy.displayName + ChatColor.GREEN + " from " + ChatColor.WHITE
+                        + previousOwnerName + ChatColor.GREEN + " for "
+                        + ChatColor.WHITE + configManager.formatMoney(mktPrice) + ChatColor.GREEN + "!");
+
+                plugin.logTransaction(player.getName() + " bought apartment " + aptToBuy.id
+                        + " from market (seller: " + previousOwnerName + ") for "
+                        + configManager.formatMoney(mktPrice));
                 break;
 
             case "guestbook_clear":

@@ -14,3 +14,18 @@
 - [feat] Mengubah tombol upgrade pada menu `ApartmentDetailsGUI` menjadi indikator sisa waktu (*Upgrading...*) bilamana apartemen sedang dalam fase renovasi level.
 - [feat] Menambahkan checker otomatis dalam `TaskManager.java` yang memroses apartemen yang selesai upgrade setiap detik (20 tick), diiringi dengan efek notifikasi Title dan *Sound Level-Up* bagi pemain yang sedang online.
 - [chore] Memodifikasi `Apartment.java` dan `ApartmentManager.java` untuk menyimpan status `upgradeInProgress` dan batas waktu `upgradeCompleteAt` secara permanen ke `data.yml` agar progres tidak hilang ketika restart.
+- [feat] Menambahkan mekanisme **Quick Sell**: pemilik apartment dapat menjual langsung apartment kembali ke pemerintah menggunakan konfigurasi `sell-percentage` yang sudah ada di `config.yml` (default 70% dari harga beli).
+- [feat] Menambahkan mekanisme **Market Sell**: pemilik apartment dapat memasang listing di browser apartment agar pemain lain dapat membeli apartment tersebut dengan mekanisme perpindahan kepemilikan (ownership transfer). Harga listing sesuai harga apartment asli, dan uang pembayaran langsung masuk ke penjual.
+- [feat] Pada `ApartmentBrowserGUI`, listing market menampilkan informasi penjual, rating apartment, level apartment, income range, dan label `📢 Market Listing` untuk membedakan dari properti government.
+- [feat] Pada `ApartmentBrowserGUI`, apartment yang dijual/dibuat oleh admin (tanpa pemilik) kini menampilkan label `🏛 Government Property` dan `Owner: Government` pada lore item.
+- [feat] Mengubah command `/ac sell <apartment_id>` menjadi `/ac sell quick <apartment_id>` untuk quick sell dan `/ac sell market <apartment_id>` untuk market sell, serta `/ac sell cancel <apartment_id>` untuk membatalkan listing market.
+- [feat] Menambahkan command `/ac marketbuy <apartment_id>` untuk proses pembelian apartment dari market listing (dengan mekanisme konfirmasi).
+- [feat] Pada `ApartmentDetailsGUI`, tombol Sell diganti menjadi dua tombol terpisah: `⚡ Quick Sell` (slot 24) dan `📢 Market Sell` (slot 25). Jika apartment sudah terlisting di market, tombol Market Sell berubah menjadi `Listed on Market` dengan opsi klik untuk membatalkan listing.
+- [feat] Pada `ApartmentDetailsGUI`, menambahkan tombol `🛒 Buy from Market` untuk non-owner ketika apartment sedang di-listing di market, menampilkan info penjual dan harga market.
+- [chore] Menambahkan field `marketListing`, `marketPrice`, dan `marketListedAt` pada model `Apartment.java` untuk menyimpan state market listing.
+- [chore] Memperbarui `ApartmentManager.java` untuk melakukan load/save field market listing dari/ke `data.yml`.
+- [chore] Menambahkan handler `handleMarketSellCommand()`, `handleCancelMarketCommand()`, dan `handleMarketBuyCommand()` pada `ApartmentCommandService.java`.
+- [chore] Menambahkan case `market_buy` pada confirm handler di `CommandHandler.java` dan `ApartmentCommandService.java` untuk proses konfirmasi pembelian market.
+- [chore] Memperbarui tab completion pada `CommandHandler.java` untuk mendukung subcommand `sell quick|market|cancel`.
+- [chore] Memperbarui usage message sell di `messages.yml`.
+- [chore] Mereset field market listing pada proses quick sell, repossession, dan market buy agar state selalu konsisten.

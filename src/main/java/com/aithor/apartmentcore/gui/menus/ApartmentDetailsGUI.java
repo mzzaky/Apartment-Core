@@ -44,7 +44,8 @@ public class ApartmentDetailsGUI implements GUI {
     private static final int SET_NAME_SLOT = 19;
     private static final int SET_WELCOME_SLOT = 21;
     private static final int SET_TELEPORT_SLOT = 23;
-    private static final int SELL_SLOT = 25;
+    private static final int QUICK_SELL_SLOT = 24;
+    private static final int MARKET_SELL_SLOT = 25;
     private static final int GUESTBOOK_SLOT = 28;
     private static final int STATISTICS_SLOT = 30;
     private static final int TAX_INFO_SLOT = 32;
@@ -210,7 +211,7 @@ public class ApartmentDetailsGUI implements GUI {
             inventory.setItem(CLAIM_INCOME_SLOT, claimItem);
         }
 
-        // Buy (non-owners, if available)
+        // Buy (non-owners, if available - government sale)
         if (isAvailable) {
             boolean canAfford = plugin.getEconomy().has(player, apartment.price);
             Material buyMaterial = canAfford ? Material.GOLD_BLOCK : Material.RED_CONCRETE;
@@ -228,6 +229,30 @@ public class ApartmentDetailsGUI implements GUI {
                     .glow()
                     .build();
             inventory.setItem(BUY_SLOT, buyItem);
+        }
+
+        // Market Buy (non-owners, if listed on market)
+        if (!isOwner && !isAvailable && apartment.marketListing) {
+            boolean canAfford = plugin.getEconomy().has(player, apartment.marketPrice);
+            String sellerName = apartment.owner != null
+                    ? Bukkit.getOfflinePlayer(apartment.owner).getName() : "Unknown";
+            Material buyMaterial = canAfford ? Material.GOLD_BLOCK : Material.RED_CONCRETE;
+
+            ItemStack marketBuyItem = new ItemBuilder(buyMaterial)
+                    .name("&a🛒 Buy from Market")
+                    .lore(
+                            "&7Purchase this apartment from",
+                            "&7the current owner",
+                            "",
+                            "&7Seller: &f" + sellerName,
+                            "&7Price: &a" + plugin.getConfigManager().formatMoney(apartment.marketPrice),
+                            "&7Your Balance: &f"
+                                    + plugin.getConfigManager().formatMoney(plugin.getEconomy().getBalance(player)),
+                            "",
+                            canAfford ? "&a▶ Click to purchase" : "&cInsufficient funds")
+                    .glow()
+                    .build();
+            inventory.setItem(BUY_SLOT, marketBuyItem);
         }
 
         // Upgrade (owners only, if not max level)
@@ -313,22 +338,55 @@ public class ApartmentDetailsGUI implements GUI {
                     .build();
             inventory.setItem(SET_TELEPORT_SLOT, setTeleportItem);
 
-            // Sell
+            // Quick Sell
             double sellPrice = apartment.price * plugin.getConfigManager().getSellPercentage();
             boolean canSell = apartment.getTotalUnpaid() <= 0; // Can't sell with unpaid taxes
 
-            ItemStack sellItem = new ItemBuilder(canSell ? Material.RED_CONCRETE : Material.BARRIER)
-                    .name("&c🗑️ Sell Apartment")
+            ItemStack quickSellItem = new ItemBuilder(canSell ? Material.RED_CONCRETE : Material.BARRIER)
+                    .name("&c⚡ Quick Sell")
                     .lore(
-                            "&7Sell this apartment back",
+                            "&7Sell apartment back to the government",
+                            "&7(instant sale at reduced price)",
                             "",
                             "&7You will receive: &a" + plugin.getConfigManager().formatMoney(sellPrice),
                             "&7(" + String.format("%.0f%%", plugin.getConfigManager().getSellPercentage() * 100)
                                     + " of purchase price)",
                             "",
-                            canSell ? "&c▶ Click to sell" : "&cCannot sell with unpaid taxes")
+                            canSell ? "&c▶ Click to quick sell" : "&cCannot sell with unpaid taxes")
                     .build();
-            inventory.setItem(SELL_SLOT, sellItem);
+            inventory.setItem(QUICK_SELL_SLOT, quickSellItem);
+
+            // Market Sell
+            boolean canMarketSell = canSell && !apartment.upgradeInProgress;
+            if (apartment.marketListing) {
+                // Already listed - show cancel option
+                ItemStack cancelListingItem = new ItemBuilder(Material.ORANGE_CONCRETE)
+                        .name("&6📢 Listed on Market")
+                        .lore(
+                                "&7Your apartment is listed on the market",
+                                "",
+                                "&7Listed Price: &a" + plugin.getConfigManager().formatMoney(apartment.marketPrice),
+                                "",
+                                "&c▶ Click to cancel listing")
+                        .glow()
+                        .build();
+                inventory.setItem(MARKET_SELL_SLOT, cancelListingItem);
+            } else {
+                ItemStack marketSellItem = new ItemBuilder(canMarketSell ? Material.YELLOW_CONCRETE : Material.BARRIER)
+                        .name("&e📢 Market Sell")
+                        .lore(
+                                "&7List apartment on the market",
+                                "&7for other players to buy",
+                                "",
+                                "&7Listing Price: &a" + plugin.getConfigManager().formatMoney(apartment.price),
+                                "&7(ownership transfer on purchase)",
+                                "",
+                                canMarketSell ? "&e▶ Click to list on market"
+                                        : (!canSell ? "&cCannot sell with unpaid taxes"
+                                                : "&cCannot list while upgrading"))
+                        .build();
+                inventory.setItem(MARKET_SELL_SLOT, marketSellItem);
+            }
         }
 
         // Guestbook (everyone can view, owners can manage)
@@ -474,8 +532,12 @@ public class ApartmentDetailsGUI implements GUI {
                 handleSetTeleport(apartment);
                 break;
 
-            case SELL_SLOT:
-                handleSell(apartment);
+            case QUICK_SELL_SLOT:
+                handleQuickSell(apartment);
+                break;
+
+            case MARKET_SELL_SLOT:
+                handleMarketSell(apartment);
                 break;
 
             case GUESTBOOK_SLOT:
@@ -531,7 +593,13 @@ public class ApartmentDetailsGUI implements GUI {
 
     private void handleBuy(Apartment apartment) {
         player.closeInventory();
-        plugin.getServer().dispatchCommand(player, "apartmentcore buy " + apartmentId);
+        if (apartment.marketListing && apartment.owner != null) {
+            // Market buy - ownership transfer
+            plugin.getServer().dispatchCommand(player, "apartmentcore marketbuy " + apartmentId);
+        } else {
+            // Regular buy from government
+            plugin.getServer().dispatchCommand(player, "apartmentcore buy " + apartmentId);
+        }
     }
 
     private void handleUpgrade(Apartment apartment) {
@@ -558,9 +626,20 @@ public class ApartmentDetailsGUI implements GUI {
         plugin.getServer().dispatchCommand(player, "apartmentcore setteleport " + apartmentId);
     }
 
-    private void handleSell(Apartment apartment) {
+    private void handleQuickSell(Apartment apartment) {
         player.closeInventory();
-        plugin.getServer().dispatchCommand(player, "apartmentcore sell " + apartmentId);
+        plugin.getServer().dispatchCommand(player, "apartmentcore sell quick " + apartmentId);
+    }
+
+    private void handleMarketSell(Apartment apartment) {
+        player.closeInventory();
+        if (apartment.marketListing) {
+            // Cancel listing
+            plugin.getServer().dispatchCommand(player, "apartmentcore sell cancel " + apartmentId);
+        } else {
+            // List on market
+            plugin.getServer().dispatchCommand(player, "apartmentcore sell market " + apartmentId);
+        }
     }
 
     private void handleStatistics() {
