@@ -163,6 +163,16 @@ public class ApartmentManager {
                             .warning(String.format("Failed reading upgrade state for %s: %s", id, t.getMessage()));
                 }
 
+                // Load market listing state
+                try {
+                    apt.marketListing = aptSection.getBoolean("market-listing", false);
+                    apt.marketPrice = aptSection.getDouble("market-price", 0.0);
+                    apt.marketListedAt = aptSection.getLong("market-listed-at", 0L);
+                } catch (Throwable t) {
+                    plugin.getLogger()
+                            .warning(String.format("Failed reading market listing state for %s: %s", id, t.getMessage()));
+                }
+
                 apartments.put(id, apt);
             } catch (Exception e) {
                 plugin.getLogger().warning(String.format("Failed to load apartment %s: %s", id, e.getMessage()));
@@ -313,6 +323,11 @@ public class ApartmentManager {
             // Save upgrade progress state
             dataManager.getDataConfig().set(path + "upgrade-in-progress", apt.upgradeInProgress);
             dataManager.getDataConfig().set(path + "upgrade-complete-at", apt.upgradeCompleteAt);
+
+            // Save market listing state
+            dataManager.getDataConfig().set(path + "market-listing", apt.marketListing);
+            dataManager.getDataConfig().set(path + "market-price", apt.marketPrice);
+            dataManager.getDataConfig().set(path + "market-listed-at", apt.marketListedAt);
 
             // Save custom teleport location
             if (apt.hasCustomTeleport) {

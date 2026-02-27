@@ -61,6 +61,11 @@ public class Apartment {
     public boolean upgradeInProgress; // true while upgrade construction is active
     public long upgradeCompleteAt; // epoch millis when upgrade finishes (0 = not upgrading)
 
+    // Market sell state
+    public boolean marketListing; // true when apartment is listed on the market
+    public double marketPrice; // price set by owner for market sale
+    public long marketListedAt; // epoch millis when listed on market
+
     public Apartment(String id, String regionName, String worldName, UUID owner, double price,
             double tax, int taxDays, int level, long lastTaxPayment, double pendingIncome,
             boolean inactive, double penalty, long inactiveSince, String displayName, String welcomeMessage) {
@@ -90,6 +95,11 @@ public class Apartment {
         // Upgrade-in-progress defaults
         this.upgradeInProgress = false;
         this.upgradeCompleteAt = 0L;
+
+        // Market sell defaults
+        this.marketListing = false;
+        this.marketPrice = 0.0;
+        this.marketListedAt = 0L;
     }
 
     /**
@@ -498,6 +508,9 @@ public class Apartment {
                 lastTaxCheckDay = 0;
                 lastInvoiceAt = 0;
                 taxInvoices.clear();
+                marketListing = false;
+                marketPrice = 0;
+                marketListedAt = 0;
                 setCustomTeleportLocation(null); // clear custom teleport
 
                 // Reset ratings and stats

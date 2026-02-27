@@ -35,7 +35,7 @@ general:
   usage:
     gui: "{prefix}&e/apartmentcore gui &7- Open the GUI interface"
     buy: "{prefix}&e/apartmentcore buy <apartment_id>"
-    sell: "{prefix}&e/apartmentcore sell <apartment_id>"
+    sell: "{prefix}&e/apartmentcore sell <quick|market|cancel> <apartment_id>"
     teleport: "{prefix}&e/apartmentcore teleport <apartment_id>"
     rent: "{prefix}&e/apartmentcore rent <claim|info> <apartment_id>"
     tax_auto: "{prefix}&e/apartmentcore tax auto <on|off>"

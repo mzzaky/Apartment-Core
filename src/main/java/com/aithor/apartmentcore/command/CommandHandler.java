@@ -135,11 +135,38 @@ public class CommandHandler implements TabCompleter {
                             .replace("%action%", "sell apartments"));
                     return true;
                 }
-                if (args.length != 2) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore sell <apartment_id>");
+                if (args.length < 3) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore sell <quick|market|cancel> <apartment_id>");
                     return true;
                 }
-                return commandService.handleSellCommand((Player) sender, args[1]);
+                String sellType = args[1].toLowerCase();
+                switch (sellType) {
+                    case "quick":
+                        return commandService.handleSellCommand((Player) sender, args[2]);
+                    case "market":
+                        return commandService.handleMarketSellCommand((Player) sender, args[2]);
+                    case "cancel":
+                        return commandService.handleCancelMarketCommand((Player) sender, args[2]);
+                    default:
+                        sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore sell <quick|market|cancel> <apartment_id>");
+                        return true;
+                }
+
+            case "marketbuy":
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(plugin.getMessageManager().getMessage("general.player_only"));
+                    return true;
+                }
+                if (!sender.hasPermission("apartmentcore.buy")) {
+                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                            .replace("%action%", "buy apartments"));
+                    return true;
+                }
+                if (args.length != 2) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore marketbuy <apartment_id>");
+                    return true;
+                }
+                return commandService.handleMarketBuyCommand((Player) sender, args[1]);
 
             case "setname":
                 if (!(sender instanceof Player)) {
@@ -437,7 +464,7 @@ public class CommandHandler implements TabCompleter {
 
         if (args.length == 1) {
             List<String> commands = new ArrayList<>(Arrays.asList(
-                    "help", "version", "info", "buy", "sell", "teleport", "gui",
+                    "help", "version", "info", "buy", "marketbuy", "sell", "teleport", "gui",
                     "rent", "tax", "upgrade", "list", "auction", "confirm", "rate",
                     "setname", "setwelcome", "setteleport", "guestbook"));
             if (sender.hasPermission("apartmentcore.admin")) {
@@ -448,7 +475,7 @@ public class CommandHandler implements TabCompleter {
             switch (args[0].toLowerCase()) {
                 case "info":
                 case "buy":
-                case "sell":
+                case "marketbuy":
                 case "teleport":
                 case "upgrade":
                 case "setname":
@@ -457,6 +484,11 @@ public class CommandHandler implements TabCompleter {
                 case "rate":
                     apartmentManager.getApartments().keySet().stream()
                             .filter(id -> id.toLowerCase().startsWith(partial))
+                            .forEach(completions::add);
+                    break;
+                case "sell":
+                    Arrays.asList("quick", "market", "cancel").stream()
+                            .filter(s -> s.startsWith(partial))
                             .forEach(completions::add);
                     break;
                 case "guestbook":
@@ -494,6 +526,14 @@ public class CommandHandler implements TabCompleter {
             }
         } else if (args.length == 3) {
             switch (args[0].toLowerCase()) {
+                case "sell":
+                    if ("quick".equalsIgnoreCase(args[1]) || "market".equalsIgnoreCase(args[1])
+                            || "cancel".equalsIgnoreCase(args[1])) {
+                        apartmentManager.getApartments().keySet().stream()
+                                .filter(id -> id.toLowerCase().startsWith(partial))
+                                .forEach(completions::add);
+                    }
+                    break;
                 case "rent":
                     if (args.length >= 2 && ("claim".equalsIgnoreCase(args[1]) || "info".equalsIgnoreCase(args[1]))) {
                         apartmentManager.getApartments().keySet().stream()
@@ -1139,6 +1179,9 @@ public class CommandHandler implements TabCompleter {
                 aptToSell.inactive = false;
                 aptToSell.penalty = 0;
                 aptToSell.inactiveSince = 0;
+                aptToSell.marketListing = false;
+                aptToSell.marketPrice = 0;
+                aptToSell.marketListedAt = 0;
                 aptToSell.setCustomTeleportLocation(null); // Clear custom teleport
 
                 // Reset ratings, guestbook, and stats
@@ -1162,6 +1205,78 @@ public class CommandHandler implements TabCompleter {
                 plugin.logTransaction(player.getName() + " sold apartment " + aptToSell.id +
                         " for " + configManager.formatMoney(sellPrice) +
                         (shopRefund > 0 ? " + shop refund " + configManager.formatMoney(shopRefund) : ""));
+                break;
+
+            case "market_buy":
+                Apartment aptToBuy = apartmentManager.getApartment(action.data);
+                if (aptToBuy == null || !aptToBuy.marketListing) {
+                    player.sendMessage(ChatColor.RED + "This apartment is no longer available on the market.");
+                    return true;
+                }
+
+                if (aptToBuy.owner != null && aptToBuy.owner.equals(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You cannot buy your own apartment!");
+                    return true;
+                }
+
+                double mktPrice = aptToBuy.marketPrice;
+
+                if (!economy.has(player, mktPrice)) {
+                    player.sendMessage(ChatColor.RED + "Insufficient funds! You need "
+                            + configManager.formatMoney(mktPrice));
+                    return true;
+                }
+
+                int maxApt = plugin.getConfig().getInt("settings.max-apartments-per-player", 5);
+                if (maxApt > 0 && !player.hasPermission("apartmentcore.bypass.limit")) {
+                    long owned = apartmentManager.getApartments().values().stream()
+                            .filter(a -> player.getUniqueId().equals(a.owner))
+                            .count();
+                    if (owned >= maxApt) {
+                        player.sendMessage(ChatColor.RED + "You already own the maximum number of apartments!");
+                        return true;
+                    }
+                }
+
+                UUID previousOwner = aptToBuy.owner;
+                String previousOwnerName = previousOwner != null
+                        ? Bukkit.getOfflinePlayer(previousOwner).getName() : "Unknown";
+
+                economy.withdrawPlayer(player, mktPrice);
+
+                if (previousOwner != null) {
+                    OfflinePlayer seller = Bukkit.getOfflinePlayer(previousOwner);
+                    economy.depositPlayer(seller, mktPrice);
+
+                    if (seller.isOnline() && seller.getPlayer() != null) {
+                        seller.getPlayer().sendMessage(ChatColor.GREEN + "Your apartment "
+                                + ChatColor.YELLOW + aptToBuy.displayName + ChatColor.GREEN
+                                + " has been sold to " + ChatColor.WHITE + player.getName()
+                                + ChatColor.GREEN + " for " + ChatColor.WHITE
+                                + configManager.formatMoney(mktPrice) + ChatColor.GREEN + "!");
+                    }
+
+                    apartmentManager.removeOwnerUuidFromRegion(aptToBuy, previousOwner);
+                }
+
+                aptToBuy.owner = player.getUniqueId();
+                aptToBuy.marketListing = false;
+                aptToBuy.marketPrice = 0;
+                aptToBuy.marketListedAt = 0;
+
+                apartmentManager.removeStats(aptToBuy.id);
+                apartmentManager.addPlayerToRegion(player, aptToBuy);
+
+                apartmentManager.saveApartments();
+
+                player.sendMessage(ChatColor.GREEN + "Successfully purchased " + ChatColor.YELLOW
+                        + aptToBuy.displayName + ChatColor.GREEN + " from " + ChatColor.WHITE
+                        + previousOwnerName + ChatColor.GREEN + " for "
+                        + ChatColor.WHITE + configManager.formatMoney(mktPrice) + ChatColor.GREEN + "!");
+
+                plugin.logTransaction(player.getName() + " bought apartment " + aptToBuy.id
+                        + " from market (seller: " + previousOwnerName + ") for "
+                        + configManager.formatMoney(mktPrice));
                 break;
 
             case "guestbook_clear":
