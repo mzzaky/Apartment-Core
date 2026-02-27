@@ -42,22 +42,32 @@ apartment-levels:
     min-income: 10
     max-income: 100
     upgrade-cost: 0
+    upgrade-duration: 0         # Duration to upgrade FROM this level (in ticks; 20 ticks = 1 second). 0 = instant.
+    income-capacity: 10000   # Maximum pending income that can accumulate (Level 1 = 10,000)
   level-2:
     min-income: 100
     max-income: 200
     upgrade-cost: 1000
+    upgrade-duration: 1200      # 1 minute to upgrade from level 2 → 3
+    income-capacity: 20000   # Maximum pending income that can accumulate (Level 2 = 20,000)
   level-3:
     min-income: 200
     max-income: 300
     upgrade-cost: 2000
+    upgrade-duration: 3600      # 3 minutes to upgrade from level 3 → 4
+    income-capacity: 30000   # Maximum pending income that can accumulate (Level 3 = 30,000)
   level-4:
     min-income: 300
     max-income: 400
     upgrade-cost: 3000
+    upgrade-duration: 7200      # 6 minutes to upgrade from level 4 → 5
+    income-capacity: 40000   # Maximum pending income that can accumulate (Level 4 = 40,000)
   level-5:
     min-income: 400
     max-income: 500
     upgrade-cost: 5000
+    upgrade-duration: 0         # Max level - no further upgrade
+    income-capacity: 50000   # Maximum pending income that can accumulate (Level 5 = 50,000)
 
 # -----------------------------------------------------------------
 # GUI

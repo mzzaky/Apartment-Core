@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+
 // Note: the above imports are still needed for shop.yml loading
 /**
  * Manages all configuration values and settings
@@ -89,7 +90,6 @@ public class ConfigManager {
     // Income settings
     private int incomeGenerationInterval;
 
-
     public ConfigManager(ApartmentCore plugin) {
         this.plugin = plugin;
         this.levelConfigs = new HashMap<>();
@@ -138,8 +138,9 @@ public class ConfigManager {
                     levelConfigs.put(level, new LevelConfig(
                             levelSection.getDouble("min-income"),
                             levelSection.getDouble("max-income"),
-                            levelSection.getDouble("upgrade-cost")
-                    ));
+                            levelSection.getDouble("upgrade-cost"),
+                            levelSection.getDouble("income-capacity", level * 10000.0),
+                            levelSection.getLong("upgrade-duration", 0L)));
                 }
             }
         }
@@ -172,7 +173,6 @@ public class ConfigManager {
         wgCheckFlags = config.getBoolean("worldguard.check-flags", false);
         wgRequiredFlags = config.getStringList("worldguard.required-flags");
 
-
         // Load Feature toggles
         featureIncomeGeneration = config.getBoolean("features.income-generation", true);
         featureTaxSystem = config.getBoolean("features.tax-system", true);
@@ -192,8 +192,9 @@ public class ConfigManager {
         } catch (Throwable t) {
             plugin.getLogger().warning("Failed to load external Shop config: " + t.getMessage());
         }
- 
-        // Notify GUI manager (if present) so GUIs immediately reflect configuration changes
+
+        // Notify GUI manager (if present) so GUIs immediately reflect configuration
+        // changes
         try {
             if (plugin.getGUIManager() != null) {
                 plugin.getGUIManager().onConfigReloaded();
@@ -217,77 +218,212 @@ public class ConfigManager {
         return levelConfigs.get(level);
     }
 
+    /**
+     * Get the maximum income capacity for a given apartment level.
+     * Falls back to level * 10,000 if config is not set.
+     */
+    public double getIncomeCapacity(int level) {
+        LevelConfig cfg = levelConfigs.get(level);
+        if (cfg != null && cfg.incomeCapacity > 0) {
+            return cfg.incomeCapacity;
+        }
+        return level * 10_000.0; // fallback: 10,000 per level
+    }
+
     // Getters
-    public boolean isDebugMode() { return debugMode; }
-    public String getCurrencySymbol() { return currencySymbol; }
-    public boolean isAutoSaveEnabled() { return autoSaveEnabled; }
-    public int getAutoSaveInterval() { return autoSaveInterval; }
-    public double getSellPercentage() { return sellPercentage; }
-    public int getInactiveGracePeriod() { return inactiveGracePeriod; }
-    public long getCommandCooldown() { return commandCooldown; }
-    public boolean isBackupEnabled() { return backupEnabled; }
-    public int getMaxBackups() { return maxBackups; }
-    public Map<Integer, LevelConfig> getLevelConfigs() { return levelConfigs; }
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public String getCurrencySymbol() {
+        return currencySymbol;
+    }
+
+    public boolean isAutoSaveEnabled() {
+        return autoSaveEnabled;
+    }
+
+    public int getAutoSaveInterval() {
+        return autoSaveInterval;
+    }
+
+    public double getSellPercentage() {
+        return sellPercentage;
+    }
+
+    public int getInactiveGracePeriod() {
+        return inactiveGracePeriod;
+    }
+
+    public long getCommandCooldown() {
+        return commandCooldown;
+    }
+
+    public boolean isBackupEnabled() {
+        return backupEnabled;
+    }
+
+    public int getMaxBackups() {
+        return maxBackups;
+    }
+
+    public Map<Integer, LevelConfig> getLevelConfigs() {
+        return levelConfigs;
+    }
 
     // GuestBook getters
-    public int getGuestBookMaxMessages() { return guestBookMaxMessages; }
-    public int getGuestBookMaxMessageLength() { return guestBookMaxMessageLength; }
-    public int getGuestBookLeaveCooldown() { return guestBookLeaveCooldown; }
+    public int getGuestBookMaxMessages() {
+        return guestBookMaxMessages;
+    }
+
+    public int getGuestBookMaxMessageLength() {
+        return guestBookMaxMessageLength;
+    }
+
+    public int getGuestBookLeaveCooldown() {
+        return guestBookLeaveCooldown;
+    }
 
     // Logging getters
-    public boolean isLogTransactions() { return logTransactions; }
-    public boolean isLogAdminActions() { return logAdminActions; }
-    public String getLogFile() { return logFile; }
-    public int getMaxLogSize() { return maxLogSize; }
-    public boolean isKeepOldLogs() { return keepOldLogs; }
-    public int getMaxOldLogs() { return maxOldLogs; }
+    public boolean isLogTransactions() {
+        return logTransactions;
+    }
+
+    public boolean isLogAdminActions() {
+        return logAdminActions;
+    }
+
+    public String getLogFile() {
+        return logFile;
+    }
+
+    public int getMaxLogSize() {
+        return maxLogSize;
+    }
+
+    public boolean isKeepOldLogs() {
+        return keepOldLogs;
+    }
+
+    public int getMaxOldLogs() {
+        return maxOldLogs;
+    }
 
     // Auction getters
-    public boolean isAuctionEnabled() { return auctionEnabled; }
-    public double getAuctionMinStartingBid() { return auctionMinStartingBid; }
-    public double getAuctionMaxStartingBid() { return auctionMaxStartingBid; }
-    public int getAuctionMinDuration() { return auctionMinDuration; }
-    public int getAuctionMaxDuration() { return auctionMaxDuration; }
-    public double getAuctionMinBidIncrement() { return auctionMinBidIncrement; }
-    public double getAuctionCreationFee() { return auctionCreationFee; }
-    public double getAuctionCommission() { return auctionCommission; }
-    public int getAuctionCooldown() { return auctionCooldown; }
-    public boolean isAuctionBroadcast() { return auctionBroadcast; }
-    public int getAuctionExtendThreshold() { return auctionExtendThreshold; }
-    public int getAuctionExtendTime() { return auctionExtendTime; }
+    public boolean isAuctionEnabled() {
+        return auctionEnabled;
+    }
+
+    public double getAuctionMinStartingBid() {
+        return auctionMinStartingBid;
+    }
+
+    public double getAuctionMaxStartingBid() {
+        return auctionMaxStartingBid;
+    }
+
+    public int getAuctionMinDuration() {
+        return auctionMinDuration;
+    }
+
+    public int getAuctionMaxDuration() {
+        return auctionMaxDuration;
+    }
+
+    public double getAuctionMinBidIncrement() {
+        return auctionMinBidIncrement;
+    }
+
+    public double getAuctionCreationFee() {
+        return auctionCreationFee;
+    }
+
+    public double getAuctionCommission() {
+        return auctionCommission;
+    }
+
+    public int getAuctionCooldown() {
+        return auctionCooldown;
+    }
+
+    public boolean isAuctionBroadcast() {
+        return auctionBroadcast;
+    }
+
+    public int getAuctionExtendThreshold() {
+        return auctionExtendThreshold;
+    }
+
+    public int getAuctionExtendTime() {
+        return auctionExtendTime;
+    }
 
     // GUI getters
-    public boolean isGuiEnabled() { return guiEnabled; }
-    public int getGuiRefreshInterval() { return guiRefreshInterval; }
-    public boolean isGuiSounds() { return guiSounds; }
+    public boolean isGuiEnabled() {
+        return guiEnabled;
+    }
+
+    public int getGuiRefreshInterval() {
+        return guiRefreshInterval;
+    }
+
+    public boolean isGuiSounds() {
+        return guiSounds;
+    }
 
     // Performance getters
-    public boolean isPerformanceUseAsync() { return performanceUseAsync; }
+    public boolean isPerformanceUseAsync() {
+        return performanceUseAsync;
+    }
 
     // WorldGuard getters
-    public boolean isWgAutoAddOwner() { return wgAutoAddOwner; }
-    public boolean isWgAutoRemoveOwner() { return wgAutoRemoveOwner; }
-    public boolean isWgCheckFlags() { return wgCheckFlags; }
-    public java.util.List<String> getWgRequiredFlags() { return wgRequiredFlags; }
+    public boolean isWgAutoAddOwner() {
+        return wgAutoAddOwner;
+    }
+
+    public boolean isWgAutoRemoveOwner() {
+        return wgAutoRemoveOwner;
+    }
+
+    public boolean isWgCheckFlags() {
+        return wgCheckFlags;
+    }
+
+    public java.util.List<String> getWgRequiredFlags() {
+        return wgRequiredFlags;
+    }
 
     // Feature getters
-    public boolean isFeatureIncomeGeneration() { return featureIncomeGeneration; }
-    public boolean isFeatureTaxSystem() { return featureTaxSystem; }
-    public boolean isFeatureTeleportation() { return featureTeleportation; }
+    public boolean isFeatureIncomeGeneration() {
+        return featureIncomeGeneration;
+    }
+
+    public boolean isFeatureTaxSystem() {
+        return featureTaxSystem;
+    }
+
+    public boolean isFeatureTeleportation() {
+        return featureTeleportation;
+    }
 
     // Income & Tax getters
-    public int getTaxGenerationInterval() { return taxGenerationInterval; }
+    public int getTaxGenerationInterval() {
+        return taxGenerationInterval;
+    }
 
     // Income getters
-    public int getIncomeGenerationInterval() { return incomeGenerationInterval; }
- 
+    public int getIncomeGenerationInterval() {
+        return incomeGenerationInterval;
+    }
+
     // External Shop configuration file (shop.yml)
     private File shopConfigFile;
     private FileConfiguration shopConfig;
- 
+
     /**
      * Load or reload the external Shop configuration file (shop.yml).
-     * If the file doesn't exist in plugin data folder, attempt to copy bundled resource.
+     * If the file doesn't exist in plugin data folder, attempt to copy bundled
+     * resource.
      */
     public void loadShopConfig() {
         try {

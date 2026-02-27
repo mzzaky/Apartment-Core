@@ -85,6 +85,7 @@ notifications:
   apartment_repossessed_day7: "{prefix}&4&l[Repossessed]&r &7Apartment &e%apartment% &7has been repossessed due to tax non-payment."
   rent_generated: "{prefix}&a&l[Rent]&r &7Your apartment &e%apartment% &7generated &f%amount% &7income!"
   rent_generated_with_buff: "{prefix}&a&l[Rent]&r &7Your apartment &e%apartment% &7generated &f%amount% &7income &a(+&f%flat_buff% &aflat + &f%percentage_buff%% &apercentage from shop buffs)&7!"
+  income_capacity_full: "{prefix}&6&l[Capacity Full]&r &7Your apartment &e%apartment% &7has reached its income vault capacity of &f%capacity%&7! Claim your income to continue generating rent."
 
 # Shop System Messages
 shop:

@@ -1,0 +1,16 @@
+- [fix] ikuti format penulisan dev log simpel ini
+- [feat] Menambahkan mekanisme Income Capacity agar pendapatan apartemen tidak dapat menumpuk tanpa batas; setiap level apartment memiliki batas maksimum akumulasi `pendingIncome` (Level 1 = 10.000, Level 2 = 20.000, dst., bertambah 10.000 per level).
+- [feat] Income generation otomatis dihentikan ketika `pendingIncome` sudah mencapai kapasitas penuh; income yang baru tidak akan ditambahkan hingga pemain melakukan klaim.
+- [feat] Jika income akan melampaui sisa kapasitas, nilainya otomatis dipotong (clamp) agar `pendingIncome` tidak pernah melebihi batas level.
+- [feat] Pemain online mendapatkan notifikasi chat `[Capacity Full]` ketika vault income apartemennya penuh, disertai info besaran kapasitas level.
+- [feat] Menambahkan field `income-capacity` pada setiap level di blok `apartment-levels` dalam `config.yml` untuk kemudahan konfigurasi kapasitas per level.
+- [chore] Menambahkan field `incomeCapacity` pada model `LevelConfig.java` dan memperbarui konstruktornya.
+- [chore] Menambahkan method `getIncomeCapacity(int level)` pada `ConfigManager.java` sebagai helper dengan nilai fallback otomatis (`level × 10.000`).
+- [chore] Memperbarui method `generateIncome()` di `ApartmentManager.java` untuk menghormati batas kapasitas dan mengirim notifikasi kapasitas penuh.
+- [chore] Menambahkan entri pesan `notifications.income_capacity_full` di `messages.yml`.
+- [feat] Menambahkan sistem durasi pada proses upgrade apartemen; upgrade tidak lagi instant melainkan membutuhkan waktu penyelesaian.
+- [feat] Menambahkan atribut konfigurasi `upgrade-duration` (dalam satuan tick) di `config.yml` pada masing-masing level di `apartment-levels` (0 = instant).
+- [feat] Menambahkan GUI konfirmasi khusus (`UpgradeConfirmGUI`) yang muncul ketika pemain menekan tombol Upgrade. GUI ini menyajikan info Harga, Sisa Durasi, dan Perkiraan Pendapatan Baru sebelum konfirmasi akhir dilakukan.
+- [feat] Mengubah tombol upgrade pada menu `ApartmentDetailsGUI` menjadi indikator sisa waktu (*Upgrading...*) bilamana apartemen sedang dalam fase renovasi level.
+- [feat] Menambahkan checker otomatis dalam `TaskManager.java` yang memroses apartemen yang selesai upgrade setiap detik (20 tick), diiringi dengan efek notifikasi Title dan *Sound Level-Up* bagi pemain yang sedang online.
+- [chore] Memodifikasi `Apartment.java` dan `ApartmentManager.java` untuk menyimpan status `upgradeInProgress` dan batas waktu `upgradeCompleteAt` secara permanen ke `data.yml` agar progres tidak hilang ketika restart.

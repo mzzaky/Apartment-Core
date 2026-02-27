@@ -52,14 +52,15 @@ public class ApartmentManager {
     private static class CachedList {
         final java.util.List<Apartment> list;
         final long timestamp;
+
         CachedList(java.util.List<Apartment> list, long timestamp) {
             this.list = list;
             this.timestamp = timestamp;
         }
     }
 
-
-    public ApartmentManager(ApartmentCore plugin, Economy economy, ConfigManager configManager, DataManager dataManager) {
+    public ApartmentManager(ApartmentCore plugin, Economy economy, ConfigManager configManager,
+            DataManager dataManager) {
         this.plugin = plugin;
         this.economy = economy;
         this.configManager = configManager;
@@ -84,12 +85,14 @@ public class ApartmentManager {
      */
     public void loadApartments() {
         ConfigurationSection section = dataManager.getDataConfig().getConfigurationSection("apartments");
-        if (section == null) return;
+        if (section == null)
+            return;
 
         for (String id : section.getKeys(false)) {
             try {
                 ConfigurationSection aptSection = section.getConfigurationSection(id);
-                if (aptSection == null) continue;
+                if (aptSection == null)
+                    continue;
 
                 String ownerStr = aptSection.getString("owner");
                 UUID owner = (ownerStr != null && !ownerStr.isEmpty()) ? UUID.fromString(ownerStr) : null;
@@ -109,8 +112,7 @@ public class ApartmentManager {
                         aptSection.getDouble("penalty", 0),
                         aptSection.getLong("inactive-since", 0),
                         aptSection.getString("display-name", id),
-                        aptSection.getString("welcome-message", "")
-                );
+                        aptSection.getString("welcome-message", ""));
 
                 // Load custom teleport location
                 if (aptSection.isConfigurationSection("teleport-location")) {
@@ -137,18 +139,29 @@ public class ApartmentManager {
                             try {
                                 java.util.Map<String, Object> map = new java.util.HashMap<>();
                                 for (java.util.Map.Entry<?, ?> e : raw.entrySet()) {
-                                    if (e.getKey() != null) map.put(String.valueOf(e.getKey()), e.getValue());
+                                    if (e.getKey() != null)
+                                        map.put(String.valueOf(e.getKey()), e.getValue());
                                 }
                                 apt.taxInvoices.add(TaxInvoice.deserialize(map));
                             } catch (Exception ex) {
-                                plugin.getLogger().warning(String.format("Failed to load invoice for %s: %s", id, ex.getMessage()));
+                                plugin.getLogger().warning(
+                                        String.format("Failed to load invoice for %s: %s", id, ex.getMessage()));
                             }
                         }
                     }
                 } catch (Throwable t) {
-                    plugin.getLogger().warning(String.format("Failed reading tax invoices for %s: %s", id, t.getMessage()));
+                    plugin.getLogger()
+                            .warning(String.format("Failed reading tax invoices for %s: %s", id, t.getMessage()));
                 }
 
+                // Load upgrade progress state
+                try {
+                    apt.upgradeInProgress = aptSection.getBoolean("upgrade-in-progress", false);
+                    apt.upgradeCompleteAt = aptSection.getLong("upgrade-complete-at", 0L);
+                } catch (Throwable t) {
+                    plugin.getLogger()
+                            .warning(String.format("Failed reading upgrade state for %s: %s", id, t.getMessage()));
+                }
 
                 apartments.put(id, apt);
             } catch (Exception e) {
@@ -164,11 +177,13 @@ public class ApartmentManager {
      */
     public void loadRatings() {
         ConfigurationSection section = dataManager.getDataConfig().getConfigurationSection("ratings");
-        if (section == null) return;
+        if (section == null)
+            return;
 
         for (String apartmentId : section.getKeys(false)) {
             ConfigurationSection ratingSection = section.getConfigurationSection(apartmentId);
-            if (ratingSection == null) continue;
+            if (ratingSection == null)
+                continue;
 
             ApartmentRating rating = new ApartmentRating();
             rating.totalRating = ratingSection.getDouble("total", 0);
@@ -180,7 +195,8 @@ public class ApartmentManager {
                     try {
                         rating.raters.put(UUID.fromString(uuid), ratersSection.getDouble(uuid));
                     } catch (IllegalArgumentException e) {
-                        plugin.getLogger().warning(String.format("Invalid UUID in ratings for apartment %s: %s", apartmentId, uuid));
+                        plugin.getLogger().warning(
+                                String.format("Invalid UUID in ratings for apartment %s: %s", apartmentId, uuid));
                     }
                 }
             }
@@ -188,13 +204,14 @@ public class ApartmentManager {
             apartmentRatings.put(apartmentId, rating);
         }
     }
-    
+
     /**
      * Load guest books from storage
      */
     public void loadGuestBooks() {
         ConfigurationSection section = dataManager.getGuestBookConfig().getConfigurationSection("guestbooks");
-        if (section == null) return;
+        if (section == null)
+            return;
 
         for (String apartmentId : section.getKeys(false)) {
             List<Map<?, ?>> messagesData = section.getMapList(apartmentId);
@@ -208,7 +225,8 @@ public class ApartmentManager {
                     long timestamp = (long) msgData.get("timestamp");
                     entries.add(new GuestBookEntry(senderUuid, senderName, message, timestamp));
                 } catch (Exception e) {
-                    plugin.getLogger().warning(String.format("Failed to load a guestbook entry for %s: %s", apartmentId, e.getMessage()));
+                    plugin.getLogger().warning(
+                            String.format("Failed to load a guestbook entry for %s: %s", apartmentId, e.getMessage()));
                 }
             }
             guestBooks.put(apartmentId, entries);
@@ -218,12 +236,13 @@ public class ApartmentManager {
 
     /**
      * Load apartment stats from storage
-     * Also ensures every existing apartment has a stats entry so the file is not empty.
+     * Also ensures every existing apartment has a stats entry so the file is not
+     * empty.
      */
     public void loadStats() {
         ConfigurationSection section = dataManager.getStatsConfig().getConfigurationSection("stats");
         apartmentStats.clear();
- 
+
         if (section != null) {
             for (String apartmentId : section.getKeys(false)) {
                 try {
@@ -233,16 +252,18 @@ public class ApartmentManager {
                         apartmentStats.put(apartmentId, stats);
                     }
                 } catch (Exception e) {
-                    plugin.getLogger().warning(String.format("Failed to load stats for apartment %s: %s", apartmentId, e.getMessage()));
+                    plugin.getLogger().warning(
+                            String.format("Failed to load stats for apartment %s: %s", apartmentId, e.getMessage()));
                 }
             }
         }
- 
-        // Ensure every apartment has a stats object so apartments-stats.yml is populated
+
+        // Ensure every apartment has a stats object so apartments-stats.yml is
+        // populated
         for (String apartmentId : apartments.keySet()) {
             apartmentStats.computeIfAbsent(apartmentId, k -> new ApartmentStats());
         }
- 
+
         // Persist to disk to guarantee file content exists at startup
         saveStats();
         plugin.debug("Loaded " + apartmentStats.size() + " apartment stats entries.");
@@ -289,6 +310,10 @@ public class ApartmentManager {
             }
             dataManager.getDataConfig().set(path + "tax-invoices", invoices);
 
+            // Save upgrade progress state
+            dataManager.getDataConfig().set(path + "upgrade-in-progress", apt.upgradeInProgress);
+            dataManager.getDataConfig().set(path + "upgrade-complete-at", apt.upgradeCompleteAt);
+
             // Save custom teleport location
             if (apt.hasCustomTeleport) {
                 String tpPath = path + "teleport-location.";
@@ -311,7 +336,8 @@ public class ApartmentManager {
      * Save apartment ratings
      */
     public void saveRatings() {
-        if (dataManager.getDataConfig() == null) return;
+        if (dataManager.getDataConfig() == null)
+            return;
 
         dataManager.getDataConfig().set("ratings", null);
 
@@ -329,12 +355,13 @@ public class ApartmentManager {
 
         dataManager.saveDataFile();
     }
-    
+
     /**
      * Save all guest books to storage.
      */
     public void saveGuestBooks() {
-        if (dataManager.getGuestBookConfig() == null) return;
+        if (dataManager.getGuestBookConfig() == null)
+            return;
 
         dataManager.getGuestBookConfig().set("guestbooks", null); // Clear old data
 
@@ -361,7 +388,8 @@ public class ApartmentManager {
      * Save all apartment stats to storage.
      */
     public void saveStats() {
-        if (dataManager.getStatsConfig() == null) return;
+        if (dataManager.getStatsConfig() == null)
+            return;
 
         dataManager.getStatsConfig().set("stats", null); // Clear old data
 
@@ -372,55 +400,79 @@ public class ApartmentManager {
         plugin.debug("Saved " + apartmentStats.size() + " apartment stats entries.");
     }
 
-
     /**
-     * Generate income for all apartments with shop buffs applied
+     * Generate income for all apartments with shop buffs applied.
+     * Income will NOT be generated if the apartment's pending income has reached
+     * its level capacity.
      */
     public void generateIncome() {
         long now = System.currentTimeMillis();
         for (Apartment apt : apartments.values()) {
-            if (apt.owner != null && apt.canGenerateIncome(now)) {
-                // Calculate base income for buff comparison
-                double baseIncome = apt.getHourlyIncome(configManager);
-                // Use shop-buffed income calculation
-                double income = apt.getHourlyIncomeWithShopBuffs(configManager, plugin);
-                apt.pendingIncome += income;
+            if (apt.owner == null || !apt.canGenerateIncome(now))
+                continue;
 
-                // Update stats
-                ApartmentStats stats = getStats(apt.id);
-                stats.totalIncomeGenerated += income;
-
-                // Send notification to player if online
+            // --- Income Capacity Check ---
+            double capacity = configManager.getIncomeCapacity(apt.level);
+            if (apt.pendingIncome >= capacity) {
+                // Vault is full; skip generation and notify player once per cycle
                 org.bukkit.OfflinePlayer offlinePlayer = org.bukkit.Bukkit.getOfflinePlayer(apt.owner);
                 if (offlinePlayer.isOnline()) {
                     org.bukkit.entity.Player player = offlinePlayer.getPlayer();
                     if (player != null) {
-                        String message;
-                        // Check if apartment actually has active income buffs
-                        boolean hasIncomeBuffs = plugin.getShopManager().hasActiveIncomeBuffs(apt.id);
-
-                        if (hasIncomeBuffs) {
-                            // Get actual shop buff amounts instead of random difference
-                            double flatBuff = plugin.getShopManager().getTotalFlatIncomeBonus(apt.id);
-                            double percentageBuff = plugin.getShopManager().getTotalPercentageIncomeBonus(apt.id);
-
-                            message = plugin.getMessageManager().getMessage("notifications.rent_generated_with_buff")
-                                    .replace("%amount%", configManager.formatMoney(income))
-                                    .replace("%apartment%", apt.displayName)
-                                    .replace("%flat_buff%", configManager.formatMoney(flatBuff))
-                                    .replace("%percentage_buff%", String.format("%.1f", percentageBuff));
-                        } else { // No shop buff
-                            message = plugin.getMessageManager().getMessage("notifications.rent_generated")
-                                    .replace("%amount%", configManager.formatMoney(income))
-                                    .replace("%apartment%", apt.displayName);
-                        }
+                        String message = plugin.getMessageManager().getMessage("notifications.income_capacity_full")
+                                .replace("%apartment%", apt.displayName)
+                                .replace("%capacity%", configManager.formatMoney(capacity));
                         player.sendMessage(message);
                     }
                 }
-
-                plugin.debug("Generated " + configManager.formatMoney(income) + " income for apartment " + apt.id +
-                    " (with shop buffs applied)");
+                plugin.debug("Income capacity full for apartment " + apt.id +
+                        " (" + configManager.formatMoney(apt.pendingIncome) + " / "
+                        + configManager.formatMoney(capacity) + ")");
+                continue;
             }
+
+            // Calculate income with shop & research buffs
+            double income = apt.getHourlyIncomeWithShopBuffs(configManager, plugin);
+
+            // Clamp income so it never exceeds remaining capacity space
+            double remaining = capacity - apt.pendingIncome;
+            income = Math.min(income, remaining);
+
+            apt.pendingIncome += income;
+
+            // Update stats
+            ApartmentStats stats = getStats(apt.id);
+            stats.totalIncomeGenerated += income;
+
+            // Send notification to player if online
+            org.bukkit.OfflinePlayer offlinePlayer = org.bukkit.Bukkit.getOfflinePlayer(apt.owner);
+            if (offlinePlayer.isOnline()) {
+                org.bukkit.entity.Player player = offlinePlayer.getPlayer();
+                if (player != null) {
+                    String message;
+                    boolean hasIncomeBuffs = plugin.getShopManager().hasActiveIncomeBuffs(apt.id);
+
+                    if (hasIncomeBuffs) {
+                        double flatBuff = plugin.getShopManager().getTotalFlatIncomeBonus(apt.id);
+                        double percentageBuff = plugin.getShopManager().getTotalPercentageIncomeBonus(apt.id);
+
+                        message = plugin.getMessageManager().getMessage("notifications.rent_generated_with_buff")
+                                .replace("%amount%", configManager.formatMoney(income))
+                                .replace("%apartment%", apt.displayName)
+                                .replace("%flat_buff%", configManager.formatMoney(flatBuff))
+                                .replace("%percentage_buff%", String.format("%.1f", percentageBuff));
+                    } else {
+                        message = plugin.getMessageManager().getMessage("notifications.rent_generated")
+                                .replace("%amount%", configManager.formatMoney(income))
+                                .replace("%apartment%", apt.displayName);
+                    }
+                    player.sendMessage(message);
+                }
+            }
+
+            plugin.debug("Generated " + configManager.formatMoney(income) + " income for apartment " + apt.id +
+                    " [" + configManager.formatMoney(apt.pendingIncome) + " / " + configManager.formatMoney(capacity)
+                    + "] (with shop buffs applied)");
         }
     }
 
@@ -430,7 +482,8 @@ public class ApartmentManager {
     public void processDailyUpdates() {
         for (Apartment apt : apartments.values()) {
             if (apt.owner != null) {
-                // Process taxes (new invoice-based system; safe to call daily as it is time-driven)
+                // Process taxes (new invoice-based system; safe to call daily as it is
+                // time-driven)
                 apt.tickTaxInvoices(economy, plugin, configManager, this);
 
                 // Increment age
@@ -438,7 +491,9 @@ public class ApartmentManager {
                 stats.ownershipAgeDays++;
             }
         }
-        // The main auto-save task is already running asynchronously. Calling a synchronous save here could cause lag. Data will be saved on the next auto-save cycle.
+        // The main auto-save task is already running asynchronously. Calling a
+        // synchronous save here could cause lag. Data will be saved on the next
+        // auto-save cycle.
         // saveApartments();
         // saveStats();
     }
@@ -468,7 +523,7 @@ public class ApartmentManager {
             player.sendMessage(ChatColor.RED + "Apartment Inactive. All functions are frozen until the tax is paid.");
             return false;
         }
-        
+
         // Prioritize custom teleport location
         Location customLoc = apt.getCustomTeleportLocation();
         if (customLoc != null) {
@@ -499,7 +554,7 @@ public class ApartmentManager {
                 double z = (min.getZ() + max.getZ() + 1) / 2.0;
 
                 Location loc = new Location(world, x, min.getY(), z);
-                
+
                 // Try to find a safe spot
                 loc = findSafeLocation(loc);
 
@@ -517,7 +572,7 @@ public class ApartmentManager {
         }
         return false;
     }
-    
+
     private Location findSafeLocation(Location loc) {
         World world = loc.getWorld();
         if (world == null) {
@@ -546,7 +601,8 @@ public class ApartmentManager {
      * Add player to WorldGuard region
      */
     public void addPlayerToRegion(Player player, Apartment apt) {
-        if (!configManager.isWgAutoAddOwner()) return;
+        if (!configManager.isWgAutoAddOwner())
+            return;
         World world = Bukkit.getWorld(apt.worldName);
         if (world != null) {
             RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
@@ -564,7 +620,8 @@ public class ApartmentManager {
      * Remove player from WorldGuard region
      */
     public void removePlayerFromRegion(Player player, Apartment apt) {
-        if (!configManager.isWgAutoRemoveOwner()) return;
+        if (!configManager.isWgAutoRemoveOwner())
+            return;
         World world = Bukkit.getWorld(apt.worldName);
         if (world != null) {
             RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
@@ -582,8 +639,10 @@ public class ApartmentManager {
      * Remove owner UUID from WorldGuard region (works even if player is offline)
      */
     public void removeOwnerUuidFromRegion(Apartment apt, java.util.UUID ownerUuid) {
-        if (ownerUuid == null) return;
-        if (!configManager.isWgAutoRemoveOwner()) return;
+        if (ownerUuid == null)
+            return;
+        if (!configManager.isWgAutoRemoveOwner())
+            return;
         World world = Bukkit.getWorld(apt.worldName);
         if (world != null) {
             RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
@@ -601,8 +660,10 @@ public class ApartmentManager {
      * Add owner UUID to WorldGuard region (works even if player is offline)
      */
     public void addOwnerUuidToRegion(Apartment apt, java.util.UUID ownerUuid) {
-        if (ownerUuid == null) return;
-        if (!configManager.isWgAutoAddOwner()) return;
+        if (ownerUuid == null)
+            return;
+        if (!configManager.isWgAutoAddOwner())
+            return;
         World world = Bukkit.getWorld(apt.worldName);
         if (world != null) {
             RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
@@ -664,11 +725,11 @@ public class ApartmentManager {
     public Map<UUID, Map<String, Long>> getPlayerRatingCooldowns() {
         return playerRatingCooldowns;
     }
-    
+
     public Map<String, List<GuestBookEntry>> getGuestBooks() {
         return guestBooks;
     }
-    
+
     public Map<String, ApartmentStats> getApartmentStats() {
         return apartmentStats;
     }
@@ -680,7 +741,7 @@ public class ApartmentManager {
     public ApartmentRating getRating(String apartmentId) {
         return apartmentRatings.get(apartmentId);
     }
-    
+
     public ApartmentStats getStats(String apartmentId) {
         return apartmentStats.computeIfAbsent(apartmentId, k -> new ApartmentStats());
     }
@@ -688,8 +749,6 @@ public class ApartmentManager {
     public void removeStats(String apartmentId) {
         apartmentStats.remove(apartmentId);
     }
-
-
 
     public int getApartmentCount() {
         return apartments.size();
@@ -702,38 +761,45 @@ public class ApartmentManager {
     // Public API for other plugins
     public TaxStatus getTaxStatus(String apartmentId) {
         Apartment a = apartments.get(apartmentId);
-        if (a == null) return TaxStatus.ACTIVE;
+        if (a == null)
+            return TaxStatus.ACTIVE;
         return a.computeTaxStatus(System.currentTimeMillis());
     }
 
     public double getTotalUnpaid(String apartmentId) {
         Apartment a = apartments.get(apartmentId);
-        if (a == null) return 0.0;
+        if (a == null)
+            return 0.0;
         return a.getTotalUnpaid();
     }
 
     public boolean canUseApartment(String apartmentId) {
         Apartment a = apartments.get(apartmentId);
-        if (a == null) return false;
+        if (a == null)
+            return false;
         return a.canGenerateIncome(System.currentTimeMillis());
     }
-    
+
     /**
-     * Validate WorldGuard flags on a region against config worldguard.required-flags.
-     * Supported forms: "pvp: deny", "build: deny", boolean flags ("someflag: true/false").
-     * Returns true when all requirements are satisfied or when checking is disabled.
+     * Validate WorldGuard flags on a region against config
+     * worldguard.required-flags.
+     * Supported forms: "pvp: deny", "build: deny", boolean flags ("someflag:
+     * true/false").
+     * Returns true when all requirements are satisfied or when checking is
+     * disabled.
      */
     public boolean checkRegionRequiredFlags(String worldName, String regionName) {
-        if (!configManager.isWgCheckFlags()) return true;
+        if (!configManager.isWgCheckFlags())
+            return true;
         try {
             org.bukkit.World world = org.bukkit.Bukkit.getWorld(worldName);
             if (world == null) {
                 plugin.getLogger().warning("WG check failed: world not found for " + worldName);
                 return false;
             }
-            com.sk89q.worldguard.protection.managers.RegionManager regionManager =
-                    com.sk89q.worldguard.WorldGuard.getInstance().getPlatform()
-                            .getRegionContainer().get(com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(world));
+            com.sk89q.worldguard.protection.managers.RegionManager regionManager = com.sk89q.worldguard.WorldGuard
+                    .getInstance().getPlatform()
+                    .getRegionContainer().get(com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(world));
             if (regionManager == null) {
                 plugin.getLogger().warning("WG check failed: RegionManager is null for " + worldName);
                 return false;
@@ -744,13 +810,15 @@ public class ApartmentManager {
                 return false;
             }
             java.util.List<String> req = configManager.getWgRequiredFlags();
-            if (req == null || req.isEmpty()) return true;
+            if (req == null || req.isEmpty())
+                return true;
 
-            com.sk89q.worldguard.protection.flags.registry.FlagRegistry reg =
-                    com.sk89q.worldguard.WorldGuard.getInstance().getFlagRegistry();
+            com.sk89q.worldguard.protection.flags.registry.FlagRegistry reg = com.sk89q.worldguard.WorldGuard
+                    .getInstance().getFlagRegistry();
 
             for (String entry : req) {
-                if (entry == null || entry.trim().isEmpty()) continue;
+                if (entry == null || entry.trim().isEmpty())
+                    continue;
                 String[] parts = entry.split(":");
                 String flagName = parts[0].trim();
                 String expectedRaw = parts.length > 1 ? parts[1].trim() : "";
@@ -761,31 +829,32 @@ public class ApartmentManager {
                 }
 
                 if (flag instanceof com.sk89q.worldguard.protection.flags.StateFlag) {
-                    com.sk89q.worldguard.protection.flags.StateFlag sf =
-                            (com.sk89q.worldguard.protection.flags.StateFlag) flag;
-                    com.sk89q.worldguard.protection.flags.StateFlag.State expected =
-                            "allow".equalsIgnoreCase(expectedRaw)
+                    com.sk89q.worldguard.protection.flags.StateFlag sf = (com.sk89q.worldguard.protection.flags.StateFlag) flag;
+                    com.sk89q.worldguard.protection.flags.StateFlag.State expected = "allow"
+                            .equalsIgnoreCase(expectedRaw)
                                     ? com.sk89q.worldguard.protection.flags.StateFlag.State.ALLOW
                                     : com.sk89q.worldguard.protection.flags.StateFlag.State.DENY;
                     com.sk89q.worldguard.protection.flags.StateFlag.State actual = region.getFlag(sf);
                     if (actual == null || actual != expected) {
-                        plugin.getLogger().warning("WG check failed: flag '" + flagName + "' expected '" + expectedRaw + "' but was '" + (actual == null ? "null" : actual.toString().toLowerCase()) + "'");
+                        plugin.getLogger().warning("WG check failed: flag '" + flagName + "' expected '" + expectedRaw
+                                + "' but was '" + (actual == null ? "null" : actual.toString().toLowerCase()) + "'");
                         return false;
                     }
                 } else if (flag instanceof com.sk89q.worldguard.protection.flags.BooleanFlag) {
-                    com.sk89q.worldguard.protection.flags.BooleanFlag bf =
-                            (com.sk89q.worldguard.protection.flags.BooleanFlag) flag;
+                    com.sk89q.worldguard.protection.flags.BooleanFlag bf = (com.sk89q.worldguard.protection.flags.BooleanFlag) flag;
                     boolean expected = Boolean.parseBoolean(expectedRaw);
                     Boolean actual = region.getFlag(bf);
                     if (actual == null || actual != expected) {
-                        plugin.getLogger().warning("WG check failed: flag '" + flagName + "' expected '" + expected + "' but was '" + actual + "'");
+                        plugin.getLogger().warning("WG check failed: flag '" + flagName + "' expected '" + expected
+                                + "' but was '" + actual + "'");
                         return false;
                     }
                 } else {
                     // Fallback string compare on map if we cannot strongly type the flag
                     String mapStr = String.valueOf(region.getFlags());
                     if (!mapStr.toLowerCase().contains((flagName + "=" + expectedRaw).toLowerCase())) {
-                        plugin.getLogger().warning("WG check fallback mismatch for '" + flagName + ":" + expectedRaw + "'. Flags: " + mapStr);
+                        plugin.getLogger().warning("WG check fallback mismatch for '" + flagName + ":" + expectedRaw
+                                + "'. Flags: " + mapStr);
                         return false;
                     }
                 }

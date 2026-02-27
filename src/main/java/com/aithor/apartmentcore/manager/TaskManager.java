@@ -26,13 +26,15 @@ public class TaskManager {
         startIncomeTask();
         startDailyUpdateTask();
         startConfirmationCleanupTask();
+        startUpgradeCheckTask();
 
         if (configManager.isAutoSaveEnabled()) {
             startAutoSaveTask();
         }
 
         // Backups are now part of the auto-save task for simplicity in some setups.
-        // If you want a separate backup schedule, you can re-add startBackupTask() here.
+        // If you want a separate backup schedule, you can re-add startBackupTask()
+        // here.
     }
 
     /**
@@ -78,15 +80,18 @@ public class TaskManager {
                 if (!configManager.isFeatureTaxSystem()) {
                     return; // tax system disabled
                 }
-                World mainWorld = plugin.getServer().getWorlds().isEmpty() ? null : plugin.getServer().getWorlds().get(0);
-                if (mainWorld == null) return;
+                World mainWorld = plugin.getServer().getWorlds().isEmpty() ? null
+                        : plugin.getServer().getWorlds().get(0);
+                if (mainWorld == null)
+                    return;
 
                 long ticksPerDay = Math.max(1, configManager.getTaxGenerationInterval());
                 long currentDay = mainWorld.getFullTime() / ticksPerDay;
                 long lastMinecraftDay = plugin.getLastMinecraftDay();
 
                 if (currentDay > lastMinecraftDay) {
-                    plugin.debug("Minecraft day changed (ticksPerDay=" + ticksPerDay + "). Processing daily updates...");
+                    plugin.debug(
+                            "Minecraft day changed (ticksPerDay=" + ticksPerDay + "). Processing daily updates...");
 
                     apartmentManager.processDailyUpdates();
 
@@ -105,10 +110,55 @@ public class TaskManager {
             public void run() {
                 long now = System.currentTimeMillis();
                 long timeout = plugin.getConfig().getLong("security.confirmation-timeout", 30) * 1000;
-                plugin.getPendingConfirmations().entrySet().removeIf(entry ->
-                        now - entry.getValue().timestamp > timeout);
+                plugin.getPendingConfirmations().entrySet()
+                        .removeIf(entry -> now - entry.getValue().timestamp > timeout);
             }
         }.runTaskTimer(plugin, 600L, 600L); // Every 30 seconds
+    }
+
+    /**
+     * Start periodic check for completed apartment upgrades
+     */
+    private void startUpgradeCheckTask() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                long now = System.currentTimeMillis();
+                boolean changed = false;
+
+                for (com.aithor.apartmentcore.model.Apartment apt : apartmentManager.getApartments().values()) {
+                    if (apt.upgradeInProgress && apt.upgradeCompleteAt > 0 && now >= apt.upgradeCompleteAt) {
+                        // Upgrade completed!
+                        apt.upgradeInProgress = false;
+                        apt.upgradeCompleteAt = 0L;
+                        apt.level++;
+                        changed = true;
+
+                        // Notify owner
+                        if (apt.owner != null) {
+                            org.bukkit.entity.Player ownerPlayer = plugin.getServer().getPlayer(apt.owner);
+                            if (ownerPlayer != null && ownerPlayer.isOnline()) {
+                                try {
+                                    ownerPlayer.playSound(ownerPlayer.getLocation(),
+                                            org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                                    ownerPlayer.sendTitle(org.bukkit.ChatColor.GREEN + "UPGRADE BERHASIL!",
+                                            org.bukkit.ChatColor.YELLOW + apt.displayName + " ➔ Level " + apt.level, 10,
+                                            70, 20);
+                                    ownerPlayer.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
+                                            new net.md_5.bungee.api.chat.TextComponent(org.bukkit.ChatColor.AQUA
+                                                    + "Apartment berhasil di upgrade ke level " + apt.level + "!"));
+                                } catch (Exception ignored) {
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (changed) {
+                    apartmentManager.saveApartments();
+                }
+            }
+        }.runTaskTimer(plugin, 20L, 20L); // Check every second
     }
 
     /**
@@ -129,10 +179,13 @@ public class TaskManager {
                 apartmentManager.saveStats();
                 // Also persist auctions for consistency snapshots
                 if (plugin.getAuctionManager() != null) {
-                    try { plugin.getAuctionManager().saveAuctions(); } catch (Throwable ignored) {}
+                    try {
+                        plugin.getAuctionManager().saveAuctions();
+                    } catch (Throwable ignored) {
+                    }
                 }
                 plugin.log("Auto-saved all data.");
- 
+
                 runs++;
                 if (configManager.isBackupEnabled() && runs >= backupFrequency) {
                     plugin.getDataManager().createBackup("auto");

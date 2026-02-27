@@ -28,7 +28,8 @@ public class Apartment {
     public UUID owner;
     public double price;
 
-    // Legacy tax fields (kept for backward-compat in storage; no longer used for logic)
+    // Legacy tax fields (kept for backward-compat in storage; no longer used for
+    // logic)
     public double tax;
     public int taxDays;
 
@@ -53,12 +54,16 @@ public class Apartment {
 
     // New tax system state
     public List<TaxInvoice> taxInvoices; // active and paid invoices
-    public boolean autoTaxPayment;       // per-apartment auto payment flag
-    public long lastInvoiceAt;           // last invoice creation timestamp (epoch millis)
+    public boolean autoTaxPayment; // per-apartment auto payment flag
+    public long lastInvoiceAt; // last invoice creation timestamp (epoch millis)
+
+    // Upgrade-in-progress state
+    public boolean upgradeInProgress; // true while upgrade construction is active
+    public long upgradeCompleteAt; // epoch millis when upgrade finishes (0 = not upgrading)
 
     public Apartment(String id, String regionName, String worldName, UUID owner, double price,
-                     double tax, int taxDays, int level, long lastTaxPayment, double pendingIncome,
-                     boolean inactive, double penalty, long inactiveSince, String displayName, String welcomeMessage) {
+            double tax, int taxDays, int level, long lastTaxPayment, double pendingIncome,
+            boolean inactive, double penalty, long inactiveSince, String displayName, String welcomeMessage) {
         this.id = id;
         this.regionName = regionName;
         this.worldName = worldName;
@@ -81,10 +86,15 @@ public class Apartment {
         this.taxInvoices = new ArrayList<>();
         this.autoTaxPayment = false;
         this.lastInvoiceAt = 0L;
+
+        // Upgrade-in-progress defaults
+        this.upgradeInProgress = false;
+        this.upgradeCompleteAt = 0L;
     }
 
     /**
      * Set a custom teleport location.
+     * 
      * @param location The new location to set.
      */
     public void setCustomTeleportLocation(Location location) {
@@ -103,6 +113,7 @@ public class Apartment {
 
     /**
      * Get the custom teleport location if it exists.
+     * 
      * @return The Location object, or null if not set.
      */
     public Location getCustomTeleportLocation() {
@@ -124,25 +135,27 @@ public class Apartment {
         if (config == null) {
             return 10; // Default fallback
         }
-        
+
         // Base income calculation
         double baseIncome = config.minIncome + Math.random() * (config.maxIncome - config.minIncome);
-        
+
         // Apply shop buffs if available
         return applyShopBuffsToIncome(baseIncome, configManager);
     }
-    
+
     /**
      * Apply shop buffs to base income amount
      */
     private double applyShopBuffsToIncome(double baseIncome, ConfigManager configManager) {
         // We need the plugin instance to get shop manager, but it's not available here
-        // This will be handled in the TaskManager where the plugin instance is available
+        // This will be handled in the TaskManager where the plugin instance is
+        // available
         return baseIncome;
     }
-    
+
     /**
-     * Get hourly income with shop buffs and research buffs applied (version with plugin access)
+     * Get hourly income with shop buffs and research buffs applied (version with
+     * plugin access)
      */
     public double getHourlyIncomeWithShopBuffs(ConfigManager configManager, ApartmentCore plugin) {
         LevelConfig config = configManager.getLevelConfig(level);
@@ -179,8 +192,10 @@ public class Apartment {
             }
 
             // Revenue Acceleration: -5% generation interval per tier
-            // Since the global interval is shared, we compensate by proportionally boosting income.
-            // A 5% interval reduction means income arrives 1/(1-0.05) = ~5.26% more frequently,
+            // Since the global interval is shared, we compensate by proportionally boosting
+            // income.
+            // A 5% interval reduction means income arrives 1/(1-0.05) = ~5.26% more
+            // frequently,
             // which is equivalent to multiplying income by 1/(1 - reduction/100).
             double intervalReduction = rm.getIncomeIntervalReduction(owner);
             if (intervalReduction > 0 && intervalReduction < 100) {
@@ -209,7 +224,7 @@ public class Apartment {
     public double computeBaseTaxAmount() {
         return price * getBaseTaxPercent();
     }
-    
+
     /**
      * Base tax amount with shop buffs and research buffs applied (tax reduction)
      */
@@ -242,7 +257,8 @@ public class Apartment {
         double sum = 0.0;
         if (taxInvoices != null) {
             for (TaxInvoice inv : taxInvoices) {
-                if (!inv.isPaid()) sum += inv.amount;
+                if (!inv.isPaid())
+                    sum += inv.amount;
             }
         }
         return sum;
@@ -252,7 +268,8 @@ public class Apartment {
      * Compute current tax status from oldest unpaid invoice.
      */
     public TaxStatus computeTaxStatus(long now) {
-        if (owner == null) return TaxStatus.ACTIVE;
+        if (owner == null)
+            return TaxStatus.ACTIVE;
         if (taxInvoices == null || taxInvoices.isEmpty()) {
             return TaxStatus.ACTIVE;
         }
@@ -266,12 +283,16 @@ public class Apartment {
                 }
             }
         }
-        if (!hasUnpaid) return TaxStatus.ACTIVE;
+        if (!hasUnpaid)
+            return TaxStatus.ACTIVE;
 
         long days = Math.max(0L, (now - oldestCreatedAt) / 86_400_000L); // real days since oldest unpaid
-        if (days >= 7) return TaxStatus.REPOSSESSION;
-        if (days >= 5) return TaxStatus.INACTIVE;
-        if (days >= 3) return TaxStatus.OVERDUE;
+        if (days >= 7)
+            return TaxStatus.REPOSSESSION;
+        if (days >= 5)
+            return TaxStatus.INACTIVE;
+        if (days >= 3)
+            return TaxStatus.OVERDUE;
         return TaxStatus.ACTIVE;
     }
 
@@ -292,14 +313,16 @@ public class Apartment {
      * - Apply status transitions and repossession at day 7.
      */
     public void tickTaxInvoices(Economy econ, ApartmentCore plugin,
-                                ConfigManager configManager, ApartmentManager apartmentManager) {
-        if (owner == null) return;
+            ConfigManager configManager, ApartmentManager apartmentManager) {
+        if (owner == null)
+            return;
 
         long now = System.currentTimeMillis();
         if (lastInvoiceAt == 0L) {
             // Seed with lastTaxPayment for backward compatibility
             lastInvoiceAt = Math.max(0L, lastTaxPayment);
-            if (lastInvoiceAt == 0L) lastInvoiceAt = now;
+            if (lastInvoiceAt == 0L)
+                lastInvoiceAt = now;
         }
 
         // 1) Generate new invoices for each full day passed since lastInvoiceAt
@@ -310,9 +333,12 @@ public class Apartment {
             // Determine current status BEFORE creating this invoice (for multiplier)
             TaxStatus statusBefore = computeTaxStatus(now);
             int multiplier = 1;
-            if (statusBefore == TaxStatus.OVERDUE) multiplier = 2;
-            else if (statusBefore == TaxStatus.INACTIVE) multiplier = 3;
-            // Repossession handled below; if reached, owner will be null and loop breaks next tick.
+            if (statusBefore == TaxStatus.OVERDUE)
+                multiplier = 2;
+            else if (statusBefore == TaxStatus.INACTIVE)
+                multiplier = 3;
+            // Repossession handled below; if reached, owner will be null and loop breaks
+            // next tick.
 
             // Use shop-buffed tax calculation
             double base = computeBaseTaxAmountWithShopBuffs(plugin);
@@ -320,7 +346,8 @@ public class Apartment {
 
             // Due at day 3 since creation
             TaxInvoice invoice = new TaxInvoice(amount, newCreatedAt, newCreatedAt + 3 * dayMs);
-            if (taxInvoices == null) taxInvoices = new ArrayList<>();
+            if (taxInvoices == null)
+                taxInvoices = new ArrayList<>();
             taxInvoices.add(invoice);
             lastInvoiceAt = newCreatedAt;
 
@@ -358,12 +385,14 @@ public class Apartment {
         // 2) Notifications for existing unpaid invoices and status effects
         OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
 
-        // Try auto-paying existing unpaid invoices if enabled and balance allows (oldest first)
+        // Try auto-paying existing unpaid invoices if enabled and balance allows
+        // (oldest first)
         if (autoTaxPayment && player != null) {
             java.util.List<TaxInvoice> unpaid = new java.util.ArrayList<>();
             if (taxInvoices != null) {
                 for (TaxInvoice i : taxInvoices) {
-                    if (!i.isPaid()) unpaid.add(i);
+                    if (!i.isPaid())
+                        unpaid.add(i);
                 }
             }
             unpaid.sort(java.util.Comparator.comparingLong(i -> i.createdAt));
@@ -387,7 +416,8 @@ public class Apartment {
         // Iterate invoices for reminders
         if (taxInvoices != null) {
             for (TaxInvoice inv : taxInvoices) {
-                if (inv.isPaid()) continue;
+                if (inv.isPaid())
+                    continue;
                 long days = inv.daysSinceCreated(now);
 
                 if (days >= 2 && !inv.notifDay2Sent) {
@@ -458,7 +488,8 @@ public class Apartment {
                 // Remove owner from region (even if offline)
                 try {
                     apartmentManager.removeOwnerUuidFromRegion(this, prevOwner);
-                } catch (Throwable ignored) {}
+                } catch (Throwable ignored) {
+                }
                 owner = null;
                 inactive = false;
                 penalty = 0;
@@ -478,8 +509,3 @@ public class Apartment {
         }
     }
 }
-
-
-
-
-

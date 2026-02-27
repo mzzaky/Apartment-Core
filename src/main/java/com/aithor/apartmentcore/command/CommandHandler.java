@@ -41,7 +41,8 @@ public class CommandHandler implements TabCompleter {
     private final Map<UUID, Long> guestBookCooldowns = new HashMap<>();
     private final ApartmentCommandService commandService;
 
-    public CommandHandler(ApartmentCore plugin, ApartmentManager apartmentManager, Economy economy, ConfigManager configManager) {
+    public CommandHandler(ApartmentCore plugin, ApartmentManager apartmentManager, Economy economy,
+            ConfigManager configManager) {
         this.plugin = plugin;
         this.apartmentManager = apartmentManager;
         this.economy = economy;
@@ -77,7 +78,8 @@ public class CommandHandler implements TabCompleter {
         }
 
         if (args.length == 0) {
-            sender.sendMessage(plugin.getMessageManager().getMessage("general.version_header").replace("%version%", plugin.getDescription().getVersion()));
+            sender.sendMessage(plugin.getMessageManager().getMessage("general.version_header").replace("%version%",
+                    plugin.getDescription().getVersion()));
             sender.sendMessage(plugin.getMessageManager().getMessage("general.about_author"));
             sender.sendMessage(plugin.getMessageManager().getMessage("general.about_help_hint"));
             return true;
@@ -94,7 +96,8 @@ public class CommandHandler implements TabCompleter {
             case "info":
                 if (args.length == 1) {
                     sender.sendMessage(ChatColor.GOLD + "=== ApartmentCore Info ===");
-                    sender.sendMessage(ChatColor.YELLOW + "Total Apartments: " + ChatColor.WHITE + apartmentManager.getApartmentCount());
+                    sender.sendMessage(ChatColor.YELLOW + "Total Apartments: " + ChatColor.WHITE
+                            + apartmentManager.getApartmentCount());
                     sender.sendMessage(ChatColor.YELLOW + "Owned Apartments: " + ChatColor.WHITE +
                             apartmentManager.getApartments().values().stream().filter(a -> a.owner != null).count());
                     sender.sendMessage(ChatColor.YELLOW + "For Sale: " + ChatColor.WHITE +
@@ -112,7 +115,8 @@ public class CommandHandler implements TabCompleter {
                     return true;
                 }
                 if (!sender.hasPermission("apartmentcore.buy")) {
-                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "buy apartments"));
+                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                            .replace("%action%", "buy apartments"));
                     return true;
                 }
                 if (args.length != 2) {
@@ -127,7 +131,8 @@ public class CommandHandler implements TabCompleter {
                     return true;
                 }
                 if (!sender.hasPermission("apartmentcore.sell")) {
-                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "sell apartments"));
+                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                            .replace("%action%", "sell apartments"));
                     return true;
                 }
                 if (args.length != 2) {
@@ -161,7 +166,7 @@ public class CommandHandler implements TabCompleter {
                         String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
 
             case "setteleport":
-                 if (!(sender instanceof Player)) {
+                if (!(sender instanceof Player)) {
                     sender.sendMessage(plugin.getMessageManager().getMessage("general.player_only"));
                     return true;
                 }
@@ -201,7 +206,8 @@ public class CommandHandler implements TabCompleter {
                     return true;
                 }
                 if (!sender.hasPermission("apartmentcore.teleport")) {
-                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "teleport"));
+                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                            .replace("%action%", "teleport"));
                     return true;
                 }
                 if (args.length != 2) {
@@ -209,7 +215,7 @@ public class CommandHandler implements TabCompleter {
                     return true;
                 }
                 return apartmentManager.teleportToApartment((Player) sender, args[1], false);
-                
+
             case "guestbook":
                 if (args.length < 2) {
                     sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore guestbook <leave|read|clear> ...");
@@ -223,7 +229,8 @@ public class CommandHandler implements TabCompleter {
                     return true;
                 }
                 if (!sender.hasPermission("apartmentcore.rent")) {
-                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "manage rent"));
+                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                            .replace("%action%", "manage rent"));
                     return true;
                 }
                 if (args.length < 3) {
@@ -238,7 +245,8 @@ public class CommandHandler implements TabCompleter {
                     return true;
                 }
                 if (!sender.hasPermission("apartmentcore.tax")) {
-                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "manage taxes"));
+                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                            .replace("%action%", "manage taxes"));
                     return true;
                 }
                 if (args.length < 2) {
@@ -267,12 +275,13 @@ public class CommandHandler implements TabCompleter {
                     sender.sendMessage(plugin.getMessageManager().getMessage("general.player_only"));
                     return true;
                 }
-                if (args.length != 2) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore upgrade <apartment_id>");
+                if (args.length < 2 || args.length > 3) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore upgrade <apartment_id> [confirm]");
                     return true;
                 }
-                return commandService.handleUpgradeCommand((Player) sender, args[1]);
-            
+                boolean confirmed = args.length == 3 && args[2].equalsIgnoreCase("confirm");
+                return commandService.handleUpgradeCommand((Player) sender, args[1], confirmed);
+
             case "list":
                 return commandService.handleListCommand(sender, args.length > 1 ? args[1] : null);
 
@@ -294,11 +303,13 @@ public class CommandHandler implements TabCompleter {
                             return true;
                         }
                         if (!sender.hasPermission("apartmentcore.auction.create")) {
-                            sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "create auctions"));
+                            sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                                    .replace("%action%", "create auctions"));
                             return true;
                         }
                         if (args.length != 5) {
-                            sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore auction create <apartment_id> <starting_bid> <duration_hours>");
+                            sender.sendMessage(ChatColor.RED
+                                    + "Usage: /apartmentcore auction create <apartment_id> <starting_bid> <duration_hours>");
                             return true;
                         }
                         try {
@@ -307,7 +318,8 @@ public class CommandHandler implements TabCompleter {
                             int hours = Integer.parseInt(args[4]);
                             return am.createAuction((Player) sender, aptId, startBid, hours);
                         } catch (NumberFormatException e) {
-                            sender.sendMessage(ChatColor.RED + "Invalid number format for starting_bid or duration_hours.");
+                            sender.sendMessage(
+                                    ChatColor.RED + "Invalid number format for starting_bid or duration_hours.");
                             return true;
                         }
                     case "bid":
@@ -316,11 +328,13 @@ public class CommandHandler implements TabCompleter {
                             return true;
                         }
                         if (!sender.hasPermission("apartmentcore.auction.bid")) {
-                            sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "bid"));
+                            sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                                    .replace("%action%", "bid"));
                             return true;
                         }
                         if (args.length != 4) {
-                            sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore auction bid <apartment_id> <amount>");
+                            sender.sendMessage(
+                                    ChatColor.RED + "Usage: /apartmentcore auction bid <apartment_id> <amount>");
                             return true;
                         }
                         try {
@@ -337,7 +351,8 @@ public class CommandHandler implements TabCompleter {
                             return true;
                         }
                         if (!sender.hasPermission("apartmentcore.auction.cancel")) {
-                            sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "cancel auctions"));
+                            sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                                    .replace("%action%", "cancel auctions"));
                             return true;
                         }
                         if (args.length != 3) {
@@ -347,7 +362,8 @@ public class CommandHandler implements TabCompleter {
                         return am.cancelAuction((Player) sender, args[2]);
                     case "list": {
                         if (!sender.hasPermission("apartmentcore.auction.list")) {
-                            sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "view auctions"));
+                            sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                                    .replace("%action%", "view auctions"));
                             return true;
                         }
                         String filter = args.length > 2 ? args[2].toLowerCase() : "all";
@@ -362,7 +378,9 @@ public class CommandHandler implements TabCompleter {
                             Apartment apt = apartmentManager.getApartment(a.apartmentId);
                             String name = apt != null ? apt.displayName : a.apartmentId;
                             String time = formatTime(a.getRemainingTime());
-                            String bidder = (a.currentBidderName != null && !a.currentBidderName.isEmpty()) ? a.currentBidderName : "-";
+                            String bidder = (a.currentBidderName != null && !a.currentBidderName.isEmpty())
+                                    ? a.currentBidderName
+                                    : "-";
                             sender.sendMessage(ChatColor.YELLOW + name + ChatColor.WHITE + " [" + a.apartmentId + "] " +
                                     "Seller: " + a.ownerName + ", Current: " + configManager.formatMoney(a.currentBid) +
                                     ", Bids: " + a.totalBids + ", Bidder: " + bidder + ", Ends in: " + time);
@@ -370,13 +388,15 @@ public class CommandHandler implements TabCompleter {
                         return true;
                     }
                     default:
-                        sender.sendMessage(ChatColor.YELLOW + "Usage: /apartmentcore auction <create|bid|list|cancel> ...");
+                        sender.sendMessage(
+                                ChatColor.YELLOW + "Usage: /apartmentcore auction <create|bid|list|cancel> ...");
                         return true;
                 }
-            
+
             case "admin":
                 if (!sender.hasPermission("apartmentcore.admin")) {
-                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "use admin commands"));
+                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                            .replace("%action%", "use admin commands"));
                     return true;
                 }
                 if (args.length < 2) {
@@ -391,7 +411,8 @@ public class CommandHandler implements TabCompleter {
                     return true;
                 }
                 if (!sender.hasPermission("apartmentcore.gui")) {
-                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission").replace("%action%", "use GUI"));
+                    sender.sendMessage(plugin.getMessageManager().getMessage("general.no_permission")
+                            .replace("%action%", "use GUI"));
                     return true;
                 }
                 plugin.getGUIManager().openMainMenu((Player) sender);
@@ -404,7 +425,7 @@ public class CommandHandler implements TabCompleter {
             default:
                 sender.sendMessage(plugin.getMessageManager().getMessage("general.unknown_command"));
                 return true;
-  
+
         }
         return false;
     }
@@ -418,8 +439,7 @@ public class CommandHandler implements TabCompleter {
             List<String> commands = new ArrayList<>(Arrays.asList(
                     "help", "version", "info", "buy", "sell", "teleport", "gui",
                     "rent", "tax", "upgrade", "list", "auction", "confirm", "rate",
-                    "setname", "setwelcome", "setteleport", "guestbook"
-            ));
+                    "setname", "setwelcome", "setteleport", "guestbook"));
             if (sender.hasPermission("apartmentcore.admin")) {
                 commands.add("admin");
             }
@@ -466,7 +486,8 @@ public class CommandHandler implements TabCompleter {
                     break;
                 case "admin":
                     if (sender.hasPermission("apartmentcore.admin")) {
-                        Arrays.asList("create", "remove", "set", "status", "invoice", "teleport", "apartment_list", "reload", "backup")
+                        Arrays.asList("create", "remove", "set", "status", "invoice", "teleport", "apartment_list",
+                                "reload", "backup")
                                 .stream().filter(cmd -> cmd.startsWith(partial)).forEach(completions::add);
                     }
                     break;
@@ -527,11 +548,13 @@ public class CommandHandler implements TabCompleter {
                         case "create": {
                             org.bukkit.World world = sender instanceof org.bukkit.entity.Player
                                     ? ((org.bukkit.entity.Player) sender).getWorld()
-                                    : (org.bukkit.Bukkit.getWorlds().isEmpty() ? null : org.bukkit.Bukkit.getWorlds().get(0));
+                                    : (org.bukkit.Bukkit.getWorlds().isEmpty() ? null
+                                            : org.bukkit.Bukkit.getWorlds().get(0));
                             if (world != null) {
-                                com.sk89q.worldguard.protection.managers.RegionManager regionManager =
-                                        com.sk89q.worldguard.WorldGuard.getInstance().getPlatform()
-                                                .getRegionContainer().get(com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(world));
+                                com.sk89q.worldguard.protection.managers.RegionManager regionManager = com.sk89q.worldguard.WorldGuard
+                                        .getInstance().getPlatform()
+                                        .getRegionContainer()
+                                        .get(com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(world));
                                 if (regionManager != null) {
                                     regionManager.getRegions().keySet().stream()
                                             .filter(r -> r.toLowerCase().startsWith(partial))
@@ -587,7 +610,8 @@ public class CommandHandler implements TabCompleter {
                             .forEach(completions::add);
                 }
             }
-            // Admin create (ID argument) - no strong suggestions available; leave free-form.
+            // Admin create (ID argument) - no strong suggestions available; leave
+            // free-form.
         } else if (args.length == 5) {
             if (args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("invoice")) {
                 if ("add".equalsIgnoreCase(args[2])) {
@@ -655,15 +679,18 @@ public class CommandHandler implements TabCompleter {
 
                 String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                 if (message.length() > configManager.getGuestBookMaxMessageLength()) {
-                    player.sendMessage(ChatColor.RED + "Your message is too long! Max " + configManager.getGuestBookMaxMessageLength() + " characters.");
+                    player.sendMessage(ChatColor.RED + "Your message is too long! Max "
+                            + configManager.getGuestBookMaxMessageLength() + " characters.");
                     return true;
                 }
 
-                List<GuestBookEntry> entries = apartmentManager.getGuestBooks().computeIfAbsent(apartmentId, k -> new ArrayList<>());
+                List<GuestBookEntry> entries = apartmentManager.getGuestBooks().computeIfAbsent(apartmentId,
+                        k -> new ArrayList<>());
                 if (entries.size() >= configManager.getGuestBookMaxMessages()) {
                     entries.remove(0); // Remove oldest message if full
                 }
-                entries.add(new GuestBookEntry(player.getUniqueId(), player.getName(), message, System.currentTimeMillis()));
+                entries.add(new GuestBookEntry(player.getUniqueId(), player.getName(), message,
+                        System.currentTimeMillis()));
                 apartmentManager.saveGuestBooks();
                 guestBookCooldowns.put(player.getUniqueId(), System.currentTimeMillis());
                 player.sendMessage(ChatColor.GREEN + "You left a message in " + apt.displayName + "'s guestbook.");
@@ -690,9 +717,12 @@ public class CommandHandler implements TabCompleter {
                 }
                 ConfirmationAction pending = plugin.getPendingConfirmations().get(player.getUniqueId());
                 if (pending == null || !pending.type.equals("guestbook_clear") || !pending.data.equals(apartmentId)) {
-                    player.sendMessage(ChatColor.YELLOW + "Are you sure you want to clear the guestbook for " + apt.displayName + "?");
-                    player.sendMessage(ChatColor.YELLOW + "Type " + ChatColor.WHITE + "/apartmentcore confirm" + ChatColor.YELLOW + " to confirm.");
-                    plugin.getPendingConfirmations().put(player.getUniqueId(), new ConfirmationAction("guestbook_clear", apartmentId, System.currentTimeMillis()));
+                    player.sendMessage(ChatColor.YELLOW + "Are you sure you want to clear the guestbook for "
+                            + apt.displayName + "?");
+                    player.sendMessage(ChatColor.YELLOW + "Type " + ChatColor.WHITE + "/apartmentcore confirm"
+                            + ChatColor.YELLOW + " to confirm.");
+                    plugin.getPendingConfirmations().put(player.getUniqueId(),
+                            new ConfirmationAction("guestbook_clear", apartmentId, System.currentTimeMillis()));
                 }
                 break;
 
@@ -704,7 +734,8 @@ public class CommandHandler implements TabCompleter {
     }
 
     private String formatTime(long millis) {
-        if (millis < 0) return "0s";
+        if (millis < 0)
+            return "0s";
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         millis -= TimeUnit.DAYS.toMillis(days);
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
@@ -714,13 +745,15 @@ public class CommandHandler implements TabCompleter {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 
         StringBuilder sb = new StringBuilder();
-        if (days > 0) sb.append(days).append("d ");
-        if (hours > 0) sb.append(hours).append("h ");
-        if (minutes > 0) sb.append(minutes).append("m ");
+        if (days > 0)
+            sb.append(days).append("d ");
+        if (hours > 0)
+            sb.append(hours).append("h ");
+        if (minutes > 0)
+            sb.append(minutes).append("m ");
         sb.append(seconds).append("s");
         return sb.toString().trim();
     }
-
 
     private boolean handleInfoCommand(CommandSender sender, String apartmentId) {
         Apartment apt = apartmentManager.getApartment(apartmentId);
@@ -743,8 +776,10 @@ public class CommandHandler implements TabCompleter {
         long unpaidCount = apt.taxInvoices == null ? 0 : apt.taxInvoices.stream().filter(inv -> !inv.isPaid()).count();
         double totalUnpaid = apt.getTotalUnpaid();
 
-        sender.sendMessage(ChatColor.YELLOW + "Base Tax: " + ChatColor.WHITE + String.format("%.2f", basePercent * 100) + "% (" + configManager.formatMoney(baseAmount) + ")");
-        sender.sendMessage(ChatColor.YELLOW + "Active Invoices: " + ChatColor.WHITE + unpaidCount + ", Total Arrears: " + configManager.formatMoney(totalUnpaid));
+        sender.sendMessage(ChatColor.YELLOW + "Base Tax: " + ChatColor.WHITE + String.format("%.2f", basePercent * 100)
+                + "% (" + configManager.formatMoney(baseAmount) + ")");
+        sender.sendMessage(ChatColor.YELLOW + "Active Invoices: " + ChatColor.WHITE + unpaidCount + ", Total Arrears: "
+                + configManager.formatMoney(totalUnpaid));
         sender.sendMessage(ChatColor.YELLOW + "Level: " + ChatColor.WHITE + apt.level + "/5");
         sender.sendMessage(ChatColor.YELLOW + "Hourly Income: " + ChatColor.WHITE +
                 configManager.formatMoney(configManager.getLevelConfig(apt.level).minIncome) + " - " +
@@ -761,7 +796,8 @@ public class CommandHandler implements TabCompleter {
         }
 
         sender.sendMessage(ChatColor.YELLOW + "Tax Status: " + ChatColor.WHITE + taxStatus.name());
-        sender.sendMessage(ChatColor.YELLOW + "Can Generate Income: " + ChatColor.WHITE + (apt.canGenerateIncome(nowTs) ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No"));
+        sender.sendMessage(ChatColor.YELLOW + "Can Generate Income: " + ChatColor.WHITE
+                + (apt.canGenerateIncome(nowTs) ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No"));
 
         // Countdown timers
         if (apt.owner != null) {
@@ -775,16 +811,18 @@ public class CommandHandler implements TabCompleter {
                     (incomeTimeRemaining > 0 ? formatTime(incomeTimeRemaining) : "Now"));
         }
 
-
         if (apt.owner != null && sender instanceof Player &&
                 apt.owner.equals(((Player) sender).getUniqueId())) {
-            sender.sendMessage(ChatColor.YELLOW + "Pending Income: " + ChatColor.WHITE + configManager.formatMoney(apt.pendingIncome));
+            sender.sendMessage(ChatColor.YELLOW + "Pending Income: " + ChatColor.WHITE
+                    + configManager.formatMoney(apt.pendingIncome));
             if (apt.penalty > 0) {
-                sender.sendMessage(ChatColor.YELLOW + "Penalty: " + ChatColor.RED + configManager.formatMoney(apt.penalty));
+                sender.sendMessage(
+                        ChatColor.YELLOW + "Penalty: " + ChatColor.RED + configManager.formatMoney(apt.penalty));
             }
             if (apt.level < 5) {
                 double upgradeCost = configManager.getLevelConfig(apt.level + 1).upgradeCost;
-                sender.sendMessage(ChatColor.YELLOW + "Upgrade Cost: " + ChatColor.WHITE + configManager.formatMoney(upgradeCost));
+                sender.sendMessage(
+                        ChatColor.YELLOW + "Upgrade Cost: " + ChatColor.WHITE + configManager.formatMoney(upgradeCost));
             }
         }
 
@@ -804,7 +842,8 @@ public class CommandHandler implements TabCompleter {
         }
 
         if (!economy.has(player, apt.price)) {
-            player.sendMessage(ChatColor.RED + "You don't have enough money! Need: " + configManager.formatMoney(apt.price));
+            player.sendMessage(
+                    ChatColor.RED + "You don't have enough money! Need: " + configManager.formatMoney(apt.price));
             return true;
         }
 
@@ -820,7 +859,8 @@ public class CommandHandler implements TabCompleter {
                         .filter(a -> player.getUniqueId().equals(a.owner))
                         .count();
                 if (owned >= maxApartments) {
-                    player.sendMessage(ChatColor.RED + "You have reached the maximum number of apartments (" + maxApartments + ")!");
+                    player.sendMessage(ChatColor.RED + "You have reached the maximum number of apartments ("
+                            + maxApartments + ")!");
                     return true;
                 }
             }
@@ -837,7 +877,8 @@ public class CommandHandler implements TabCompleter {
         apartmentManager.addPlayerToRegion(player, apt);
 
         apartmentManager.saveApartments();
-        player.sendMessage(ChatColor.GREEN + "Successfully purchased apartment " + apt.displayName + " for " + configManager.formatMoney(apt.price));
+        player.sendMessage(ChatColor.GREEN + "Successfully purchased apartment " + apt.displayName + " for "
+                + configManager.formatMoney(apt.price));
 
         // Show welcome message if exists
         if (!apt.welcomeMessage.isEmpty()) {
@@ -883,8 +924,8 @@ public class CommandHandler implements TabCompleter {
 
         return true;
     }
-    
-     private boolean handleSetTeleportCommand(Player player, String apartmentId) {
+
+    private boolean handleSetTeleportCommand(Player player, String apartmentId) {
         if (!player.hasPermission("apartmentcore.setteleport")) {
             player.sendMessage(ChatColor.RED + "You don't have permission to set a teleport location.");
             return true;
@@ -907,12 +948,14 @@ public class CommandHandler implements TabCompleter {
             player.sendMessage(ChatColor.RED + "Could not find the world for this apartment.");
             return true;
         }
-        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
+        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
+                .get(BukkitAdapter.adapt(world));
         if (regionManager == null) {
             player.sendMessage(ChatColor.RED + "WorldGuard RegionManager not found.");
             return true;
         }
-        ApplicableRegionSet regionSet = regionManager.getApplicableRegions(BlockVector3.at(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()));
+        ApplicableRegionSet regionSet = regionManager.getApplicableRegions(
+                BlockVector3.at(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()));
 
         boolean inRegion = false;
         for (ProtectedRegion region : regionSet) {
@@ -923,17 +966,18 @@ public class CommandHandler implements TabCompleter {
         }
 
         if (!inRegion) {
-            player.sendMessage(ChatColor.RED + "You must be standing inside the apartment to set its teleport location.");
+            player.sendMessage(
+                    ChatColor.RED + "You must be standing inside the apartment to set its teleport location.");
             return true;
         }
 
         apt.setCustomTeleportLocation(player.getLocation());
         apartmentManager.saveApartments();
 
-        player.sendMessage(ChatColor.GREEN + "Teleport location for " + apt.displayName + " has been set to your current position.");
+        player.sendMessage(ChatColor.GREEN + "Teleport location for " + apt.displayName
+                + " has been set to your current position.");
         return true;
     }
-
 
     private boolean handleSetNameCommand(Player player, String apartmentId, String displayName) {
         Apartment apt = apartmentManager.getApartment(apartmentId);
@@ -1013,20 +1057,23 @@ public class CommandHandler implements TabCompleter {
 
         // Check cooldown (24 hours)
         UUID playerUuid = player.getUniqueId();
-        Map<String, Long> playerCooldowns = apartmentManager.getPlayerRatingCooldowns().computeIfAbsent(playerUuid, k -> new HashMap<>());
+        Map<String, Long> playerCooldowns = apartmentManager.getPlayerRatingCooldowns().computeIfAbsent(playerUuid,
+                k -> new HashMap<>());
         Long lastRating = playerCooldowns.get(apartmentId);
 
         if (lastRating != null) {
             long timeSinceLastRating = System.currentTimeMillis() - lastRating;
             if (timeSinceLastRating < 86400000) { // 24 hours in milliseconds
                 long hoursLeft = TimeUnit.MILLISECONDS.toHours(86400000 - timeSinceLastRating);
-                player.sendMessage(ChatColor.RED + "You can rate this apartment again in " + (hoursLeft + 1) + " hours!");
+                player.sendMessage(
+                        ChatColor.RED + "You can rate this apartment again in " + (hoursLeft + 1) + " hours!");
                 return true;
             }
         }
 
         // Get or create rating entry
-        ApartmentRating aptRating = apartmentManager.getApartmentRatings().computeIfAbsent(apartmentId, k -> new ApartmentRating());
+        ApartmentRating aptRating = apartmentManager.getApartmentRatings().computeIfAbsent(apartmentId,
+                k -> new ApartmentRating());
 
         // Check if player has rated before
         Double oldRating = aptRating.raters.get(playerUuid);
@@ -1068,18 +1115,19 @@ public class CommandHandler implements TabCompleter {
                 }
                 // Prevent sale if there are unpaid tax invoices
                 if (aptToSell.getTotalUnpaid() > 0) {
-                    player.sendMessage(ChatColor.RED + "Apartments with tax arrears cannot be sold. Pay the taxes first.");
+                    player.sendMessage(
+                            ChatColor.RED + "Apartments with tax arrears cannot be sold. Pay the taxes first.");
                     return true;
                 }
 
                 double sellPrice = aptToSell.price * configManager.getSellPercentage();
-                
+
                 // Get shop refund before clearing data
                 double shopRefund = 0.0;
                 if (plugin.getShopManager() != null) {
                     shopRefund = plugin.getShopManager().handleApartmentSale(aptToSell.id, player.getUniqueId());
                 }
-                
+
                 double totalRefund = sellPrice + shopRefund;
                 economy.depositPlayer(player, totalRefund);
 
@@ -1103,22 +1151,23 @@ public class CommandHandler implements TabCompleter {
                 apartmentManager.saveGuestBooks();
                 apartmentManager.saveStats();
 
-                String message = "Successfully sold " + aptToSell.displayName + " for " + configManager.formatMoney(sellPrice);
+                String message = "Successfully sold " + aptToSell.displayName + " for "
+                        + configManager.formatMoney(sellPrice);
                 if (shopRefund > 0) {
                     message += " + " + configManager.formatMoney(shopRefund) + " shop refund";
                 }
                 message += " (Total: " + configManager.formatMoney(totalRefund) + ")";
-                
+
                 player.sendMessage(ChatColor.GREEN + message);
                 plugin.logTransaction(player.getName() + " sold apartment " + aptToSell.id +
-                    " for " + configManager.formatMoney(sellPrice) +
-                    (shopRefund > 0 ? " + shop refund " + configManager.formatMoney(shopRefund) : ""));
+                        " for " + configManager.formatMoney(sellPrice) +
+                        (shopRefund > 0 ? " + shop refund " + configManager.formatMoney(shopRefund) : ""));
                 break;
 
             case "guestbook_clear":
                 String apartmentId = action.data;
                 Apartment aptToClear = apartmentManager.getApartment(apartmentId);
-                 if (aptToClear == null || !player.getUniqueId().equals(aptToClear.owner)) {
+                if (aptToClear == null || !player.getUniqueId().equals(aptToClear.owner)) {
                     player.sendMessage(ChatColor.RED + "Cannot clear guestbook!");
                     return true;
                 }
@@ -1150,12 +1199,13 @@ public class CommandHandler implements TabCompleter {
                 }
                 double incomeToClaim = apt.pendingIncome;
                 economy.depositPlayer(player, incomeToClaim);
-                player.sendMessage(ChatColor.GREEN + "Claimed " + configManager.formatMoney(incomeToClaim) + " from " + apt.displayName);
-                
+                player.sendMessage(ChatColor.GREEN + "Claimed " + configManager.formatMoney(incomeToClaim) + " from "
+                        + apt.displayName);
+
                 // Update stats
                 ApartmentStats stats = apartmentManager.getStats(apartmentId);
                 stats.totalIncomeGenerated += incomeToClaim;
-                
+
                 apt.pendingIncome = 0;
                 plugin.setLastRentClaimTime(System.currentTimeMillis());
                 apartmentManager.saveApartments();
@@ -1164,17 +1214,18 @@ public class CommandHandler implements TabCompleter {
 
             case "info":
                 player.sendMessage(ChatColor.GOLD + "=== Rent Info: " + apt.displayName + " ===");
-                player.sendMessage(ChatColor.YELLOW + "Pending Income: " + ChatColor.WHITE + configManager.formatMoney(apt.pendingIncome));
+                player.sendMessage(ChatColor.YELLOW + "Pending Income: " + ChatColor.WHITE
+                        + configManager.formatMoney(apt.pendingIncome));
                 player.sendMessage(ChatColor.YELLOW + "Hourly Income Range: " + ChatColor.WHITE +
                         configManager.formatMoney(configManager.getLevelConfig(apt.level).minIncome) + " - " +
                         configManager.formatMoney(configManager.getLevelConfig(apt.level).maxIncome));
                 player.sendMessage(ChatColor.YELLOW + "Level: " + ChatColor.WHITE + apt.level + "/5");
 
-                 // Income countdown
+                // Income countdown
                 long nextIncomeMillis = plugin.getLastIncomeGenerationTime() + 50000L;
                 long incomeTimeRemaining = nextIncomeMillis - System.currentTimeMillis();
                 player.sendMessage(ChatColor.YELLOW + "Next Income In: " + ChatColor.WHITE +
-                    (incomeTimeRemaining > 0 ? formatTime(incomeTimeRemaining) : "Now"));
+                        (incomeTimeRemaining > 0 ? formatTime(incomeTimeRemaining) : "Now"));
 
                 player.sendMessage(ChatColor.YELLOW + "Status: " + ChatColor.WHITE +
                         (apt.inactive ? ChatColor.RED + "Inactive (no income)" : ChatColor.GREEN + "Active"));
@@ -1214,7 +1265,8 @@ public class CommandHandler implements TabCompleter {
             long activeCount = 0;
             if (apt.taxInvoices != null) {
                 for (TaxInvoice inv : apt.taxInvoices) {
-                    if (!inv.isPaid()) activeCount++;
+                    if (!inv.isPaid())
+                        activeCount++;
                 }
             }
 
@@ -1226,7 +1278,8 @@ public class CommandHandler implements TabCompleter {
             int idx = 1;
             if (apt.taxInvoices != null) {
                 for (TaxInvoice inv : apt.taxInvoices) {
-                    if (inv.isPaid()) continue;
+                    if (inv.isPaid())
+                        continue;
                     long days = inv.daysSinceCreated(now);
                     String dueStr = days >= 3 ? ChatColor.RED + "due date" : ChatColor.WHITE + "not due date";
                     player.sendMessage(ChatColor.GRAY + "  #" + idx + " " + configManager.formatMoney(inv.amount) +
@@ -1236,7 +1289,8 @@ public class CommandHandler implements TabCompleter {
             }
         }
 
-        player.sendMessage(ChatColor.GOLD + "Total all invoices: " + ChatColor.WHITE + configManager.formatMoney(grandTotal));
+        player.sendMessage(
+                ChatColor.GOLD + "Total all invoices: " + ChatColor.WHITE + configManager.formatMoney(grandTotal));
         return true;
     }
 
@@ -1300,14 +1354,17 @@ public class CommandHandler implements TabCompleter {
         apartmentManager.saveApartments();
         apartmentManager.saveStats();
 
-        player.sendMessage(ChatColor.GREEN + "All tax arrears have been paid: " + configManager.formatMoney(totalUnpaid));
+        player.sendMessage(
+                ChatColor.GREEN + "All tax arrears have been paid: " + configManager.formatMoney(totalUnpaid));
         return true;
     }
 
     private boolean handleTaxAuto(Player player, String toggle) {
         boolean enable;
-        if ("on".equalsIgnoreCase(toggle)) enable = true;
-        else if ("off".equalsIgnoreCase(toggle)) enable = false;
+        if ("on".equalsIgnoreCase(toggle))
+            enable = true;
+        else if ("off".equalsIgnoreCase(toggle))
+            enable = false;
         else {
             player.sendMessage(ChatColor.RED + "Usage: /apartmentcore tax auto <on|off>");
             return true;
@@ -1328,7 +1385,8 @@ public class CommandHandler implements TabCompleter {
         }
         apartmentManager.saveApartments();
 
-        player.sendMessage(ChatColor.GREEN + "Auto-payment for taxes has been " + (enable ? "enabled" : "disabled") + " for all your apartments.");
+        player.sendMessage(ChatColor.GREEN + "Auto-payment for taxes has been " + (enable ? "enabled" : "disabled")
+                + " for all your apartments.");
         return true;
     }
 
@@ -1358,7 +1416,8 @@ public class CommandHandler implements TabCompleter {
         double upgradeCost = nextLevelConfig.upgradeCost;
 
         if (!economy.has(player, upgradeCost)) {
-            player.sendMessage(ChatColor.RED + "You don't have enough money! Need: " + configManager.formatMoney(upgradeCost));
+            player.sendMessage(
+                    ChatColor.RED + "You don't have enough money! Need: " + configManager.formatMoney(upgradeCost));
             return true;
         }
 
@@ -1380,11 +1439,19 @@ public class CommandHandler implements TabCompleter {
         List<Apartment> displayList = apartmentManager.getApartmentList(finalFilter, playerUuid);
         String title;
 
-        switch(finalFilter) {
-            case "sale": title = "Apartments For Sale"; break;
-            case "mine": title = "Your Apartments"; break;
-            case "top": title = "Top Rated Apartments"; break;
-            default: title = "All Apartments"; break;
+        switch (finalFilter) {
+            case "sale":
+                title = "Apartments For Sale";
+                break;
+            case "mine":
+                title = "Your Apartments";
+                break;
+            case "top":
+                title = "Top Rated Apartments";
+                break;
+            default:
+                title = "All Apartments";
+                break;
         }
 
         if (displayList.isEmpty()) {
@@ -1399,8 +1466,9 @@ public class CommandHandler implements TabCompleter {
 
             // Get rating
             ApartmentRating rating = apartmentManager.getRating(apt.id);
-            String ratingStr = rating != null && rating.ratingCount > 0 ?
-                    String.format(" %.1f⭐", rating.getAverageRating()) : "";
+            String ratingStr = rating != null && rating.ratingCount > 0
+                    ? String.format(" %.1f⭐", rating.getAverageRating())
+                    : "";
 
             sender.sendMessage(ChatColor.YELLOW + apt.displayName + " (" + apt.id + "): " + ChatColor.WHITE +
                     "Owner: " + owner + ", Price: " + configManager.formatMoney(apt.price) +
@@ -1409,7 +1477,7 @@ public class CommandHandler implements TabCompleter {
 
         return true;
     }
-    
+
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(plugin.getMessageManager().getMessage("general.help_header"));
         sender.sendMessage(plugin.getMessageManager().getMessage("general.about_help_hint"));
@@ -1417,7 +1485,9 @@ public class CommandHandler implements TabCompleter {
         sender.sendMessage(plugin.getMessageManager().getMessage("general.usage.sell"));
         sender.sendMessage(plugin.getMessageManager().getMessage("general.usage.teleport"));
         sender.sendMessage(plugin.getMessageManager().getMessage("general.usage.rent"));
-        sender.sendMessage(plugin.getMessageManager().getMessage("general.usage.tax_auto")); // tax usage maps to tax_auto or tax, choose closest
+        sender.sendMessage(plugin.getMessageManager().getMessage("general.usage.tax_auto")); // tax usage maps to
+                                                                                             // tax_auto or tax, choose
+                                                                                             // closest
         sender.sendMessage(plugin.getMessageManager().getMessage("general.usage.upgrade"));
         sender.sendMessage(plugin.getMessageManager().getMessage("general.usage.setname"));
         sender.sendMessage(plugin.getMessageManager().getMessage("general.usage.setwelcome"));
@@ -1465,10 +1535,12 @@ public class CommandHandler implements TabCompleter {
 
             case "set":
                 if (args.length < 4) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin set <property> <apartment_id> <value>");
+                    sender.sendMessage(
+                            ChatColor.RED + "Usage: /apartmentcore admin set <property> <apartment_id> <value>");
                     return true;
                 }
-                return setApartmentProperty(sender, args[1], args[2], String.join(" ", Arrays.copyOfRange(args, 3, args.length)));
+                return setApartmentProperty(sender, args[1], args[2],
+                        String.join(" ", Arrays.copyOfRange(args, 3, args.length)));
 
             case "teleport":
                 if (!(sender instanceof Player)) {
@@ -1520,7 +1592,8 @@ public class CommandHandler implements TabCompleter {
             return true;
         }
 
-        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
+        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
+                .get(BukkitAdapter.adapt(world));
         ProtectedRegion region = regionManager != null ? regionManager.getRegion(regionName) : null;
         if (regionManager == null || region == null) {
             sender.sendMessage(ChatColor.RED + "Region '" + regionName + "' not found in world '" + worldName + "'!");
@@ -1528,13 +1601,15 @@ public class CommandHandler implements TabCompleter {
         }
         // Optional WorldGuard flag checks from config
         if (configManager.isWgCheckFlags() && !apartmentManager.checkRegionRequiredFlags(worldName, regionName)) {
-            sender.sendMessage(ChatColor.RED + "Region '" + regionName + "' does not satisfy required WorldGuard flags.");
+            sender.sendMessage(
+                    ChatColor.RED + "Region '" + regionName + "' does not satisfy required WorldGuard flags.");
             return true;
         }
 
         Apartment apt = new Apartment(id, regionName, worldName, null, price, 0.0, 0, 1,
                 System.currentTimeMillis(), 0, false, 0, 0, id, "");
-        // Set default teleport location to the admin's current position at creation time (if sender is a player)
+        // Set default teleport location to the admin's current position at creation
+        // time (if sender is a player)
         if (player != null) {
             apt.setCustomTeleportLocation(player.getLocation());
         }
@@ -1603,7 +1678,8 @@ public class CommandHandler implements TabCompleter {
                             }
                         }
                         if (targetUuid == null) {
-                            sender.sendMessage(ChatColor.RED + "Player not found online and not a valid UUID. Use a UUID or have the player join once.");
+                            sender.sendMessage(ChatColor.RED
+                                    + "Player not found online and not a valid UUID. Use a UUID or have the player join once.");
                             return true;
                         }
                         OfflinePlayer newOwner = Bukkit.getOfflinePlayer(targetUuid);
@@ -1612,17 +1688,20 @@ public class CommandHandler implements TabCompleter {
                             return true;
                         }
                         apt.owner = targetUuid;
-                        sender.sendMessage(ChatColor.GREEN + "Set owner of " + apt.displayName + " to " + (online != null ? online.getName() : targetUuid.toString()));
+                        sender.sendMessage(ChatColor.GREEN + "Set owner of " + apt.displayName + " to "
+                                + (online != null ? online.getName() : targetUuid.toString()));
                     }
                     break;
                 case "price":
                     apt.price = Double.parseDouble(value);
-                    sender.sendMessage(ChatColor.GREEN + "Set price for " + apt.displayName + " to " + configManager.formatMoney(apt.price));
+                    sender.sendMessage(ChatColor.GREEN + "Set price for " + apt.displayName + " to "
+                            + configManager.formatMoney(apt.price));
                     break;
                 case "level":
                     int level = Integer.parseInt(value);
                     if (level < 1 || level > configManager.getLevelConfigs().size()) {
-                        sender.sendMessage(ChatColor.RED + "Invalid level. Must be between 1 and " + configManager.getLevelConfigs().size());
+                        sender.sendMessage(ChatColor.RED + "Invalid level. Must be between 1 and "
+                                + configManager.getLevelConfigs().size());
                         return true;
                     }
                     apt.level = level;
@@ -1634,12 +1713,14 @@ public class CommandHandler implements TabCompleter {
                         sender.sendMessage(ChatColor.RED + "Rating must be between 0 and 10.");
                         return true;
                     }
-                    ApartmentRating aptRating = apartmentManager.getApartmentRatings().computeIfAbsent(apartmentId, k -> new ApartmentRating());
+                    ApartmentRating aptRating = apartmentManager.getApartmentRatings().computeIfAbsent(apartmentId,
+                            k -> new ApartmentRating());
                     aptRating.totalRating = newRating;
                     aptRating.ratingCount = 1;
                     aptRating.raters.clear();
                     apartmentManager.saveRatings();
-                    sender.sendMessage(ChatColor.GREEN + "Set rating for " + apt.displayName + " to " + String.format("%.1f", newRating));
+                    sender.sendMessage(ChatColor.GREEN + "Set rating for " + apt.displayName + " to "
+                            + String.format("%.1f", newRating));
                     return true;
                 default:
                     sender.sendMessage(ChatColor.RED + "Unknown property. Use: owner, price, level, rate");
@@ -1658,7 +1739,8 @@ public class CommandHandler implements TabCompleter {
         sender.sendMessage(ChatColor.GOLD + "=== All Apartments (" + apartmentManager.getApartmentCount() + ") ===");
         for (Apartment apt : apartmentManager.getApartments().values()) {
             String ownerName = apt.owner != null ? Bukkit.getOfflinePlayer(apt.owner).getName() : "For Sale";
-            sender.sendMessage(ChatColor.YELLOW + apt.id + " (" + apt.displayName + "): " + ChatColor.WHITE + "Owner: " + ownerName);
+            sender.sendMessage(ChatColor.YELLOW + apt.id + " (" + apt.displayName + "): " + ChatColor.WHITE + "Owner: "
+                    + ownerName);
         }
     }
 
@@ -1679,16 +1761,19 @@ public class CommandHandler implements TabCompleter {
                     sender.sendMessage(ChatColor.YELLOW + "No backups found.");
                     return true;
                 }
-                java.util.Arrays.sort(backups, java.util.Comparator.comparingLong(java.io.File::lastModified).reversed());
+                java.util.Arrays.sort(backups,
+                        java.util.Comparator.comparingLong(java.io.File::lastModified).reversed());
                 sender.sendMessage(ChatColor.GOLD + "=== Available Backups (" + backups.length + ") ===");
                 java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 int shown = 0;
                 for (java.io.File f : backups) {
                     String date = sdf.format(new java.util.Date(f.lastModified()));
                     long sizeKb = Math.max(1L, f.length() / 1024L);
-                    sender.sendMessage(ChatColor.YELLOW + f.getName() + ChatColor.WHITE + " - " + sizeKb + "KB, " + date);
+                    sender.sendMessage(
+                            ChatColor.YELLOW + f.getName() + ChatColor.WHITE + " - " + sizeKb + "KB, " + date);
                     shown++;
-                    if (shown >= 100) break; // avoid chat spam
+                    if (shown >= 100)
+                        break; // avoid chat spam
                 }
                 sender.sendMessage(ChatColor.GRAY + "Use: /apartmentcore admin backup restore <filename.yml>");
                 return true;
@@ -1721,7 +1806,8 @@ public class CommandHandler implements TabCompleter {
                 return true;
             }
             default:
-                sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin backup <create|list|restore> [filename]");
+                sender.sendMessage(
+                        ChatColor.RED + "Usage: /apartmentcore admin backup <create|list|restore> [filename]");
                 return true;
         }
     }

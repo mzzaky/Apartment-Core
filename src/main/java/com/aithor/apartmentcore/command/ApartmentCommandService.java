@@ -46,9 +46,9 @@ public class ApartmentCommandService {
     private final Map<UUID, Long> guestBookCooldowns = new HashMap<>();
 
     public ApartmentCommandService(ApartmentCore plugin,
-                                   ApartmentManager apartmentManager,
-                                   Economy economy,
-                                   ConfigManager configManager) {
+            ApartmentManager apartmentManager,
+            Economy economy,
+            ConfigManager configManager) {
         this.plugin = plugin;
         this.apartmentManager = apartmentManager;
         this.economy = economy;
@@ -95,27 +95,33 @@ public class ApartmentCommandService {
 
                 String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                 if (message.length() > configManager.getGuestBookMaxMessageLength()) {
-                    player.sendMessage(plugin.getMessageManager().getMessage("guestbook.leave.too_long").replace("%max_chars%", String.valueOf(configManager.getGuestBookMaxMessageLength())));
+                    player.sendMessage(plugin.getMessageManager().getMessage("guestbook.leave.too_long")
+                            .replace("%max_chars%", String.valueOf(configManager.getGuestBookMaxMessageLength())));
                     return true;
                 }
 
-                List<GuestBookEntry> entries = apartmentManager.getGuestBooks().computeIfAbsent(apartmentId, k -> new ArrayList<>());
+                List<GuestBookEntry> entries = apartmentManager.getGuestBooks().computeIfAbsent(apartmentId,
+                        k -> new ArrayList<>());
                 if (entries.size() >= configManager.getGuestBookMaxMessages()) {
                     entries.remove(0); // Remove oldest message if full
                 }
-                entries.add(new GuestBookEntry(player.getUniqueId(), player.getName(), message, System.currentTimeMillis()));
+                entries.add(new GuestBookEntry(player.getUniqueId(), player.getName(), message,
+                        System.currentTimeMillis()));
                 apartmentManager.saveGuestBooks();
                 guestBookCooldowns.put(player.getUniqueId(), System.currentTimeMillis());
-                player.sendMessage(plugin.getMessageManager().getMessage("guestbook.leave.success").replace("%apartment%", apt.displayName));
+                player.sendMessage(plugin.getMessageManager().getMessage("guestbook.leave.success")
+                        .replace("%apartment%", apt.displayName));
                 break;
 
             case "read":
                 List<GuestBookEntry> book = apartmentManager.getGuestBooks().get(apartmentId);
                 if (book == null || book.isEmpty()) {
-                    player.sendMessage(plugin.getMessageManager().getMessage("guestbook.read.empty").replace("%apartment%", apt.displayName));
+                    player.sendMessage(plugin.getMessageManager().getMessage("guestbook.read.empty")
+                            .replace("%apartment%", apt.displayName));
                     return true;
                 }
-                player.sendMessage(plugin.getMessageManager().getMessage("guestbook.read.header").replace("%apartment%", apt.displayName));
+                player.sendMessage(plugin.getMessageManager().getMessage("guestbook.read.header").replace("%apartment%",
+                        apt.displayName));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 for (GuestBookEntry entry : book) {
                     String line = plugin.getMessageManager().getMessage("guestbook.read.line_format")
@@ -133,10 +139,12 @@ public class ApartmentCommandService {
                 }
                 ConfirmationAction pending = plugin.getPendingConfirmations().get(player.getUniqueId());
                 if (pending == null || !pending.type.equals("guestbook_clear") || !pending.data.equals(apartmentId)) {
-                player.sendMessage(plugin.getMessageManager().getMessage("guestbook.clear.confirm_line1").replace("%apartment%", apt.displayName));
-                player.sendMessage(plugin.getMessageManager().getMessage("guestbook.clear.confirm_line2"));
-                plugin.getPendingConfirmations().put(player.getUniqueId(), new ConfirmationAction("guestbook_clear", apartmentId, System.currentTimeMillis()));
-            }
+                    player.sendMessage(plugin.getMessageManager().getMessage("guestbook.clear.confirm_line1")
+                            .replace("%apartment%", apt.displayName));
+                    player.sendMessage(plugin.getMessageManager().getMessage("guestbook.clear.confirm_line2"));
+                    plugin.getPendingConfirmations().put(player.getUniqueId(),
+                            new ConfirmationAction("guestbook_clear", apartmentId, System.currentTimeMillis()));
+                }
                 break;
 
             default:
@@ -150,7 +158,8 @@ public class ApartmentCommandService {
     // Utilities
     // ==========
     private String formatTime(long millis) {
-        if (millis < 0) return "0s";
+        if (millis < 0)
+            return "0s";
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         millis -= TimeUnit.DAYS.toMillis(days);
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
@@ -160,9 +169,12 @@ public class ApartmentCommandService {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 
         StringBuilder sb = new StringBuilder();
-        if (days > 0) sb.append(days).append("d ");
-        if (hours > 0) sb.append(hours).append("h ");
-        if (minutes > 0) sb.append(minutes).append("m ");
+        if (days > 0)
+            sb.append(days).append("d ");
+        if (hours > 0)
+            sb.append(hours).append("h ");
+        if (minutes > 0)
+            sb.append(minutes).append("m ");
         sb.append(seconds).append("s");
         return sb.toString().trim();
     }
@@ -191,8 +203,10 @@ public class ApartmentCommandService {
         long unpaidCount = apt.taxInvoices == null ? 0 : apt.taxInvoices.stream().filter(inv -> !inv.isPaid()).count();
         double totalUnpaid = apt.getTotalUnpaid();
 
-        sender.sendMessage(ChatColor.YELLOW + "Base Tax: " + ChatColor.WHITE + String.format("%.2f", basePercent * 100) + "% (" + configManager.formatMoney(baseAmount) + ")");
-        sender.sendMessage(ChatColor.YELLOW + "Active Invoices: " + ChatColor.WHITE + unpaidCount + ", Total Arrears: " + configManager.formatMoney(totalUnpaid));
+        sender.sendMessage(ChatColor.YELLOW + "Base Tax: " + ChatColor.WHITE + String.format("%.2f", basePercent * 100)
+                + "% (" + configManager.formatMoney(baseAmount) + ")");
+        sender.sendMessage(ChatColor.YELLOW + "Active Invoices: " + ChatColor.WHITE + unpaidCount + ", Total Arrears: "
+                + configManager.formatMoney(totalUnpaid));
         sender.sendMessage(ChatColor.YELLOW + "Level: " + ChatColor.WHITE + apt.level + "/5");
         sender.sendMessage(ChatColor.YELLOW + "Hourly Income: " + ChatColor.WHITE +
                 configManager.formatMoney(configManager.getLevelConfig(apt.level).minIncome) + " - " +
@@ -209,7 +223,8 @@ public class ApartmentCommandService {
         }
 
         sender.sendMessage(ChatColor.YELLOW + "Tax Status: " + ChatColor.WHITE + taxStatus.name());
-        sender.sendMessage(ChatColor.YELLOW + "Can Generate Income: " + ChatColor.WHITE + (apt.canGenerateIncome(nowTs) ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No"));
+        sender.sendMessage(ChatColor.YELLOW + "Can Generate Income: " + ChatColor.WHITE
+                + (apt.canGenerateIncome(nowTs) ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No"));
 
         // Countdown timers
         if (apt.owner != null) {
@@ -225,13 +240,16 @@ public class ApartmentCommandService {
 
         if (apt.owner != null && sender instanceof Player &&
                 apt.owner.equals(((Player) sender).getUniqueId())) {
-            sender.sendMessage(ChatColor.YELLOW + "Pending Income: " + ChatColor.WHITE + configManager.formatMoney(apt.pendingIncome));
+            sender.sendMessage(ChatColor.YELLOW + "Pending Income: " + ChatColor.WHITE
+                    + configManager.formatMoney(apt.pendingIncome));
             if (apt.penalty > 0) {
-                sender.sendMessage(ChatColor.YELLOW + "Penalty: " + ChatColor.RED + configManager.formatMoney(apt.penalty));
+                sender.sendMessage(
+                        ChatColor.YELLOW + "Penalty: " + ChatColor.RED + configManager.formatMoney(apt.penalty));
             }
             if (apt.level < 5) {
                 double upgradeCost = configManager.getLevelConfig(apt.level + 1).upgradeCost;
-                sender.sendMessage(ChatColor.YELLOW + "Upgrade Cost: " + ChatColor.WHITE + configManager.formatMoney(upgradeCost));
+                sender.sendMessage(
+                        ChatColor.YELLOW + "Upgrade Cost: " + ChatColor.WHITE + configManager.formatMoney(upgradeCost));
             }
         }
 
@@ -251,7 +269,8 @@ public class ApartmentCommandService {
         }
 
         if (!economy.has(player, apt.price)) {
-            player.sendMessage(ChatColor.RED + "You don't have enough money! Need: " + configManager.formatMoney(apt.price));
+            player.sendMessage(
+                    ChatColor.RED + "You don't have enough money! Need: " + configManager.formatMoney(apt.price));
             return true;
         }
 
@@ -267,7 +286,8 @@ public class ApartmentCommandService {
                         .filter(a -> player.getUniqueId().equals(a.owner))
                         .count();
                 if (owned >= maxApartments) {
-                    player.sendMessage(ChatColor.RED + "You have reached the maximum number of apartments (" + maxApartments + ")!");
+                    player.sendMessage(ChatColor.RED + "You have reached the maximum number of apartments ("
+                            + maxApartments + ")!");
                     return true;
                 }
             }
@@ -284,7 +304,8 @@ public class ApartmentCommandService {
         apartmentManager.addPlayerToRegion(player, apt);
 
         apartmentManager.saveApartments();
-        player.sendMessage(ChatColor.GREEN + "Successfully purchased apartment " + apt.displayName + " for " + configManager.formatMoney(apt.price));
+        player.sendMessage(ChatColor.GREEN + "Successfully purchased apartment " + apt.displayName + " for "
+                + configManager.formatMoney(apt.price));
 
         // Show welcome message if exists
         if (!apt.welcomeMessage.isEmpty()) {
@@ -361,7 +382,8 @@ public class ApartmentCommandService {
             player.sendMessage(ChatColor.RED + "Could not find the world for this apartment.");
             return true;
         }
-        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
+        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
+                .get(BukkitAdapter.adapt(world));
         if (regionManager == null) {
             player.sendMessage(ChatColor.RED + "WorldGuard RegionManager not found.");
             return true;
@@ -369,8 +391,7 @@ public class ApartmentCommandService {
         ApplicableRegionSet regionSet = regionManager.getApplicableRegions(BlockVector3.at(
                 player.getLocation().getBlockX(),
                 player.getLocation().getBlockY(),
-                player.getLocation().getBlockZ()
-        ));
+                player.getLocation().getBlockZ()));
 
         boolean inRegion = false;
         for (ProtectedRegion region : regionSet) {
@@ -381,14 +402,16 @@ public class ApartmentCommandService {
         }
 
         if (!inRegion) {
-            player.sendMessage(ChatColor.RED + "You must be standing inside the apartment to set its teleport location.");
+            player.sendMessage(
+                    ChatColor.RED + "You must be standing inside the apartment to set its teleport location.");
             return true;
         }
 
         apt.setCustomTeleportLocation(player.getLocation());
         apartmentManager.saveApartments();
 
-        player.sendMessage(ChatColor.GREEN + "Teleport location for " + apt.displayName + " has been set to your current position.");
+        player.sendMessage(ChatColor.GREEN + "Teleport location for " + apt.displayName
+                + " has been set to your current position.");
         return true;
     }
 
@@ -470,20 +493,23 @@ public class ApartmentCommandService {
 
         // Check cooldown (24 hours)
         UUID playerUuid = player.getUniqueId();
-        Map<String, Long> playerCooldowns = apartmentManager.getPlayerRatingCooldowns().computeIfAbsent(playerUuid, k -> new HashMap<>());
+        Map<String, Long> playerCooldowns = apartmentManager.getPlayerRatingCooldowns().computeIfAbsent(playerUuid,
+                k -> new HashMap<>());
         Long lastRating = playerCooldowns.get(apartmentId);
 
         if (lastRating != null) {
             long timeSinceLastRating = System.currentTimeMillis() - lastRating;
             if (timeSinceLastRating < 86400000) { // 24 hours in milliseconds
                 long hoursLeft = TimeUnit.MILLISECONDS.toHours(86400000 - timeSinceLastRating);
-                player.sendMessage(ChatColor.RED + "You can rate this apartment again in " + (hoursLeft + 1) + " hours!");
+                player.sendMessage(
+                        ChatColor.RED + "You can rate this apartment again in " + (hoursLeft + 1) + " hours!");
                 return true;
             }
         }
 
         // Get or create rating entry
-        ApartmentRating aptRating = apartmentManager.getApartmentRatings().computeIfAbsent(apartmentId, k -> new ApartmentRating());
+        ApartmentRating aptRating = apartmentManager.getApartmentRatings().computeIfAbsent(apartmentId,
+                k -> new ApartmentRating());
 
         // Check if player has rated before
         Double oldRating = aptRating.raters.get(playerUuid);
@@ -525,25 +551,27 @@ public class ApartmentCommandService {
                 }
                 // Prevent sale if there are unpaid tax invoices
                 if (aptToSell.getTotalUnpaid() > 0) {
-                    player.sendMessage(ChatColor.RED + "Apartments with tax arrears cannot be sold. Pay the taxes first.");
+                    player.sendMessage(
+                            ChatColor.RED + "Apartments with tax arrears cannot be sold. Pay the taxes first.");
                     return true;
                 }
 
                 // Prevent sale if the apartment has an active auction
                 AuctionManager am = plugin.getAuctionManager();
                 if (am != null && am.getAuction(action.data) != null) {
-                    player.sendMessage(ChatColor.RED + "Cannot complete the sale while the apartment is being auctioned.");
+                    player.sendMessage(
+                            ChatColor.RED + "Cannot complete the sale while the apartment is being auctioned.");
                     return true;
                 }
- 
+
                 double sellPrice = aptToSell.price * configManager.getSellPercentage();
-                
+
                 // Get shop refund before clearing data
                 double shopRefund = 0.0;
                 if (plugin.getShopManager() != null) {
                     shopRefund = plugin.getShopManager().handleApartmentSale(aptToSell.id, player.getUniqueId());
                 }
-                
+
                 double totalRefund = sellPrice + shopRefund;
                 economy.depositPlayer(player, totalRefund);
 
@@ -567,16 +595,17 @@ public class ApartmentCommandService {
                 apartmentManager.saveGuestBooks();
                 apartmentManager.saveStats();
 
-                String message = "Successfully sold " + aptToSell.displayName + " for " + configManager.formatMoney(sellPrice);
+                String message = "Successfully sold " + aptToSell.displayName + " for "
+                        + configManager.formatMoney(sellPrice);
                 if (shopRefund > 0) {
                     message += " + " + configManager.formatMoney(shopRefund) + " shop refund";
                 }
                 message += " (Total: " + configManager.formatMoney(totalRefund) + ")";
-                
+
                 player.sendMessage(ChatColor.GREEN + message);
                 plugin.logTransaction(player.getName() + " sold apartment " + aptToSell.id +
-                    " for " + configManager.formatMoney(sellPrice) +
-                    (shopRefund > 0 ? " + shop refund " + configManager.formatMoney(shopRefund) : ""));
+                        " for " + configManager.formatMoney(sellPrice) +
+                        (shopRefund > 0 ? " + shop refund " + configManager.formatMoney(shopRefund) : ""));
                 break;
 
             case "guestbook_clear":
@@ -614,7 +643,8 @@ public class ApartmentCommandService {
                 }
                 double incomeToClaim = apt.pendingIncome;
                 economy.depositPlayer(player, incomeToClaim);
-                player.sendMessage(ChatColor.GREEN + "Claimed " + configManager.formatMoney(incomeToClaim) + " from " + apt.displayName);
+                player.sendMessage(ChatColor.GREEN + "Claimed " + configManager.formatMoney(incomeToClaim) + " from "
+                        + apt.displayName);
 
                 // Update stats
                 ApartmentStats stats = apartmentManager.getStats(apartmentId);
@@ -628,7 +658,8 @@ public class ApartmentCommandService {
 
             case "info":
                 player.sendMessage(ChatColor.GOLD + "=== Rent Info: " + apt.displayName + " ===");
-                player.sendMessage(ChatColor.YELLOW + "Pending Income: " + ChatColor.WHITE + configManager.formatMoney(apt.pendingIncome));
+                player.sendMessage(ChatColor.YELLOW + "Pending Income: " + ChatColor.WHITE
+                        + configManager.formatMoney(apt.pendingIncome));
                 player.sendMessage(ChatColor.YELLOW + "Hourly Income Range: " + ChatColor.WHITE +
                         configManager.formatMoney(configManager.getLevelConfig(apt.level).minIncome) + " - " +
                         configManager.formatMoney(configManager.getLevelConfig(apt.level).maxIncome));
@@ -677,7 +708,8 @@ public class ApartmentCommandService {
             long activeCount = 0;
             if (apt.taxInvoices != null) {
                 for (TaxInvoice inv : apt.taxInvoices) {
-                    if (!inv.isPaid()) activeCount++;
+                    if (!inv.isPaid())
+                        activeCount++;
                 }
             }
 
@@ -689,7 +721,8 @@ public class ApartmentCommandService {
             int idx = 1;
             if (apt.taxInvoices != null) {
                 for (TaxInvoice inv : apt.taxInvoices) {
-                    if (inv.isPaid()) continue;
+                    if (inv.isPaid())
+                        continue;
                     long days = inv.daysSinceCreated(now);
                     String dueStr = days >= 3 ? ChatColor.RED + "due date" : ChatColor.WHITE + "not due date";
                     player.sendMessage(ChatColor.GRAY + "  #" + idx + " " + configManager.formatMoney(inv.amount) +
@@ -699,7 +732,8 @@ public class ApartmentCommandService {
             }
         }
 
-        player.sendMessage(ChatColor.GOLD + "Total all invoices: " + ChatColor.WHITE + configManager.formatMoney(grandTotal));
+        player.sendMessage(
+                ChatColor.GOLD + "Total all invoices: " + ChatColor.WHITE + configManager.formatMoney(grandTotal));
         return true;
     }
 
@@ -763,14 +797,17 @@ public class ApartmentCommandService {
         apartmentManager.saveApartments();
         apartmentManager.saveStats();
 
-        player.sendMessage(ChatColor.GREEN + "All tax arrears have been paid: " + configManager.formatMoney(totalUnpaid));
+        player.sendMessage(
+                ChatColor.GREEN + "All tax arrears have been paid: " + configManager.formatMoney(totalUnpaid));
         return true;
     }
 
     public boolean handleTaxAuto(Player player, String toggle) {
         boolean enable;
-        if ("on".equalsIgnoreCase(toggle)) enable = true;
-        else if ("off".equalsIgnoreCase(toggle)) enable = false;
+        if ("on".equalsIgnoreCase(toggle))
+            enable = true;
+        else if ("off".equalsIgnoreCase(toggle))
+            enable = false;
         else {
             player.sendMessage(ChatColor.RED + "Usage: /apartmentcore tax auto <on|off>");
             return true;
@@ -791,14 +828,15 @@ public class ApartmentCommandService {
         }
         apartmentManager.saveApartments();
 
-        player.sendMessage(ChatColor.GREEN + "Auto-payment for taxes has been " + (enable ? "enabled" : "disabled") + " for all your apartments.");
+        player.sendMessage(ChatColor.GREEN + "Auto-payment for taxes has been " + (enable ? "enabled" : "disabled")
+                + " for all your apartments.");
         return true;
     }
 
     // =====================
     // Upgrades and listings
     // =====================
-    public boolean handleUpgradeCommand(Player player, String apartmentId) {
+    public boolean handleUpgradeCommand(Player player, String apartmentId, boolean confirmed) {
         Apartment apt = apartmentManager.getApartment(apartmentId);
         if (apt == null) {
             player.sendMessage(ChatColor.RED + "Apartment not found!");
@@ -815,6 +853,11 @@ public class ApartmentCommandService {
             return true;
         }
 
+        if (apt.upgradeInProgress) {
+            player.sendMessage(ChatColor.RED + "An upgrade is already in progress!");
+            return true;
+        }
+
         LevelConfig nextLevelConfig = configManager.getLevelConfig(apt.level + 1);
         if (nextLevelConfig == null) {
             player.sendMessage(ChatColor.RED + "This apartment cannot be upgraded further (missing config)!");
@@ -823,27 +866,63 @@ public class ApartmentCommandService {
         }
         double upgradeCost = nextLevelConfig.upgradeCost;
 
+        if (!confirmed) {
+            if (configManager.isGuiEnabled()) {
+                plugin.getGUIManager().openUpgradeConfirm(player, apartmentId);
+            } else {
+                player.sendMessage(ChatColor.YELLOW + "Upgrading to Level " + (apt.level + 1) + " costs "
+                        + configManager.formatMoney(upgradeCost));
+                long duration = nextLevelConfig.upgradeDuration;
+                if (duration > 0) {
+                    player.sendMessage(ChatColor.YELLOW + "Upgrade duration: " + (duration / 20) + " seconds.");
+                }
+                player.sendMessage(ChatColor.YELLOW + "Type " + ChatColor.WHITE + "/apartmentcore upgrade "
+                        + apartmentId + " confirm" + ChatColor.YELLOW + " to confirm.");
+            }
+            return true;
+        }
+
         if (!economy.has(player, upgradeCost)) {
-            player.sendMessage(ChatColor.RED + "You don't have enough money! Need: " + configManager.formatMoney(upgradeCost));
+            player.sendMessage(
+                    ChatColor.RED + "You don't have enough money! Need: " + configManager.formatMoney(upgradeCost));
             return true;
         }
 
         economy.withdrawPlayer(player, upgradeCost);
-        apt.level++;
-        apartmentManager.saveApartments();
 
-        player.sendMessage(ChatColor.GREEN + "Successfully upgraded " + apt.displayName + " to level " + apt.level);
-        player.sendMessage(ChatColor.YELLOW + "New income range: " +
-                configManager.formatMoney(configManager.getLevelConfig(apt.level).minIncome) + " - " +
-                configManager.formatMoney(configManager.getLevelConfig(apt.level).maxIncome) + " per hour");
+        long upgradeDuration = nextLevelConfig.upgradeDuration;
+        if (upgradeDuration <= 0) {
+            // Instant upgrade
+            apt.level++;
+            apartmentManager.saveApartments();
 
-        // UI Effects
-        try {
-            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-            player.sendTitle(ChatColor.GREEN + "UPGRADE BERHASIL!", ChatColor.YELLOW + apt.displayName + " ➔ Level " + apt.level, 10, 70, 20);
-            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, new net.md_5.bungee.api.chat.TextComponent(ChatColor.AQUA + "Apartment berhasil di upgrade ke level " + apt.level + "!"));
-        } catch (Exception ignored) {
-            // Ignore if server version doesn't support some of these features
+            player.sendMessage(ChatColor.GREEN + "Successfully upgraded " + apt.displayName + " to level " + apt.level);
+            player.sendMessage(ChatColor.YELLOW + "New income range: " +
+                    configManager.formatMoney(configManager.getLevelConfig(apt.level).minIncome) + " - " +
+                    configManager.formatMoney(configManager.getLevelConfig(apt.level).maxIncome) + " per hour");
+
+            try {
+                player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                player.sendTitle(ChatColor.GREEN + "UPGRADE BERHASIL!",
+                        ChatColor.YELLOW + apt.displayName + " ➔ Level " + apt.level, 10, 70, 20);
+                player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
+                        new net.md_5.bungee.api.chat.TextComponent(
+                                ChatColor.AQUA + "Apartment berhasil di upgrade ke level " + apt.level + "!"));
+            } catch (Exception ignored) {
+            }
+        } else {
+            // Time-based upgrade
+            apt.upgradeInProgress = true;
+            apt.upgradeCompleteAt = System.currentTimeMillis() + (upgradeDuration * 50L); // 1 tick = 50ms
+            apartmentManager.saveApartments();
+
+            player.sendMessage(ChatColor.GREEN + "Upgrade process for " + apt.displayName + " has started!");
+            player.sendMessage(ChatColor.YELLOW + "It will take " + (upgradeDuration / 20) + " seconds to complete.");
+
+            try {
+                player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
+            } catch (Exception ignored) {
+            }
         }
 
         return true;
@@ -855,11 +934,19 @@ public class ApartmentCommandService {
         List<Apartment> displayList = apartmentManager.getApartmentList(finalFilter, playerUuid);
         String title;
 
-        switch(finalFilter) {
-            case "sale": title = "Apartments For Sale"; break;
-            case "mine": title = "Your Apartments"; break;
-            case "top": title = "Top Rated Apartments"; break;
-            default: title = "All Apartments"; break;
+        switch (finalFilter) {
+            case "sale":
+                title = "Apartments For Sale";
+                break;
+            case "mine":
+                title = "Your Apartments";
+                break;
+            case "top":
+                title = "Top Rated Apartments";
+                break;
+            default:
+                title = "All Apartments";
+                break;
         }
 
         if (displayList.isEmpty()) {
@@ -874,8 +961,9 @@ public class ApartmentCommandService {
 
             // Get rating
             ApartmentRating rating = apartmentManager.getRating(apt.id);
-            String ratingStr = rating != null && rating.ratingCount > 0 ?
-                    String.format(" %.1f⭐", rating.getAverageRating()) : "";
+            String ratingStr = rating != null && rating.ratingCount > 0
+                    ? String.format(" %.1f⭐", rating.getAverageRating())
+                    : "";
 
             sender.sendMessage(ChatColor.YELLOW + apt.displayName + " (" + apt.id + "): " + ChatColor.WHITE +
                     "Owner: " + owner + ", Price: " + configManager.formatMoney(apt.price) +
@@ -888,44 +976,64 @@ public class ApartmentCommandService {
     // =================
     // Help and Admin UI
     // =================
-public void sendHelp(CommandSender sender) {
+    public void sendHelp(CommandSender sender) {
         sender.sendMessage(ChatColor.GOLD + "=== ApartmentCore Commands ===");
         sender.sendMessage(ChatColor.YELLOW + "/apartmentcore gui" + ChatColor.WHITE + " - Open GUI interface");
         sender.sendMessage(ChatColor.YELLOW + "/apartmentcore info [id]" + ChatColor.WHITE + " - View info");
         sender.sendMessage(ChatColor.YELLOW + "/apartmentcore buy <id>" + ChatColor.WHITE + " - Buy apartment");
         sender.sendMessage(ChatColor.YELLOW + "/apartmentcore sell <id>" + ChatColor.WHITE + " - Sell apartment");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore teleport <id>" + ChatColor.WHITE + " - Teleport to apartment");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore rent <claim|info> <id>" + ChatColor.WHITE + " - Manage income");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore tax <info|pay|auto> [on/off]" + ChatColor.WHITE + " - Manage tax (global)");
+        sender.sendMessage(
+                ChatColor.YELLOW + "/apartmentcore teleport <id>" + ChatColor.WHITE + " - Teleport to apartment");
+        sender.sendMessage(
+                ChatColor.YELLOW + "/apartmentcore rent <claim|info> <id>" + ChatColor.WHITE + " - Manage income");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore tax <info|pay|auto> [on/off]" + ChatColor.WHITE
+                + " - Manage tax (global)");
         sender.sendMessage(ChatColor.YELLOW + "/apartmentcore upgrade <id>" + ChatColor.WHITE + " - Upgrade apartment");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore setname <id> <name>" + ChatColor.WHITE + " - Set display name");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore setwelcome <id> <msg>" + ChatColor.WHITE + " - Set welcome message");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore setteleport <id>" + ChatColor.WHITE + " - Set teleport location");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore rate <id> <0-10>" + ChatColor.WHITE + " - Rate apartment");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore list [all|sale|mine|top]" + ChatColor.WHITE + " - List apartments");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore auction <create|bid|list|cancel> ..." + ChatColor.WHITE + " - Auction system");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore guestbook <leave|read|clear> <id>" + ChatColor.WHITE + " - Manage guestbook");
+        sender.sendMessage(
+                ChatColor.YELLOW + "/apartmentcore setname <id> <name>" + ChatColor.WHITE + " - Set display name");
+        sender.sendMessage(
+                ChatColor.YELLOW + "/apartmentcore setwelcome <id> <msg>" + ChatColor.WHITE + " - Set welcome message");
+        sender.sendMessage(
+                ChatColor.YELLOW + "/apartmentcore setteleport <id>" + ChatColor.WHITE + " - Set teleport location");
+        sender.sendMessage(
+                ChatColor.YELLOW + "/apartmentcore rate <id> <0-10>" + ChatColor.WHITE + " - Rate apartment");
+        sender.sendMessage(
+                ChatColor.YELLOW + "/apartmentcore list [all|sale|mine|top]" + ChatColor.WHITE + " - List apartments");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore auction <create|bid|list|cancel> ..." + ChatColor.WHITE
+                + " - Auction system");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore guestbook <leave|read|clear> <id>" + ChatColor.WHITE
+                + " - Manage guestbook");
         sender.sendMessage(ChatColor.YELLOW + "/apartmentcore confirm" + ChatColor.WHITE + " - Confirm action");
-        sender.sendMessage(ChatColor.GREEN + "💡 Tip: Use " + ChatColor.WHITE + "/apartmentcore gui" + ChatColor.GREEN + " for an easy-to-use interface!");
+        sender.sendMessage(ChatColor.GREEN + "💡 Tip: Use " + ChatColor.WHITE + "/apartmentcore gui" + ChatColor.GREEN
+                + " for an easy-to-use interface!");
     }
 
     public void sendAdminHelp(CommandSender sender) {
         sender.sendMessage(ChatColor.GOLD + "=== Admin Commands ===");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin create <region> <id> <price>" + ChatColor.WHITE + " - Create apartment");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin remove <id>" + ChatColor.WHITE + " - Remove apartment");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin set <prop> <id> <val>" + ChatColor.WHITE + " - Set apartment property (owner, price, level, rate)");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin status <id> <active|inactive>" + ChatColor.WHITE + " - Manually set apartment status");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin invoice <add|remove> <id> <amount|invoice_id>" + ChatColor.WHITE + " - Manage invoices manually");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin apartment_list" + ChatColor.WHITE + " - List all apartments");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin teleport <id>" + ChatColor.WHITE + " - Teleport to any apartment");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin backup <create|list|restore> [file]" + ChatColor.WHITE + " - Manage backups");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin auction <list|cancel|forceend> [id|filter]" + ChatColor.WHITE + " - Manage auctions");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin create <region> <id> <price>" + ChatColor.WHITE
+                + " - Create apartment");
+        sender.sendMessage(
+                ChatColor.YELLOW + "/apartmentcore admin remove <id>" + ChatColor.WHITE + " - Remove apartment");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin set <prop> <id> <val>" + ChatColor.WHITE
+                + " - Set apartment property (owner, price, level, rate)");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin status <id> <active|inactive>" + ChatColor.WHITE
+                + " - Manually set apartment status");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin invoice <add|remove> <id> <amount|invoice_id>"
+                + ChatColor.WHITE + " - Manage invoices manually");
+        sender.sendMessage(
+                ChatColor.YELLOW + "/apartmentcore admin apartment_list" + ChatColor.WHITE + " - List all apartments");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin teleport <id>" + ChatColor.WHITE
+                + " - Teleport to any apartment");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin backup <create|list|restore> [file]"
+                + ChatColor.WHITE + " - Manage backups");
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin auction <list|cancel|forceend> [id|filter]"
+                + ChatColor.WHITE + " - Manage auctions");
         sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin reload" + ChatColor.WHITE + " - Reload config");
     }
 
     public boolean handleAdminCommand(CommandSender sender, String[] args) {
         String adminCmd = args[0].toLowerCase();
- 
+
         switch (adminCmd) {
             case "create":
                 if (args.length != 4) {
@@ -939,61 +1047,65 @@ public void sendHelp(CommandSender sender) {
                     sender.sendMessage(ChatColor.RED + "Invalid number format!");
                     return true;
                 }
- 
+
             case "remove":
                 if (args.length != 2) {
                     sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin remove <apartment_id>");
                     return true;
                 }
                 return removeApartment(sender, args[1]);
- 
+
             case "set":
                 if (args.length < 4) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin set <property> <apartment_id> <value>");
+                    sender.sendMessage(
+                            ChatColor.RED + "Usage: /apartmentcore admin set <property> <apartment_id> <value>");
                     return true;
                 }
-                return setApartmentProperty(sender, args[1], args[2], String.join(" ", Arrays.copyOfRange(args, 3, args.length)));
- 
+                return setApartmentProperty(sender, args[1], args[2],
+                        String.join(" ", Arrays.copyOfRange(args, 3, args.length)));
+
             case "status":
                 if (args.length != 3) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin status <apartment_id> <active|inactive>");
+                    sender.sendMessage(
+                            ChatColor.RED + "Usage: /apartmentcore admin status <apartment_id> <active|inactive>");
+                    return true;
+                } {
+                String aptId = args[1];
+                String val = args[2].toLowerCase();
+                Apartment apt = apartmentManager.getApartment(aptId);
+                if (apt == null) {
+                    sender.sendMessage(ChatColor.RED + "Apartment not found!");
                     return true;
                 }
-                {
-                    String aptId = args[1];
-                    String val = args[2].toLowerCase();
-                    Apartment apt = apartmentManager.getApartment(aptId);
-                    if (apt == null) {
-                        sender.sendMessage(ChatColor.RED + "Apartment not found!");
-                        return true;
-                    }
-                    if ("active".equals(val)) {
-                        apt.inactive = false;
-                        apt.inactiveSince = 0L;
-                        sender.sendMessage(ChatColor.GREEN + "Set apartment " + apt.displayName + " to ACTIVE.");
-                        plugin.logAdminAction("Admin " + sender.getName() + " set apartment " + aptId + " status ACTIVE");
-                    } else if ("inactive".equals(val)) {
-                        apt.inactive = true;
-                        apt.inactiveSince = System.currentTimeMillis();
-                        sender.sendMessage(ChatColor.GREEN + "Set apartment " + apt.displayName + " to INACTIVE.");
-                        plugin.logAdminAction("Admin " + sender.getName() + " set apartment " + aptId + " status INACTIVE");
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Invalid status. Use active or inactive.");
-                        return true;
-                    }
-                    apartmentManager.saveApartments();
+                if ("active".equals(val)) {
+                    apt.inactive = false;
+                    apt.inactiveSince = 0L;
+                    sender.sendMessage(ChatColor.GREEN + "Set apartment " + apt.displayName + " to ACTIVE.");
+                    plugin.logAdminAction("Admin " + sender.getName() + " set apartment " + aptId + " status ACTIVE");
+                } else if ("inactive".equals(val)) {
+                    apt.inactive = true;
+                    apt.inactiveSince = System.currentTimeMillis();
+                    sender.sendMessage(ChatColor.GREEN + "Set apartment " + apt.displayName + " to INACTIVE.");
+                    plugin.logAdminAction("Admin " + sender.getName() + " set apartment " + aptId + " status INACTIVE");
+                } else {
+                    sender.sendMessage(ChatColor.RED + "Invalid status. Use active or inactive.");
                     return true;
                 }
- 
+                apartmentManager.saveApartments();
+                return true;
+            }
+
             case "invoice": {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin invoice <add|remove> <apartment_id> <amount|invoice_id>");
+                    sender.sendMessage(ChatColor.RED
+                            + "Usage: /apartmentcore admin invoice <add|remove> <apartment_id> <amount|invoice_id>");
                     return true;
                 }
                 String op = args[1].toLowerCase();
                 if ("add".equals(op)) {
                     if (args.length != 4) {
-                        sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin invoice add <apartment_id> <amount>");
+                        sender.sendMessage(
+                                ChatColor.RED + "Usage: /apartmentcore admin invoice add <apartment_id> <amount>");
                         return true;
                     }
                     String aptId = args[2];
@@ -1006,12 +1118,15 @@ public void sendHelp(CommandSender sender) {
                         double amount = Double.parseDouble(args[3]);
                         long now = System.currentTimeMillis();
                         long due = now + 3L * 86_400_000L; // 3 days
-                        if (apt.taxInvoices == null) apt.taxInvoices = new ArrayList<>();
+                        if (apt.taxInvoices == null)
+                            apt.taxInvoices = new ArrayList<>();
                         TaxInvoice inv = new TaxInvoice(amount, now, due);
                         apt.taxInvoices.add(inv);
                         apartmentManager.saveApartments();
-                        sender.sendMessage(ChatColor.GREEN + "Added invoice " + inv.id + " (" + configManager.formatMoney(amount) + ") to " + apt.displayName);
-                        plugin.logAdminAction("Admin " + sender.getName() + " added invoice " + inv.id + " to " + aptId + " amount " + amount);
+                        sender.sendMessage(ChatColor.GREEN + "Added invoice " + inv.id + " ("
+                                + configManager.formatMoney(amount) + ") to " + apt.displayName);
+                        plugin.logAdminAction("Admin " + sender.getName() + " added invoice " + inv.id + " to " + aptId
+                                + " amount " + amount);
                         return true;
                     } catch (NumberFormatException e) {
                         sender.sendMessage(ChatColor.RED + "Invalid amount format.");
@@ -1019,7 +1134,8 @@ public void sendHelp(CommandSender sender) {
                     }
                 } else if ("remove".equals(op)) {
                     if (args.length != 4) {
-                        sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin invoice remove <apartment_id> <invoice_id>");
+                        sender.sendMessage(ChatColor.RED
+                                + "Usage: /apartmentcore admin invoice remove <apartment_id> <invoice_id>");
                         return true;
                     }
                     String aptId = args[2];
@@ -1036,8 +1152,10 @@ public void sendHelp(CommandSender sender) {
                     boolean removed = apt.taxInvoices.removeIf(inv -> invoiceId.equals(inv.id));
                     if (removed) {
                         apartmentManager.saveApartments();
-                        sender.sendMessage(ChatColor.GREEN + "Removed invoice " + invoiceId + " from " + apt.displayName);
-                        plugin.logAdminAction("Admin " + sender.getName() + " removed invoice " + invoiceId + " from " + aptId);
+                        sender.sendMessage(
+                                ChatColor.GREEN + "Removed invoice " + invoiceId + " from " + apt.displayName);
+                        plugin.logAdminAction(
+                                "Admin " + sender.getName() + " removed invoice " + invoiceId + " from " + aptId);
                     } else {
                         sender.sendMessage(ChatColor.RED + "Invoice ID not found for this apartment.");
                     }
@@ -1047,7 +1165,7 @@ public void sendHelp(CommandSender sender) {
                     return true;
                 }
             }
- 
+
             case "teleport":
                 if (!(sender instanceof Player)) {
                     sender.sendMessage(ChatColor.RED + "Only players can use this command!");
@@ -1058,35 +1176,35 @@ public void sendHelp(CommandSender sender) {
                     return true;
                 }
                 return apartmentManager.teleportToApartment((Player) sender, args[1], true);
- 
+
             case "apartment_list":
                 listAllApartments(sender);
                 return true;
- 
+
             case "backup":
                 if (args.length < 2) {
                     sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin backup <create|list|restore>");
                     return true;
                 }
                 return handleBackupCommand(sender, args[1], args.length > 2 ? args[2] : null);
- 
+
             case "reload": {
                 boolean wasEnabled = plugin.getAuctionManager() != null;
                 plugin.reloadConfig();
                 configManager.loadConfiguration();
                 plugin.getMessageManager().reloadMessages();
                 boolean nowEnabled = configManager.isAuctionEnabled();
- 
+
                 if (nowEnabled && !wasEnabled) {
                     plugin.initAuctionSystem();
                 } else if (!nowEnabled && wasEnabled) {
                     plugin.shutdownAuctionSystem();
                 }
- 
+
                 sender.sendMessage(plugin.getMessageManager().getMessage("general.reloaded"));
                 return true;
             }
- 
+
             case "auction": {
                 AuctionManager am = plugin.getAuctionManager();
                 if (am == null) {
@@ -1094,7 +1212,8 @@ public void sendHelp(CommandSender sender) {
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /apartmentcore admin auction <list|cancel|forceend> [id|filter]");
+                    sender.sendMessage(ChatColor.YELLOW
+                            + "Usage: /apartmentcore admin auction <list|cancel|forceend> [id|filter]");
                     return true;
                 }
                 String op = args[1].toLowerCase();
@@ -1111,7 +1230,9 @@ public void sendHelp(CommandSender sender) {
                             Apartment apt = apartmentManager.getApartment(a.apartmentId);
                             String name = apt != null ? apt.displayName : a.apartmentId;
                             String time = formatTime(a.getRemainingTime());
-                            String bidder = (a.currentBidderName != null && !a.currentBidderName.isEmpty()) ? a.currentBidderName : "-";
+                            String bidder = (a.currentBidderName != null && !a.currentBidderName.isEmpty())
+                                    ? a.currentBidderName
+                                    : "-";
                             sender.sendMessage(ChatColor.YELLOW + name + ChatColor.WHITE + " [" + a.apartmentId + "] " +
                                     "Seller: " + a.ownerName + ", Current: " + configManager.formatMoney(a.currentBid) +
                                     ", Bids: " + a.totalBids + ", Bidder: " + bidder + ", Ends in: " + time);
@@ -1120,28 +1241,33 @@ public void sendHelp(CommandSender sender) {
                     }
                     case "cancel": {
                         if (args.length != 3) {
-                            sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin auction cancel <apartment_id>");
+                            sender.sendMessage(
+                                    ChatColor.RED + "Usage: /apartmentcore admin auction cancel <apartment_id>");
                             return true;
                         }
                         boolean ok = am.cancelAuctionAdmin(args[2]);
-                        sender.sendMessage(ok ? ChatColor.GREEN + "Auction cancelled for " + args[2] : ChatColor.RED + "No active auction for " + args[2]);
+                        sender.sendMessage(ok ? ChatColor.GREEN + "Auction cancelled for " + args[2]
+                                : ChatColor.RED + "No active auction for " + args[2]);
                         return true;
                     }
                     case "forceend": {
                         if (args.length != 3) {
-                            sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin auction forceend <apartment_id>");
+                            sender.sendMessage(
+                                    ChatColor.RED + "Usage: /apartmentcore admin auction forceend <apartment_id>");
                             return true;
                         }
                         boolean ok = am.forceEndAuction(args[2]);
-                        sender.sendMessage(ok ? ChatColor.GREEN + "Auction force-ended for " + args[2] : ChatColor.RED + "No active auction for " + args[2]);
+                        sender.sendMessage(ok ? ChatColor.GREEN + "Auction force-ended for " + args[2]
+                                : ChatColor.RED + "No active auction for " + args[2]);
                         return true;
                     }
                     default:
-                        sender.sendMessage(ChatColor.YELLOW + "Usage: /apartmentcore admin auction <list|cancel|forceend> [id|filter]");
+                        sender.sendMessage(ChatColor.YELLOW
+                                + "Usage: /apartmentcore admin auction <list|cancel|forceend> [id|filter]");
                         return true;
                 }
             }
- 
+
             default:
                 sendAdminHelp(sender);
                 return true;
@@ -1166,7 +1292,8 @@ public void sendHelp(CommandSender sender) {
             return true;
         }
 
-        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
+        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
+                .get(BukkitAdapter.adapt(world));
         if (regionManager == null || regionManager.getRegion(regionName) == null) {
             sender.sendMessage(ChatColor.RED + "Region '" + regionName + "' not found in world '" + worldName + "'!");
             return true;
@@ -1174,7 +1301,8 @@ public void sendHelp(CommandSender sender) {
 
         Apartment apt = new Apartment(id, regionName, worldName, null, price, 0.0, 0, 1,
                 System.currentTimeMillis(), 0, false, 0, 0, id, "");
-        // Set default teleport location to the admin's current position at creation time (if sender is a player)
+        // Set default teleport location to the admin's current position at creation
+        // time (if sender is a player)
         if (player != null) {
             apt.setCustomTeleportLocation(player.getLocation());
         }
@@ -1203,11 +1331,11 @@ public void sendHelp(CommandSender sender) {
             }
         }
 
-// Cancel active auction if exists (admin action)
-AuctionManager am = plugin.getAuctionManager();
-if (am != null) {
-    am.cancelAuctionAdmin(apartmentId);
-}
+        // Cancel active auction if exists (admin action)
+        AuctionManager am = plugin.getAuctionManager();
+        if (am != null) {
+            am.cancelAuctionAdmin(apartmentId);
+        }
         apartmentManager.getApartments().remove(apartmentId);
         apartmentManager.getApartmentRatings().remove(apartmentId);
         apartmentManager.getGuestBooks().remove(apartmentId);
@@ -1228,7 +1356,7 @@ if (am != null) {
             sender.sendMessage(ChatColor.RED + "Apartment not found!");
             return true;
         }
- 
+
         try {
             switch (property.toLowerCase()) {
                 case "owner":
@@ -1248,7 +1376,8 @@ if (am != null) {
                             }
                         }
                         if (targetUuid == null) {
-                            sender.sendMessage(ChatColor.RED + "Player not found online and not a valid UUID. Use a UUID or have the player join once.");
+                            sender.sendMessage(ChatColor.RED
+                                    + "Player not found online and not a valid UUID. Use a UUID or have the player join once.");
                             return true;
                         }
                         OfflinePlayer newOwner = Bukkit.getOfflinePlayer(targetUuid);
@@ -1257,17 +1386,20 @@ if (am != null) {
                             return true;
                         }
                         apt.owner = targetUuid;
-                        sender.sendMessage(ChatColor.GREEN + "Set owner of " + apt.displayName + " to " + (online != null ? online.getName() : targetUuid.toString()));
+                        sender.sendMessage(ChatColor.GREEN + "Set owner of " + apt.displayName + " to "
+                                + (online != null ? online.getName() : targetUuid.toString()));
                     }
                     break;
                 case "price":
                     apt.price = Double.parseDouble(value);
-                    sender.sendMessage(ChatColor.GREEN + "Set price for " + apt.displayName + " to " + configManager.formatMoney(apt.price));
+                    sender.sendMessage(ChatColor.GREEN + "Set price for " + apt.displayName + " to "
+                            + configManager.formatMoney(apt.price));
                     break;
                 case "level":
                     int level = Integer.parseInt(value);
                     if (level < 1 || level > configManager.getLevelConfigs().size()) {
-                        sender.sendMessage(ChatColor.RED + "Invalid level. Must be between 1 and " + configManager.getLevelConfigs().size());
+                        sender.sendMessage(ChatColor.RED + "Invalid level. Must be between 1 and "
+                                + configManager.getLevelConfigs().size());
                         return true;
                     }
                     apt.level = level;
@@ -1279,12 +1411,14 @@ if (am != null) {
                         sender.sendMessage(ChatColor.RED + "Rating must be between 0 and 10.");
                         return true;
                     }
-                    ApartmentRating aptRating = apartmentManager.getApartmentRatings().computeIfAbsent(apartmentId, k -> new ApartmentRating());
+                    ApartmentRating aptRating = apartmentManager.getApartmentRatings().computeIfAbsent(apartmentId,
+                            k -> new ApartmentRating());
                     aptRating.totalRating = newRating;
                     aptRating.ratingCount = 1;
                     aptRating.raters.clear();
                     apartmentManager.saveRatings();
-                    sender.sendMessage(ChatColor.GREEN + "Set rating for " + apt.displayName + " to " + String.format("%.1f", newRating));
+                    sender.sendMessage(ChatColor.GREEN + "Set rating for " + apt.displayName + " to "
+                            + String.format("%.1f", newRating));
                     return true;
                 default:
                     sender.sendMessage(ChatColor.RED + "Unknown property. Use: owner, price, level, rate");
@@ -1294,7 +1428,7 @@ if (am != null) {
             sender.sendMessage(ChatColor.RED + "Invalid number format for value!");
             return true;
         }
- 
+
         apartmentManager.saveApartments();
         return true;
     }
@@ -1303,7 +1437,8 @@ if (am != null) {
         sender.sendMessage(ChatColor.GOLD + "=== All Apartments (" + apartmentManager.getApartmentCount() + ") ===");
         for (Apartment apt : apartmentManager.getApartments().values()) {
             String ownerName = apt.owner != null ? Bukkit.getOfflinePlayer(apt.owner).getName() : "For Sale";
-            sender.sendMessage(ChatColor.YELLOW + apt.id + " (" + apt.displayName + "): " + ChatColor.WHITE + "Owner: " + ownerName);
+            sender.sendMessage(ChatColor.YELLOW + apt.id + " (" + apt.displayName + "): " + ChatColor.WHITE + "Owner: "
+                    + ownerName);
         }
     }
 
@@ -1324,16 +1459,19 @@ if (am != null) {
                     sender.sendMessage(ChatColor.YELLOW + "No backups found.");
                     return true;
                 }
-                java.util.Arrays.sort(backups, java.util.Comparator.comparingLong(java.io.File::lastModified).reversed());
+                java.util.Arrays.sort(backups,
+                        java.util.Comparator.comparingLong(java.io.File::lastModified).reversed());
                 sender.sendMessage(ChatColor.GOLD + "=== Available Backups (" + backups.length + ") ===");
                 java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 int shown = 0;
                 for (java.io.File f : backups) {
                     String date = sdf.format(new java.util.Date(f.lastModified()));
                     long sizeKb = Math.max(1L, f.length() / 1024L);
-                    sender.sendMessage(ChatColor.YELLOW + f.getName() + ChatColor.WHITE + " - " + sizeKb + "KB, " + date);
+                    sender.sendMessage(
+                            ChatColor.YELLOW + f.getName() + ChatColor.WHITE + " - " + sizeKb + "KB, " + date);
                     shown++;
-                    if (shown >= 100) break; // avoid chat spam
+                    if (shown >= 100)
+                        break; // avoid chat spam
                 }
                 sender.sendMessage(ChatColor.GRAY + "Use: /apartmentcore admin backup restore <filename.yml>");
                 return true;
@@ -1366,7 +1504,8 @@ if (am != null) {
                 return true;
             }
             default:
-                sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin backup <create|list|restore> [filename]");
+                sender.sendMessage(
+                        ChatColor.RED + "Usage: /apartmentcore admin backup <create|list|restore> [filename]");
                 return true;
         }
     }

@@ -7,11 +7,11 @@
 
   <groupId>com.aithor</groupId>
   <artifactId>ApartmentCore</artifactId>
-  <version>1.3.3</version>
+  <version>1.3.4</version>
   <packaging>jar</packaging>
 
   <name>ApartmentCore</name>
-  <description>Plugin untuk mengelola apartemen di Minecraft</description>
+  <description>Advanced Apartment Minecraft Plugin</description>
 
   <properties>
     <java.version>17</java.version>
