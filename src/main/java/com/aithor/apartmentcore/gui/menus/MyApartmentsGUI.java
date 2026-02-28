@@ -200,14 +200,45 @@ public class MyApartmentsGUI extends PaginatedGUI {
             nextTaxDisplay = remainingTaxMs > 0 ? GUIUtils.formatTime(remainingTaxMs) : "Soon...";
         }
 
+        // Get config and capacity
+        double baseCapacity = plugin.getConfigManager().getIncomeCapacity(apartment.level);
+        double researchBonusPercentage = 0.0;
+        if (plugin.getResearchManager() != null && apartment.owner != null) {
+            researchBonusPercentage = plugin.getResearchManager().getIncomeCapacityBonus(apartment.owner);
+        }
+        double capacity = baseCapacity * (1.0 + (researchBonusPercentage / 100.0));
+
+        // Get research buffs for display
+        double capitalGrowthBonus = 0.0;
+        double revenueAccelerationBonus = 0.0;
+        if (plugin.getResearchManager() != null && apartment.owner != null) {
+            capitalGrowthBonus = plugin.getResearchManager().getIncomeAmountBonus(apartment.owner);
+            revenueAccelerationBonus = plugin.getResearchManager().getIncomeIntervalReduction(apartment.owner);
+        }
+
         // Build item lore
         List<String> lore = new ArrayList<>();
         lore.add("&7ID: &f" + apartment.id);
         lore.add("&7Level: &f" + apartment.level + "/5");
         lore.add("");
         lore.add("&e💰 Financial Info:");
-        lore.add("&7• Pending Income: &a" + plugin.getConfigManager().formatMoney(apartment.pendingIncome));
-        lore.add("&7• Next Income In: &a" + nextIncomeDisplay);
+        lore.add("&7• Pending Income: &a" + plugin.getConfigManager().formatMoney(apartment.pendingIncome) +
+                " &7/ &a" + plugin.getConfigManager().formatMoney(capacity));
+        String nextIncomeLine = "&7• Next Income In: &a" + nextIncomeDisplay;
+        if (capitalGrowthBonus > 0 || revenueAccelerationBonus > 0) {
+            nextIncomeLine += " &7(";
+            if (capitalGrowthBonus > 0) {
+                nextIncomeLine += "&a+" + String.format("%.0f%%", capitalGrowthBonus) + " &7CG";
+            }
+            if (capitalGrowthBonus > 0 && revenueAccelerationBonus > 0) {
+                nextIncomeLine += "&7, ";
+            }
+            if (revenueAccelerationBonus > 0) {
+                nextIncomeLine += "&a-" + String.format("%.0f%%", revenueAccelerationBonus) + " &7RA";
+            }
+            nextIncomeLine += "&7)";
+        }
+        lore.add(nextIncomeLine);
         lore.add("&7• Next Tax In: &c" + nextTaxDisplay);
         lore.add("&7• Outstanding Taxes: &c" + plugin.getConfigManager().formatMoney(totalUnpaid));
         lore.add("&7• Auto-pay: " + (apartment.autoTaxPayment ? "&aEnabled" : "&cDisabled"));

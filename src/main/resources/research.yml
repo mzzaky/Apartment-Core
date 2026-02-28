@@ -72,6 +72,16 @@ researches:
     duration-base: 5400
     duration-multiplier: 2.5
 
+  capacity_expansion:
+    display-name: "Vault Expansion"
+    description: "Increases income capacity by 5% per tier"
+    icon: "CHEST"
+    effect-per-tier: 5.0
+    cost-base: 250000
+    cost-multiplier: 4.5
+    duration-base: 21600
+    duration-multiplier: 3.5
+
 # GUI Configuration
 gui:
   title: "&8Research Center"

@@ -29,3 +29,14 @@
 - [chore] Memperbarui tab completion pada `CommandHandler.java` untuk mendukung subcommand `sell quick|market|cancel`.
 - [chore] Memperbarui usage message sell di `messages.yml`.
 - [chore] Mereset field market listing pada proses quick sell, repossession, dan market buy agar state selalu konsisten.
+- [fix] Membuat tombol Claim Income pada GUI Apartment Details tetap muncul (warna abu-abu) meskipun tidak ada income yang bisa diklaim.
+- [feat] Menambahkan info `Vault Capacity` (`income-capacity`) pada lore item info di `ApartmentDetailsGUI` (menu detail apartemen).
+- [feat] Memperbaiki format tampilan `Pending Income` pada `MyApartmentsGUI` untuk turut menampilkan batas maksimum / `Vault Capacity` (contoh: `$1,000 / $10,000`).
+- [feat] Mengubah mekanisme Market Sell di `ApartmentDetailsGUI`. Kini ketika pemain mengklik tombol Market Sell, GUI akan tertutup dan permainan akan meminta pemain untuk memasukkan angka `custom price` (harga jual yang diinginkan) melalui chat, disertai dengan validasi format harga. Pemain dapat mengetik 'cancel' untuk membatalkan proses listing.
+- [feat] Menambahkan tipe riset baru `capacity_expansion` (Vault Expansion) pada Research System, yang memberikan bonus +5% Income Capacity per tier. Resep riset ini dibuat mahal dengan durasi waktu riset yang paling lama.
+- [feat] Menambahkan tampilan perhitungan bonus research pada lore item `Next Income In` di MyApartmentsGUI, menampilkan persentase bonus `capital_growth` (CG) dan `revenue_acceleration` (RA) untuk pemain yang telah menyelesaikan riset tersebut (contoh: `(+15% CG, -10% RA)`).
+- [feat] Menambahkan command admin `/ac admin set research <factory_id> <research_id> <tier>` untuk meningkatkan level research secara manual, berguna untuk keperluan testing maupun event.
+- [fix] Memperbaiki timer mekanisme pajak yang sebelumnya selalu menggunakan waktu 24 jam (real-world), sekarang telah tersinkronisasi murni menggunakan interval `tax-generation-interval` yang telah ditetapkan di `config.yml`.
+- [feat] Menambahkan info total jumlah level riset (`Research Lv`) milik penjual pada item lore apartemen yang dijual di market (`ApartmentBrowserGUI`).
+- [feat] Menambahkan tampilan efek buff `tax_efficiency` (Tax Efficiency) pada lore item nilai pajak di `TaxManagementGUI`, menampilkan persentase pengurangan pajak dari research (contoh: `-15% (Research)`) pada item Tax Overview, Apartment Tax Item, dan Invoice Item.
+- [feat] Menambahkan full tab completion untuk command `/ac admin set research <factory_id> <research_id> <tier>`, mendukung auto-complete ID apartemen, jenis riset (`ResearchType`), dan batasan maksimal tier.

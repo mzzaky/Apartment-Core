@@ -37,7 +37,8 @@ public class ResearchGUI implements GUI {
     private static final int CAPITAL_GROWTH_SLOT = 12;
     private static final int TAX_EFFICIENCY_SLOT = 14;
     private static final int EXPANSION_PLAN_SLOT = 16;
-    private static final int AUCTION_EFFICIENCY_SLOT = 22;
+    private static final int CAPACITY_EXPANSION_SLOT = 21;
+    private static final int AUCTION_EFFICIENCY_SLOT = 23;
 
     // Other slots
     private static final int INFO_SLOT = 4;
@@ -113,9 +114,10 @@ public class ResearchGUI implements GUI {
         int extraSlots = rm.getExtraOwnershipSlots(player.getUniqueId());
         double auctionFeeReduction = rm.getAuctionFeeReduction(player.getUniqueId());
         double commissionReduction = rm.getAuctionCommissionReduction(player.getUniqueId());
+        double capacityBonus = rm.getIncomeCapacityBonus(player.getUniqueId());
 
         boolean hasBuffs = intervalReduction > 0 || incomeBonus > 0 || taxReduction > 0
-                || extraSlots > 0 || auctionFeeReduction > 0;
+                || extraSlots > 0 || auctionFeeReduction > 0 || capacityBonus > 0;
 
         if (hasBuffs) {
             lore.add("&a Active Buffs:");
@@ -127,6 +129,8 @@ public class ResearchGUI implements GUI {
                 lore.add("&7 Tax Reduction: &a-" + String.format("%.0f%%", taxReduction));
             if (extraSlots > 0)
                 lore.add("&7 Extra Slots: &a+" + extraSlots);
+            if (capacityBonus > 0)
+                lore.add("&7 Capacity Bonus: &a+" + String.format("%.0f%%", capacityBonus));
             if (auctionFeeReduction > 0)
                 lore.add("&7 Auction Fee: &a-" + String.format("%.0f%%", auctionFeeReduction)
                         + " &7/ Commission: &a-" + String.format("%.0f%%", commissionReduction));
@@ -151,6 +155,7 @@ public class ResearchGUI implements GUI {
         addResearchItem(ResearchType.CAPITAL_GROWTH, CAPITAL_GROWTH_SLOT, data, rm);
         addResearchItem(ResearchType.TAX_EFFICIENCY, TAX_EFFICIENCY_SLOT, data, rm);
         addResearchItem(ResearchType.EXPANSION_PLAN, EXPANSION_PLAN_SLOT, data, rm);
+        addResearchItem(ResearchType.CAPACITY_EXPANSION, CAPACITY_EXPANSION_SLOT, data, rm);
         addResearchItem(ResearchType.AUCTION_EFFICIENCY, AUCTION_EFFICIENCY_SLOT, data, rm);
     }
 
@@ -308,6 +313,7 @@ public class ResearchGUI implements GUI {
             case CAPITAL_GROWTH -> "+" + (tier * 5) + "% income amount";
             case TAX_EFFICIENCY -> "-" + (tier * 5) + "% tax amount";
             case EXPANSION_PLAN -> "+" + tier + " apartment ownership slot" + (tier > 1 ? "s" : "");
+            case CAPACITY_EXPANSION -> "+" + (tier * 5) + "% income capacity";
             case AUCTION_EFFICIENCY -> "-" + (tier * 5) + "% auction fee, -" + tier + "% commission rate";
         };
     }
@@ -339,6 +345,7 @@ public class ResearchGUI implements GUI {
             case CAPITAL_GROWTH_SLOT -> ResearchType.CAPITAL_GROWTH;
             case TAX_EFFICIENCY_SLOT -> ResearchType.TAX_EFFICIENCY;
             case EXPANSION_PLAN_SLOT -> ResearchType.EXPANSION_PLAN;
+            case CAPACITY_EXPANSION_SLOT -> ResearchType.CAPACITY_EXPANSION;
             case AUCTION_EFFICIENCY_SLOT -> ResearchType.AUCTION_EFFICIENCY;
             default -> null;
         };

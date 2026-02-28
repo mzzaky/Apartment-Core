@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * GUI for browsing available apartments
  */
 public class ApartmentBrowserGUI extends PaginatedGUI {
-    
+
     private final ApartmentCore plugin;
     private final GUIManager guiManager;
 
@@ -41,13 +41,13 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
     private static final int FILTER_LEVEL_SLOT = 6;
     private static final int SORT_SLOT = 7;
     private static final int BACK_SLOT = 0;
-    
+
     public ApartmentBrowserGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         super(player, ChatColor.DARK_BLUE + "Browse Apartments", 54, 28);
         this.plugin = plugin;
         this.guiManager = guiManager;
     }
-    
+
     @Override
     protected List<GUIItem> loadItems() {
         List<Apartment> apartments = plugin.getApartmentManager().getApartments().values().stream()
@@ -68,13 +68,13 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
 
         return items;
     }
-    
+
     @Override
     protected void setupInventory() {
         super.setupInventory();
         addFilterAndSortOptions();
     }
-    
+
     private void addFilterAndSortOptions() {
         // Back button
         ItemStack backItem = new ItemBuilder(Material.ARROW)
@@ -82,16 +82,15 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                 .lore("&7Return to the main menu")
                 .build();
         inventory.setItem(BACK_SLOT, backItem);
-        
+
         // Filter: All
         Material allMaterial = currentFilter == FilterType.ALL ? Material.LIME_CONCRETE : Material.WHITE_CONCRETE;
         ItemStack allFilter = new ItemBuilder(allMaterial)
                 .name("&6All Apartments")
                 .lore(
-                    "&7Show all available apartments",
-                    "",
-                    currentFilter == FilterType.ALL ? "&a✓ Active filter" : "&7Click to activate"
-                )
+                        "&7Show all available apartments",
+                        "",
+                        currentFilter == FilterType.ALL ? "&a✓ Active filter" : "&7Click to activate")
                 .build();
         inventory.setItem(FILTER_ALL_SLOT, allFilter);
         // Filter: Cheap (under median price)
@@ -99,71 +98,68 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
         ItemStack cheapFilter = new ItemBuilder(cheapMaterial)
                 .name("&6Budget Friendly")
                 .lore(
-                    "&7Show cheaper apartments",
-                    "&7(Below median price)",
-                    "",
-                    currentFilter == FilterType.CHEAP ? "&a✓ Active filter" : "&7Click to activate"
-                )
+                        "&7Show cheaper apartments",
+                        "&7(Below median price)",
+                        "",
+                        currentFilter == FilterType.CHEAP ? "&a✓ Active filter" : "&7Click to activate")
                 .build();
         inventory.setItem(FILTER_CHEAP_SLOT, cheapFilter);
-        
+
         // Filter: Expensive (above median price)
-        Material expensiveMaterial = currentFilter == FilterType.EXPENSIVE ? Material.LIME_CONCRETE : Material.ORANGE_CONCRETE;
+        Material expensiveMaterial = currentFilter == FilterType.EXPENSIVE ? Material.LIME_CONCRETE
+                : Material.ORANGE_CONCRETE;
         ItemStack expensiveFilter = new ItemBuilder(expensiveMaterial)
                 .name("&6Premium Properties")
                 .lore(
-                    "&7Show luxury apartments",
-                    "&7(Above median price)",
-                    "",
-                    currentFilter == FilterType.EXPENSIVE ? "&a✓ Active filter" : "&7Click to activate"
-                )
+                        "&7Show luxury apartments",
+                        "&7(Above median price)",
+                        "",
+                        currentFilter == FilterType.EXPENSIVE ? "&a✓ Active filter" : "&7Click to activate")
                 .build();
         inventory.setItem(FILTER_EXPENSIVE_SLOT, expensiveFilter);
-        
+
         // Filter: Top Rated
         Material ratedMaterial = currentFilter == FilterType.TOP_RATED ? Material.LIME_CONCRETE : Material.GOLD_BLOCK;
         ItemStack ratedFilter = new ItemBuilder(ratedMaterial)
                 .name("&6Top Rated")
                 .lore(
-                    "&7Show highly rated apartments",
-                    "&7(Rating 4.0+ stars)",
-                    "",
-                    currentFilter == FilterType.TOP_RATED ? "&a✓ Active filter" : "&7Click to activate"
-                )
+                        "&7Show highly rated apartments",
+                        "&7(Rating 4.0+ stars)",
+                        "",
+                        currentFilter == FilterType.TOP_RATED ? "&a✓ Active filter" : "&7Click to activate")
                 .build();
         inventory.setItem(FILTER_RATED_SLOT, ratedFilter);
-        
+
         // Filter: High Level
-        Material levelMaterial = currentFilter == FilterType.HIGH_LEVEL ? Material.LIME_CONCRETE : Material.DIAMOND_BLOCK;
+        Material levelMaterial = currentFilter == FilterType.HIGH_LEVEL ? Material.LIME_CONCRETE
+                : Material.DIAMOND_BLOCK;
         ItemStack levelFilter = new ItemBuilder(levelMaterial)
                 .name("&6High Level")
                 .lore(
-                    "&7Show level 3+ apartments",
-                    "&7(Better income potential)",
-                    "",
-                    currentFilter == FilterType.HIGH_LEVEL ? "&a✓ Active filter" : "&7Click to activate"
-                )
+                        "&7Show level 3+ apartments",
+                        "&7(Better income potential)",
+                        "",
+                        currentFilter == FilterType.HIGH_LEVEL ? "&a✓ Active filter" : "&7Click to activate")
                 .build();
         inventory.setItem(FILTER_LEVEL_SLOT, levelFilter);
-        
+
         // Sort options
         ItemStack sortItem = new ItemBuilder(Material.HOPPER)
                 .name("&6Sort: " + currentSort.getDisplayName())
                 .lore(
-                    "&7Current sorting method",
-                    "",
-                    "&7Available sorts:",
-                    "&7• Price: Low to High",
-                    "&7• Price: High to Low", 
-                    "&7• Rating: High to Low",
-                    "&7• Level: High to Low",
-                    "",
-                    "&a▶ Click to change"
-                )
+                        "&7Current sorting method",
+                        "",
+                        "&7Available sorts:",
+                        "&7• Price: Low to High",
+                        "&7• Price: High to Low",
+                        "&7• Rating: High to Low",
+                        "&7• Level: High to Low",
+                        "",
+                        "&a▶ Click to change")
                 .build();
         inventory.setItem(SORT_SLOT, sortItem);
     }
-    
+
     private double getEffectivePrice(Apartment a) {
         return (a.marketListing && a.owner != null) ? a.marketPrice : a.price;
     }
@@ -191,7 +187,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                 return apartments.stream()
                         .filter(a -> getEffectivePrice(a) > medianPrice2)
                         .collect(Collectors.toList());
-                        
+
             case TOP_RATED:
                 return apartments.stream()
                         .filter(a -> {
@@ -199,17 +195,17 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                             return rating != null && rating.getAverageRating() >= 4.0;
                         })
                         .collect(Collectors.toList());
-                        
+
             case HIGH_LEVEL:
                 return apartments.stream()
                         .filter(a -> a.level >= 3)
                         .collect(Collectors.toList());
-                        
+
             default:
                 return apartments;
         }
     }
-    
+
     private List<Apartment> applySort(List<Apartment> apartments) {
         switch (currentSort) {
             case PRICE_LOW:
@@ -221,7 +217,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                 return apartments.stream()
                         .sorted(Comparator.comparingDouble((Apartment a) -> getEffectivePrice(a)).reversed())
                         .collect(Collectors.toList());
-                        
+
             case RATING:
                 return apartments.stream()
                         .sorted((a1, a2) -> {
@@ -232,29 +228,30 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                             return Double.compare(rating2, rating1);
                         })
                         .collect(Collectors.toList());
-                        
+
             case LEVEL:
                 return apartments.stream()
                         .sorted(Comparator.comparingInt((Apartment a) -> a.level).reversed())
                         .collect(Collectors.toList());
-                        
+
             default:
                 return apartments;
         }
     }
-    
+
     private GUIItem createApartmentItem(Apartment apartment) {
         ApartmentRating rating = plugin.getApartmentManager().getRating(apartment.id);
         double avgRating = rating != null ? rating.getAverageRating() : 0;
         String ratingDisplay = rating != null && rating.ratingCount > 0
-            ? String.format("%.1f⭐ (%d reviews)", avgRating, rating.ratingCount)
-            : "No ratings yet";
+                ? String.format("%.1f⭐ (%d reviews)", avgRating, rating.ratingCount)
+                : "No ratings yet";
 
         // Get level config for income display
         var levelConfig = plugin.getConfigManager().getLevelConfig(apartment.level);
         String incomeRange = levelConfig != null
-            ? plugin.getConfigManager().formatMoney(levelConfig.minIncome) + " - " + plugin.getConfigManager().formatMoney(levelConfig.maxIncome)
-            : "Unknown";
+                ? plugin.getConfigManager().formatMoney(levelConfig.minIncome) + " - "
+                        + plugin.getConfigManager().formatMoney(levelConfig.maxIncome)
+                : "Unknown";
 
         boolean isMarketListing = apartment.marketListing && apartment.owner != null;
         boolean isGovernment = apartment.owner == null;
@@ -292,7 +289,25 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
         // Property details
         lore.add("&e💰 Price: &f" + plugin.getConfigManager().formatMoney(displayPrice));
         lore.add("&e📊 Level: &f" + apartment.level + "/5");
-        lore.add("&e💸 Income: &f" + incomeRange + "/hour");
+
+        String incomeLine = "&e💸 Income: &f" + incomeRange + "/hour";
+        lore.add(incomeLine);
+
+        if (isMarketListing && plugin.getResearchManager() != null && apartment.owner != null) {
+            com.aithor.apartmentcore.research.PlayerResearchData data = plugin.getResearchManager()
+                    .getPlayerData(apartment.owner);
+            int totalTiers = 0;
+            int maxTotalTiers = 0;
+            for (com.aithor.apartmentcore.research.ResearchType rt : com.aithor.apartmentcore.research.ResearchType
+                    .values()) {
+                totalTiers += data.getCompletedTier(rt);
+                maxTotalTiers += rt.getMaxTier();
+            }
+            if (totalTiers > 0) {
+                lore.add("&e🔬 Research: &f" + totalTiers + "&7/&f" + maxTotalTiers);
+            }
+        }
+
         lore.add("&e⭐ Rating: &f" + ratingDisplay);
         lore.add("");
 
@@ -313,12 +328,13 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
 
         return new GUIItem(item, apartment.id, apartment);
     }
-    
+
     @Override
     protected void handleItemClick(GUIItem item, InventoryClickEvent event) {
         Apartment apartment = item.getData(Apartment.class);
-        if (apartment == null) return;
-        
+        if (apartment == null)
+            return;
+
         if (event.isShiftClick()) {
             // Teleport to preview
             handlePreview(apartment);
@@ -330,12 +346,12 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
             guiManager.openApartmentDetails(player, apartment.id);
         }
     }
-    
+
     @Override
     public void handleClick(InventoryClickEvent event) {
         // Handle filter/sort clicks first
         int slot = event.getSlot();
-        
+
         if (slot == BACK_SLOT) {
             guiManager.openMainMenu(player);
             return;
@@ -383,11 +399,11 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
             GUIUtils.playSound(player, GUIUtils.CLICK_SOUND);
             return;
         }
-        
+
         // Handle pagination and items
         super.handleClick(event);
     }
-    
+
     private void handleInstantBuy(Apartment apartment) {
         player.closeInventory();
 
@@ -399,7 +415,7 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
             plugin.getServer().dispatchCommand(player, "apartmentcore buy " + apartment.id);
         }
     }
-    
+
     private void handlePreview(Apartment apartment) {
         if (player.hasPermission("apartmentcore.preview")) {
             plugin.getApartmentManager().teleportToApartment(player, apartment.id, true);
@@ -410,27 +426,27 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
             GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
         }
     }
-    
+
     private enum FilterType {
         ALL, CHEAP, EXPENSIVE, TOP_RATED, HIGH_LEVEL
     }
-    
+
     private enum SortType {
         PRICE_LOW("Price: Low to High"),
         PRICE_HIGH("Price: High to Low"),
         RATING("Rating: High to Low"),
         LEVEL("Level: High to Low");
-        
+
         private final String displayName;
-        
+
         SortType(String displayName) {
             this.displayName = displayName;
         }
-        
+
         public String getDisplayName() {
             return displayName;
         }
-        
+
         public SortType next() {
             SortType[] values = values();
             return values[(ordinal() + 1) % values.length];

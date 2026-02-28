@@ -360,9 +360,10 @@ public class ApartmentCommandService {
     }
 
     /**
-     * Handle market sell command - list apartment on the market for other players to buy
+     * Handle market sell command - list apartment on the market for other players
+     * to buy
      */
-    public boolean handleMarketSellCommand(Player player, String apartmentId) {
+    public boolean handleMarketSellCommand(Player player, String apartmentId, double customPrice) {
         Apartment apt = apartmentManager.getApartment(apartmentId);
         if (apt == null) {
             player.sendMessage(ChatColor.RED + "Apartment not found!");
@@ -401,9 +402,9 @@ public class ApartmentCommandService {
             return true;
         }
 
-        // List on market at the apartment's current price
+        // List on market at the specified custom price (or current price if negative)
         apt.marketListing = true;
-        apt.marketPrice = apt.price;
+        apt.marketPrice = customPrice >= 0 ? customPrice : apt.price;
         apt.marketListedAt = System.currentTimeMillis();
 
         apartmentManager.saveApartments();
@@ -483,7 +484,8 @@ public class ApartmentCommandService {
                     .filter(a -> player.getUniqueId().equals(a.owner))
                     .count();
             if (ownedCount >= maxApartments) {
-                player.sendMessage(ChatColor.RED + "You already own the maximum number of apartments (" + maxApartments + ")!");
+                player.sendMessage(
+                        ChatColor.RED + "You already own the maximum number of apartments (" + maxApartments + ")!");
                 return true;
             }
         }
@@ -805,7 +807,8 @@ public class ApartmentCommandService {
                 // Process the transfer
                 UUID previousOwner = aptToBuy.owner;
                 String previousOwnerName = previousOwner != null
-                        ? Bukkit.getOfflinePlayer(previousOwner).getName() : "Unknown";
+                        ? Bukkit.getOfflinePlayer(previousOwner).getName()
+                        : "Unknown";
 
                 // Withdraw from buyer
                 economy.withdrawPlayer(player, mktPrice);
@@ -834,7 +837,8 @@ public class ApartmentCommandService {
                 aptToBuy.marketPrice = 0;
                 aptToBuy.marketListedAt = 0;
 
-                // Keep existing apartment data (level, pending income, etc.) - ownership transfer
+                // Keep existing apartment data (level, pending income, etc.) - ownership
+                // transfer
                 // Reset stats for new owner
                 apartmentManager.removeStats(aptToBuy.id);
 
@@ -1301,6 +1305,72 @@ public class ApartmentCommandService {
                 return removeApartment(sender, args[1]);
 
             case "set":
+                if (args.length >= 2 && args[1].equalsIgnoreCase("research")) {
+                    if (args.length != 5) {
+                        sender.sendMessage(ChatColor.RED
+                                + "Usage: /apartmentcore admin set research <factory_id> <research_id> <tier>");
+                        return true;
+                    }
+                    if (plugin.getResearchManager() == null || !plugin.getResearchManager().isEnabled()) {
+                        sender.sendMessage(ChatColor.RED + "Research system is disabled.");
+                        return true;
+                    }
+
+                    String factoryId = args[2];
+                    String researchIdStr = args[3];
+                    int tier;
+
+                    try {
+                        tier = Integer.parseInt(args[4]);
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage(ChatColor.RED + "Invalid tier number!");
+                        return true;
+                    }
+
+                    Apartment apt = apartmentManager.getApartment(factoryId);
+                    UUID targetUuid = null;
+                    if (apt != null && apt.owner != null) {
+                        targetUuid = apt.owner;
+                    } else {
+                        Player online = Bukkit.getPlayerExact(factoryId);
+                        if (online != null) {
+                            targetUuid = online.getUniqueId();
+                        } else {
+                            try {
+                                targetUuid = UUID.fromString(factoryId);
+                            } catch (IllegalArgumentException ignored) {
+                            }
+                        }
+                    }
+
+                    if (targetUuid == null) {
+                        sender.sendMessage(ChatColor.RED + "Could not find owner for '" + factoryId + "'.");
+                        return true;
+                    }
+
+                    com.aithor.apartmentcore.research.ResearchType rType = com.aithor.apartmentcore.research.ResearchType
+                            .fromConfigKey(researchIdStr.toLowerCase());
+                    if (rType == null) {
+                        try {
+                            rType = com.aithor.apartmentcore.research.ResearchType.valueOf(researchIdStr.toUpperCase());
+                        } catch (IllegalArgumentException e) {
+                            sender.sendMessage(ChatColor.RED + "Invalid research type: " + researchIdStr);
+                            return true;
+                        }
+                    }
+
+                    com.aithor.apartmentcore.research.PlayerResearchData rData = plugin.getResearchManager()
+                            .getPlayerData(targetUuid);
+                    rData.setCompletedTier(rType, tier);
+                    plugin.getResearchManager().savePlayerData();
+
+                    sender.sendMessage(ChatColor.GREEN + "Successfully set research " + rType.getDisplayName()
+                            + " to tier " + tier + " for " + factoryId);
+                    plugin.logAdminAction("Admin " + sender.getName() + " set research " + rType.name() + " tier "
+                            + tier + " for " + factoryId);
+                    return true;
+                }
+
                 if (args.length < 4) {
                     sender.sendMessage(
                             ChatColor.RED + "Usage: /apartmentcore admin set <property> <apartment_id> <value>");

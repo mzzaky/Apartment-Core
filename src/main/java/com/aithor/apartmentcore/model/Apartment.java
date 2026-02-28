@@ -296,7 +296,14 @@ public class Apartment {
         if (!hasUnpaid)
             return TaxStatus.ACTIVE;
 
-        long days = Math.max(0L, (now - oldestCreatedAt) / 86_400_000L); // real days since oldest unpaid
+        ApartmentCore plugin_instance = (ApartmentCore) org.bukkit.Bukkit.getPluginManager().getPlugin("ApartmentCore");
+        long dayMs = plugin_instance != null && plugin_instance.getConfigManager() != null
+                ? plugin_instance.getConfigManager().getTaxGenerationInterval() * 50L
+                : 86_400_000L;
+        if (dayMs <= 0)
+            dayMs = 86_400_000L;
+
+        long days = Math.max(0L, (now - oldestCreatedAt) / dayMs); // config days since oldest unpaid
         if (days >= 7)
             return TaxStatus.REPOSSESSION;
         if (days >= 5)
@@ -336,7 +343,7 @@ public class Apartment {
         }
 
         // 1) Generate new invoices for each full day passed since lastInvoiceAt
-        final long dayMs = 86_400_000L;
+        final long dayMs = Math.max(1000L, configManager.getTaxGenerationInterval() * 50L);
         while (now - lastInvoiceAt >= dayMs) {
             long newCreatedAt = lastInvoiceAt + dayMs;
 

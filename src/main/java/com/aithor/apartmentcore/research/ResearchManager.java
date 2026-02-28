@@ -147,6 +147,7 @@ public class ResearchManager {
 
     /**
      * Start a research for a player. Validates conditions and deducts cost.
+     * 
      * @return Result message (success or error)
      */
     public StartResult startResearch(Player player, ResearchType type) {
@@ -203,7 +204,8 @@ public class ResearchManager {
     private void startTickTask() {
         // Check every 20 ticks (1 second) for completed researches
         this.tickTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-            if (!enabled) return;
+            if (!enabled)
+                return;
             for (Map.Entry<UUID, PlayerResearchData> entry : playerData.entrySet()) {
                 PlayerResearchData data = entry.getValue();
                 if (data.hasActiveResearch() && data.isResearchComplete()) {
@@ -234,7 +236,8 @@ public class ResearchManager {
                         org.bukkit.ChatColor.translateAlternateColorCodes('&',
                                 "&e" + type.getDisplayName() + " &fTier " + toRoman(tier)),
                         10, 60, 20);
-            } catch (Throwable ignored) {}
+            } catch (Throwable ignored) {
+            }
         }
 
         plugin.log("Research completed: " + type.getDisplayName() + " tier " + toRoman(tier) +
@@ -251,7 +254,8 @@ public class ResearchManager {
      */
     public double getIncomeIntervalReduction(UUID playerId) {
         PlayerResearchData data = playerData.get(playerId);
-        if (data == null) return 0.0;
+        if (data == null)
+            return 0.0;
         return data.getCompletedTier(ResearchType.REVENUE_ACCELERATION) * 5.0;
     }
 
@@ -261,7 +265,8 @@ public class ResearchManager {
      */
     public double getIncomeAmountBonus(UUID playerId) {
         PlayerResearchData data = playerData.get(playerId);
-        if (data == null) return 0.0;
+        if (data == null)
+            return 0.0;
         return data.getCompletedTier(ResearchType.CAPITAL_GROWTH) * 5.0;
     }
 
@@ -271,7 +276,8 @@ public class ResearchManager {
      */
     public double getTaxReduction(UUID playerId) {
         PlayerResearchData data = playerData.get(playerId);
-        if (data == null) return 0.0;
+        if (data == null)
+            return 0.0;
         return data.getCompletedTier(ResearchType.TAX_EFFICIENCY) * 5.0;
     }
 
@@ -281,8 +287,20 @@ public class ResearchManager {
      */
     public int getExtraOwnershipSlots(UUID playerId) {
         PlayerResearchData data = playerData.get(playerId);
-        if (data == null) return 0;
+        if (data == null)
+            return 0;
         return data.getCompletedTier(ResearchType.EXPANSION_PLAN);
+    }
+
+    /**
+     * Get the income capacity bonus percentage for a player.
+     * Vault Expansion: 5% per tier.
+     */
+    public double getIncomeCapacityBonus(UUID playerId) {
+        PlayerResearchData data = playerData.get(playerId);
+        if (data == null)
+            return 0.0;
+        return data.getCompletedTier(ResearchType.CAPACITY_EXPANSION) * 5.0;
     }
 
     /**
@@ -291,17 +309,20 @@ public class ResearchManager {
      */
     public double getAuctionFeeReduction(UUID playerId) {
         PlayerResearchData data = playerData.get(playerId);
-        if (data == null) return 0.0;
+        if (data == null)
+            return 0.0;
         return data.getCompletedTier(ResearchType.AUCTION_EFFICIENCY) * 5.0;
     }
 
     /**
-     * Get the auction commission reduction (absolute percentage points) for a player.
+     * Get the auction commission reduction (absolute percentage points) for a
+     * player.
      * Auction Efficiency: 1% per tier.
      */
     public double getAuctionCommissionReduction(UUID playerId) {
         PlayerResearchData data = playerData.get(playerId);
-        if (data == null) return 0.0;
+        if (data == null)
+            return 0.0;
         return data.getCompletedTier(ResearchType.AUCTION_EFFICIENCY) * 1.0;
     }
 
@@ -333,14 +354,16 @@ public class ResearchManager {
             this.dataConfig = YamlConfiguration.loadConfiguration(dataFile);
 
             ConfigurationSection players = dataConfig.getConfigurationSection("players");
-            if (players == null) return;
+            if (players == null)
+                return;
 
             for (String uuidStr : players.getKeys(false)) {
                 try {
                     UUID uuid = UUID.fromString(uuidStr);
                     PlayerResearchData data = new PlayerResearchData(uuid);
                     ConfigurationSection playerSec = players.getConfigurationSection(uuidStr);
-                    if (playerSec == null) continue;
+                    if (playerSec == null)
+                        continue;
 
                     // Load completed tiers
                     ConfigurationSection completed = playerSec.getConfigurationSection("completed");
@@ -418,7 +441,10 @@ public class ResearchManager {
 
     public void shutdown() {
         if (tickTask != null) {
-            try { tickTask.cancel(); } catch (Throwable ignored) {}
+            try {
+                tickTask.cancel();
+            } catch (Throwable ignored) {
+            }
             tickTask = null;
         }
         savePlayerData();

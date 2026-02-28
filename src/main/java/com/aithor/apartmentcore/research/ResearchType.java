@@ -24,6 +24,10 @@ public enum ResearchType {
             "Increases apartment ownership limit by +1 per tier",
             Material.BEACON, 5),
 
+    CAPACITY_EXPANSION("capacity_expansion", "Vault Expansion",
+            "Increases income capacity by 5% per tier",
+            Material.CHEST, 5),
+
     AUCTION_EFFICIENCY("auction_efficiency", "Auction Efficiency",
             "Reduces auction fee by 5% and commission by 1% per tier",
             Material.SUNFLOWER, 5);

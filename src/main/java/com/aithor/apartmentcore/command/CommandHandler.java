@@ -136,7 +136,8 @@ public class CommandHandler implements TabCompleter {
                     return true;
                 }
                 if (args.length < 3) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore sell <quick|market|cancel> <apartment_id>");
+                    sender.sendMessage(
+                            ChatColor.RED + "Usage: /apartmentcore sell <quick|market|cancel> <apartment_id> [price]");
                     return true;
                 }
                 String sellType = args[1].toLowerCase();
@@ -144,11 +145,22 @@ public class CommandHandler implements TabCompleter {
                     case "quick":
                         return commandService.handleSellCommand((Player) sender, args[2]);
                     case "market":
-                        return commandService.handleMarketSellCommand((Player) sender, args[2]);
+                        double price = -1;
+                        if (args.length >= 4) {
+                            try {
+                                price = Double.parseDouble(args[3]);
+                            } catch (NumberFormatException e) {
+                                sender.sendMessage(
+                                        ChatColor.RED + "Invalid price format! Please enter a valid number.");
+                                return true;
+                            }
+                        }
+                        return commandService.handleMarketSellCommand((Player) sender, args[2], price);
                     case "cancel":
                         return commandService.handleCancelMarketCommand((Player) sender, args[2]);
                     default:
-                        sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore sell <quick|market|cancel> <apartment_id>");
+                        sender.sendMessage(ChatColor.RED
+                                + "Usage: /apartmentcore sell <quick|market|cancel> <apartment_id> [price]");
                         return true;
                 }
 
@@ -611,7 +623,7 @@ public class CommandHandler implements TabCompleter {
                                     .forEach(completions::add);
                             break;
                         case "set":
-                            Arrays.asList("owner", "price", "level", "rate").stream()
+                            Arrays.asList("owner", "price", "level", "rate", "research").stream()
                                     .filter(s -> s.startsWith(partial))
                                     .forEach(completions::add);
                             break;
@@ -653,7 +665,13 @@ public class CommandHandler implements TabCompleter {
             // Admin create (ID argument) - no strong suggestions available; leave
             // free-form.
         } else if (args.length == 5) {
-            if (args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("invoice")) {
+            if (args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("set")
+                    && args[2].equalsIgnoreCase("research")) {
+                Arrays.stream(com.aithor.apartmentcore.research.ResearchType.values())
+                        .map(com.aithor.apartmentcore.research.ResearchType::getConfigKey)
+                        .filter(key -> key.toLowerCase().startsWith(partial))
+                        .forEach(completions::add);
+            } else if (args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("invoice")) {
                 if ("add".equalsIgnoreCase(args[2])) {
                     Arrays.asList("100", "500", "1000", "2500", "5000").stream()
                             .filter(s -> s.startsWith(partial))
@@ -676,6 +694,24 @@ public class CommandHandler implements TabCompleter {
                 Arrays.asList("1", "12", "24", "72", "168").stream()
                         .filter(s -> s.startsWith(partial))
                         .forEach(completions::add);
+            }
+        } else if (args.length == 6) {
+            if (args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("set")
+                    && args[2].equalsIgnoreCase("research")) {
+                com.aithor.apartmentcore.research.ResearchType rt = com.aithor.apartmentcore.research.ResearchType
+                        .fromConfigKey(args[4]);
+                if (rt != null) {
+                    for (int i = 0; i <= rt.getMaxTier(); i++) {
+                        String tierStr = String.valueOf(i);
+                        if (tierStr.startsWith(partial)) {
+                            completions.add(tierStr);
+                        }
+                    }
+                } else {
+                    Arrays.asList("0", "1", "2", "3", "4", "5").stream()
+                            .filter(s -> s.startsWith(partial))
+                            .forEach(completions::add);
+                }
             }
         }
 
@@ -1240,7 +1276,8 @@ public class CommandHandler implements TabCompleter {
 
                 UUID previousOwner = aptToBuy.owner;
                 String previousOwnerName = previousOwner != null
-                        ? Bukkit.getOfflinePlayer(previousOwner).getName() : "Unknown";
+                        ? Bukkit.getOfflinePlayer(previousOwner).getName()
+                        : "Unknown";
 
                 economy.withdrawPlayer(player, mktPrice);
 

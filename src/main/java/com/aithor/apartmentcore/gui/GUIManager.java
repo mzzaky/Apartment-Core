@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 
 import com.aithor.apartmentcore.ApartmentCore;
@@ -36,12 +37,14 @@ public class GUIManager implements Listener {
     private final ApartmentCore plugin;
     private final Map<UUID, GUI> openGUIs;
     private final Map<Inventory, GUI> inventoryToGUI;
+    private final Map<UUID, String> pendingMarketPriceInputs;
     private int refreshTaskId = -1;
 
     public GUIManager(ApartmentCore plugin) {
         this.plugin = plugin;
         this.openGUIs = new HashMap<>();
         this.inventoryToGUI = new HashMap<>();
+        this.pendingMarketPriceInputs = new HashMap<>();
 
         // Register event listener
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -439,5 +442,51 @@ public class GUIManager implements Listener {
         }
 
         return stats;
+    }
+
+    /**
+     * Start asking the player for market price input
+     */
+    public void requestMarketPriceInput(Player player, String apartmentId) {
+        closeGUI(player);
+        player.closeInventory();
+        pendingMarketPriceInputs.put(player.getUniqueId(), apartmentId);
+        GUIUtils.sendMessage(player, "&eSilakan masukkan angka harga jual untuk &f" + apartmentId + " &edi chat.");
+        GUIUtils.sendMessage(player, "&eKetik '&ccancel&e' jika ingin membatalkan.");
+    }
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+
+        if (pendingMarketPriceInputs.containsKey(uuid)) {
+            event.setCancelled(true);
+            String apartmentId = pendingMarketPriceInputs.remove(uuid);
+            String message = event.getMessage().trim();
+
+            if (message.equalsIgnoreCase("cancel")) {
+                GUIUtils.sendMessage(player, "&cListing market dibatalkan.");
+                return;
+            }
+
+            double price;
+            try {
+                price = Double.parseDouble(message);
+                if (price < 0) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException e) {
+                GUIUtils.sendMessage(player,
+                        "&cFormat harga tidak valid! Harap masukkan angka yang valid dan positif.");
+                GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+                return;
+            }
+
+            // Jalankan command secara synchronous di next-tick (sync thread)
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                plugin.getServer().dispatchCommand(player, "apartmentcore sell market " + apartmentId + " " + price);
+            });
+        }
     }
 }

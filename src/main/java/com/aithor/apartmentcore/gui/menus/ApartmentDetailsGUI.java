@@ -132,6 +132,7 @@ public class ApartmentDetailsGUI implements GUI {
             lore.add("&7• Current Level: &f" + apartment.level + "/5");
             lore.add("&7• Hourly Income: &a" + plugin.getConfigManager().formatMoney(levelConfig.minIncome) +
                     " &7- &a" + plugin.getConfigManager().formatMoney(levelConfig.maxIncome));
+            lore.add("&7• Vault Capacity: &a" + plugin.getConfigManager().formatMoney(levelConfig.incomeCapacity));
 
             if (apartment.level < 5) {
                 LevelConfig nextLevel = plugin.getConfigManager().getLevelConfig(apartment.level + 1);
@@ -197,18 +198,22 @@ public class ApartmentDetailsGUI implements GUI {
         }
 
         // Claim Income (owners only)
-        if (isOwner && apartment.pendingIncome > 0) {
-            ItemStack claimItem = new ItemBuilder(Material.EMERALD)
+        if (isOwner) {
+            boolean hasIncome = apartment.pendingIncome > 0;
+            ItemBuilder claimItemBuilder = new ItemBuilder(hasIncome ? Material.EMERALD : Material.GRAY_DYE)
                     .name("&a💰 Claim Income")
                     .lore(
                             "&7Claim pending rental income",
                             "",
                             "&7Amount: &a" + plugin.getConfigManager().formatMoney(apartment.pendingIncome),
                             "",
-                            "&a▶ Click to claim")
-                    .glow()
-                    .build();
-            inventory.setItem(CLAIM_INCOME_SLOT, claimItem);
+                            hasIncome ? "&a▶ Click to claim" : "&7No income to claim");
+
+            if (hasIncome) {
+                claimItemBuilder.glow();
+            }
+
+            inventory.setItem(CLAIM_INCOME_SLOT, claimItemBuilder.build());
         }
 
         // Buy (non-owners, if available - government sale)
@@ -235,7 +240,8 @@ public class ApartmentDetailsGUI implements GUI {
         if (!isOwner && !isAvailable && apartment.marketListing) {
             boolean canAfford = plugin.getEconomy().has(player, apartment.marketPrice);
             String sellerName = apartment.owner != null
-                    ? Bukkit.getOfflinePlayer(apartment.owner).getName() : "Unknown";
+                    ? Bukkit.getOfflinePlayer(apartment.owner).getName()
+                    : "Unknown";
             Material buyMaterial = canAfford ? Material.GOLD_BLOCK : Material.RED_CONCRETE;
 
             ItemStack marketBuyItem = new ItemBuilder(buyMaterial)
@@ -587,6 +593,11 @@ public class ApartmentDetailsGUI implements GUI {
     }
 
     private void handleClaimIncome(Apartment apartment) {
+        if (apartment.pendingIncome <= 0) {
+            GUIUtils.sendMessage(player, "&cNo income to claim!");
+            GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+            return;
+        }
         player.closeInventory();
         plugin.getServer().dispatchCommand(player, "apartmentcore rent claim " + apartmentId);
     }
@@ -637,8 +648,8 @@ public class ApartmentDetailsGUI implements GUI {
             // Cancel listing
             plugin.getServer().dispatchCommand(player, "apartmentcore sell cancel " + apartmentId);
         } else {
-            // List on market
-            plugin.getServer().dispatchCommand(player, "apartmentcore sell market " + apartmentId);
+            // List on market: request custom price from user
+            guiManager.requestMarketPriceInput(player, apartmentId);
         }
     }
 

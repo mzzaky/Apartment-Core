@@ -170,7 +170,8 @@ public class ApartmentManager {
                     apt.marketListedAt = aptSection.getLong("market-listed-at", 0L);
                 } catch (Throwable t) {
                     plugin.getLogger()
-                            .warning(String.format("Failed reading market listing state for %s: %s", id, t.getMessage()));
+                            .warning(String.format("Failed reading market listing state for %s: %s", id,
+                                    t.getMessage()));
                 }
 
                 apartments.put(id, apt);
@@ -427,7 +428,13 @@ public class ApartmentManager {
                 continue;
 
             // --- Income Capacity Check ---
-            double capacity = configManager.getIncomeCapacity(apt.level);
+            double baseCapacity = configManager.getIncomeCapacity(apt.level);
+            double researchBonusPercentage = 0.0;
+            if (plugin.getResearchManager() != null) {
+                researchBonusPercentage = plugin.getResearchManager().getIncomeCapacityBonus(apt.owner);
+            }
+            double capacity = baseCapacity * (1.0 + (researchBonusPercentage / 100.0));
+
             if (apt.pendingIncome >= capacity) {
                 // Vault is full; skip generation and notify player once per cycle
                 org.bukkit.OfflinePlayer offlinePlayer = org.bukkit.Bukkit.getOfflinePlayer(apt.owner);
