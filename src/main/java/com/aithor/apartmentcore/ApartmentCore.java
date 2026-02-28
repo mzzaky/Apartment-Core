@@ -11,6 +11,7 @@ import com.aithor.apartmentcore.manager.MessageManager;
 import com.aithor.apartmentcore.manager.TaskManager;
 import com.aithor.apartmentcore.model.ConfirmationAction;
 import com.aithor.apartmentcore.placeholder.ApartmentPlaceholder;
+import com.aithor.apartmentcore.achievement.AchievementManager;
 import com.aithor.apartmentcore.research.ResearchManager;
 import com.aithor.apartmentcore.shop.ApartmentShopManager;
 import net.milkbowl.vault.economy.Economy;
@@ -41,6 +42,7 @@ public class ApartmentCore extends JavaPlugin {
     private GUIManager guiManager;
     private ApartmentShopManager shopManager;
     private ResearchManager researchManager;
+    private AchievementManager achievementManager;
     private BukkitTask auctionTask;
 
     private final Map<UUID, Long> commandCooldowns = new ConcurrentHashMap<>();
@@ -102,6 +104,9 @@ public class ApartmentCore extends JavaPlugin {
         // Research system
         this.researchManager = new ResearchManager(this, economy, configManager);
 
+        // Achievement system
+        this.achievementManager = new AchievementManager(this, economy, configManager);
+
         // Commands
         this.commandHandler = new CommandHandler(this, apartmentManager, economy, configManager);
         PluginCommand cmd = getCommand("apartmentcore");
@@ -162,6 +167,10 @@ public class ApartmentCore extends JavaPlugin {
         if (researchManager != null) {
             try { researchManager.shutdown(); } catch (Throwable ignored) {}
             researchManager = null;
+        }
+        if (achievementManager != null) {
+            try { achievementManager.shutdown(); } catch (Throwable ignored) {}
+            achievementManager = null;
         }
         log("ApartmentCore disabled.");
     }
@@ -279,6 +288,10 @@ public class ApartmentCore extends JavaPlugin {
 
     public ResearchManager getResearchManager() {
         return researchManager;
+    }
+
+    public AchievementManager getAchievementManager() {
+        return achievementManager;
     }
 
     /**

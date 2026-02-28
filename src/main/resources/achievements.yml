@@ -1,0 +1,63 @@
+# ============================================
+# ApartmentCore - Achievements Configuration
+# ============================================
+# This file controls the Achievement system.
+# Each achievement has configurable targets, rewards, and display settings.
+
+# Master toggle for the achievement system
+achievements:
+  enabled: true
+
+# Achievement definitions
+# Each achievement tracks a specific player milestone.
+# - enabled: Whether this achievement is active
+# - target: The numeric goal the player must reach
+# - icon: The Minecraft material used as the GUI icon
+# - reward: Money rewarded upon completion (0 = no reward)
+# - broadcast: Whether to announce completion to all online players
+
+definitions:
+  income_millionaire:
+    enabled: true
+    name: "Income Millionaire"
+    description: "Accumulate $1,000,000 in total apartment income"
+    icon: GOLD_BLOCK
+    target: 1000000
+    reward: 50000
+    broadcast: true
+
+  tax_contributor:
+    enabled: true
+    name: "Tax Contributor"
+    description: "Pay a total of $1,000,000 in apartment taxes"
+    icon: EMERALD_BLOCK
+    target: 1000000
+    reward: 50000
+    broadcast: true
+
+  sales_tycoon:
+    enabled: true
+    name: "Sales Tycoon"
+    description: "Earn $1,000,000 from apartment sales"
+    icon: DIAMOND_BLOCK
+    target: 1000000
+    reward: 50000
+    broadcast: true
+
+  research_master:
+    enabled: true
+    name: "Research Master"
+    description: "Complete any research to its maximum tier"
+    icon: ENCHANTING_TABLE
+    target: 1
+    reward: 50000
+    broadcast: true
+
+  max_level_owner:
+    enabled: true
+    name: "Max Level Owner"
+    description: "Own an apartment at the maximum level"
+    icon: BEACON
+    target: 1
+    reward: 50000
+    broadcast: true

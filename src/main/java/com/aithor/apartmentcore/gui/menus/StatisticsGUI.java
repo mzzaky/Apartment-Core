@@ -265,6 +265,19 @@ public class StatisticsGUI extends PaginatedGUI {
             plugin.getApartmentManager().saveApartments();
             plugin.getApartmentManager().saveStats();
 
+            // Track income achievement
+            if (plugin.getAchievementManager() != null) {
+                double totalInc = 0;
+                for (Apartment a : plugin.getApartmentManager().getApartments().values()) {
+                    if (player.getUniqueId().equals(a.owner)) {
+                        ApartmentStats st2 = plugin.getApartmentManager().getStats(a.id);
+                        if (st2 != null) totalInc += st2.totalIncomeGenerated;
+                    }
+                }
+                plugin.getAchievementManager().setProgress(player.getUniqueId(),
+                        com.aithor.apartmentcore.achievement.AchievementType.INCOME_MILLIONAIRE, totalInc);
+            }
+
             GUIUtils.sendMessage(player, "&aClaimed &f" + plugin.getConfigManager().formatMoney(totalIncome) +
                     " &afrom &f" + claimedCount + " &aapartments!");
             GUIUtils.playSound(player, GUIUtils.SUCCESS_SOUND);

@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 
 import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.gui.interfaces.GUI;
+import com.aithor.apartmentcore.gui.menus.AchievementGUI;
 import com.aithor.apartmentcore.gui.menus.ApartmentBrowserGUI;
 import com.aithor.apartmentcore.gui.menus.ApartmentDetailsGUI;
 import com.aithor.apartmentcore.gui.menus.ApartmentShopGUI;
@@ -232,11 +233,21 @@ public class GUIManager implements Listener {
 
     /**
      * Open research center GUI
-     * 
+     *
      * @param player The player
      */
     public void openResearch(Player player) {
         ResearchGUI gui = new ResearchGUI(player, plugin, this);
+        openGUI(player, gui);
+    }
+
+    /**
+     * Open achievements GUI
+     *
+     * @param player The player
+     */
+    public void openAchievements(Player player) {
+        AchievementGUI gui = new AchievementGUI(player, plugin, this);
         openGUI(player, gui);
     }
 

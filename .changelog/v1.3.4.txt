@@ -40,3 +40,17 @@
 - [feat] Menambahkan info total jumlah level riset (`Research Lv`) milik penjual pada item lore apartemen yang dijual di market (`ApartmentBrowserGUI`).
 - [feat] Menambahkan tampilan efek buff `tax_efficiency` (Tax Efficiency) pada lore item nilai pajak di `TaxManagementGUI`, menampilkan persentase pengurangan pajak dari research (contoh: `-15% (Research)`) pada item Tax Overview, Apartment Tax Item, dan Invoice Item.
 - [feat] Menambahkan full tab completion untuk command `/ac admin set research <factory_id> <research_id> <tier>`, mendukung auto-complete ID apartemen, jenis riset (`ResearchType`), dan batasan maksimal tier.
+- [feat] Menambahkan sistem **Achievement** lengkap dengan 5 jenis pencapaian: Income Millionaire (akumulasi income $1,000,000), Tax Contributor (akumulasi pajak $1,000,000), Sales Tycoon (akumulasi penjualan $1,000,000), Research Master (menyelesaikan 1 riset hingga tier maksimal), dan Max Level Owner (memiliki 1 apartment level maksimal).
+- [feat] Menambahkan custom GUI khusus Achievement (`AchievementGUI`) dengan tampilan progress bar real-time, persentase penyelesaian, dan informasi reward untuk setiap achievement.
+- [feat] Menghubungkan GUI Achievement ke Main Menu GUI dengan tombol Nether Star di slot 30, menampilkan ringkasan progress achievement pemain.
+- [feat] Menambahkan tracking achievement secara real-time pada setiap event terkait: klaim income, pembayaran pajak (manual & auto-pay), penjualan apartment (quick sell & market sell), penyelesaian riset, dan upgrade apartment ke level maksimal.
+- [feat] Menambahkan notifikasi achievement unlocked berupa chat message, title screen, dan sound effect (`UI_TOAST_CHALLENGE_COMPLETE`) ketika pemain menyelesaikan achievement.
+- [feat] Menambahkan sistem broadcast global yang mengumumkan pencapaian achievement ke seluruh pemain online.
+- [feat] Menambahkan reward uang otomatis ketika achievement diselesaikan (default: $50,000 per achievement, dapat dikonfigurasi).
+- [chore] Menambahkan file konfigurasi `achievements.yml` untuk mengontrol seluruh fitur achievement: enable/disable per achievement, target, reward, icon, dan broadcast.
+- [chore] Menambahkan package `com.aithor.apartmentcore.achievement` dengan class `AchievementType`, `PlayerAchievementData`, dan `AchievementManager`.
+- [chore] Menambahkan persistensi data achievement ke file `data/achievement_data.yml` dengan auto-save pada shutdown.
+- [chore] Memperbarui `ApartmentCore.java` untuk inisialisasi dan shutdown `AchievementManager`.
+- [chore] Memperbarui `MainMenuGUI.java` untuk menambahkan tombol Achievement dan menggeser posisi tombol Help & Info.
+- [chore] Memperbarui `GUIManager.java` untuk mendukung method `openAchievements(Player)`.
+- [chore] Menambahkan tracking achievement pada `ApartmentManager.java`, `ApartmentCommandService.java`, `CommandHandler.java`, `Apartment.java`, `TaskManager.java`, `ResearchManager.java`, `TaxManagementGUI.java`, dan `StatisticsGUI.java`.
