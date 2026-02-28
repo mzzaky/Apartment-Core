@@ -416,6 +416,19 @@ public class TaxManagementGUI extends PaginatedGUI {
         ApartmentStats stats = plugin.getApartmentManager().getStats(apartment.id);
         stats.totalTaxPaid += invoice.amount;
 
+        // Track tax achievement
+        if (plugin.getAchievementManager() != null) {
+            double totalTax = 0;
+            for (com.aithor.apartmentcore.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
+                if (player.getUniqueId().equals(a.owner)) {
+                    ApartmentStats s = plugin.getApartmentManager().getStats(a.id);
+                    if (s != null) totalTax += s.totalTaxPaid;
+                }
+            }
+            plugin.getAchievementManager().setProgress(player.getUniqueId(),
+                    com.aithor.apartmentcore.achievement.AchievementType.TAX_CONTRIBUTOR, totalTax);
+        }
+
         // Clear inactive flags if this was the last unpaid invoice
         if (apartment.getTotalUnpaid() <= 0) {
             apartment.inactive = false;

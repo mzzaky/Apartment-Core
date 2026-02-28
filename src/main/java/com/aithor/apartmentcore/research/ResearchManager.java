@@ -240,6 +240,18 @@ public class ResearchManager {
             }
         }
 
+        // Track research achievement - check if any research is now at max tier
+        if (plugin.getAchievementManager() != null) {
+            int maxedCount = 0;
+            for (ResearchType rt : ResearchType.values()) {
+                if (data.isMaxTier(rt)) maxedCount++;
+            }
+            if (maxedCount > 0) {
+                plugin.getAchievementManager().setProgress(playerId,
+                        com.aithor.apartmentcore.achievement.AchievementType.RESEARCH_MASTER, maxedCount);
+            }
+        }
+
         plugin.log("Research completed: " + type.getDisplayName() + " tier " + toRoman(tier) +
                 " for player " + playerId);
     }

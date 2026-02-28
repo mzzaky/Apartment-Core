@@ -1207,6 +1207,12 @@ public class CommandHandler implements TabCompleter {
                 double totalRefund = sellPrice + shopRefund;
                 economy.depositPlayer(player, totalRefund);
 
+                // Track sales achievement (before resetting owner)
+                if (plugin.getAchievementManager() != null) {
+                    plugin.getAchievementManager().recordProgress(player.getUniqueId(),
+                            com.aithor.apartmentcore.achievement.AchievementType.SALES_TYCOON, sellPrice);
+                }
+
                 apartmentManager.removePlayerFromRegion(player, aptToSell);
 
                 // Reset apartment
@@ -1285,6 +1291,12 @@ public class CommandHandler implements TabCompleter {
                     OfflinePlayer seller = Bukkit.getOfflinePlayer(previousOwner);
                     economy.depositPlayer(seller, mktPrice);
 
+                    // Track sales achievement for seller
+                    if (plugin.getAchievementManager() != null) {
+                        plugin.getAchievementManager().recordProgress(previousOwner,
+                                com.aithor.apartmentcore.achievement.AchievementType.SALES_TYCOON, mktPrice);
+                    }
+
                     if (seller.isOnline() && seller.getPlayer() != null) {
                         seller.getPlayer().sendMessage(ChatColor.GREEN + "Your apartment "
                                 + ChatColor.YELLOW + aptToBuy.displayName + ChatColor.GREEN
@@ -1357,6 +1369,19 @@ public class CommandHandler implements TabCompleter {
                 // Update stats
                 ApartmentStats stats = apartmentManager.getStats(apartmentId);
                 stats.totalIncomeGenerated += incomeToClaim;
+
+                // Track income achievement
+                if (plugin.getAchievementManager() != null) {
+                    double totalInc = 0;
+                    for (Apartment a : apartmentManager.getApartments().values()) {
+                        if (player.getUniqueId().equals(a.owner)) {
+                            ApartmentStats s = apartmentManager.getStats(a.id);
+                            if (s != null) totalInc += s.totalIncomeGenerated;
+                        }
+                    }
+                    plugin.getAchievementManager().setProgress(player.getUniqueId(),
+                            com.aithor.apartmentcore.achievement.AchievementType.INCOME_MILLIONAIRE, totalInc);
+                }
 
                 apt.pendingIncome = 0;
                 plugin.setLastRentClaimTime(System.currentTimeMillis());
@@ -1506,6 +1531,19 @@ public class CommandHandler implements TabCompleter {
         apartmentManager.saveApartments();
         apartmentManager.saveStats();
 
+        // Track tax achievement
+        if (plugin.getAchievementManager() != null) {
+            double totalTax = 0;
+            for (Apartment a : apartmentManager.getApartments().values()) {
+                if (player.getUniqueId().equals(a.owner)) {
+                    ApartmentStats s = apartmentManager.getStats(a.id);
+                    if (s != null) totalTax += s.totalTaxPaid;
+                }
+            }
+            plugin.getAchievementManager().setProgress(player.getUniqueId(),
+                    com.aithor.apartmentcore.achievement.AchievementType.TAX_CONTRIBUTOR, totalTax);
+        }
+
         player.sendMessage(
                 ChatColor.GREEN + "All tax arrears have been paid: " + configManager.formatMoney(totalUnpaid));
         return true;
@@ -1576,6 +1614,16 @@ public class CommandHandler implements TabCompleter {
         economy.withdrawPlayer(player, upgradeCost);
         apt.level++;
         apartmentManager.saveApartments();
+
+        // Track max level achievement
+        if (plugin.getAchievementManager() != null) {
+            int maxLevel = configManager.getLevelConfigs().keySet().stream()
+                    .mapToInt(Integer::intValue).max().orElse(5);
+            if (apt.level >= maxLevel) {
+                plugin.getAchievementManager().setProgress(player.getUniqueId(),
+                        com.aithor.apartmentcore.achievement.AchievementType.MAX_LEVEL_OWNER, 1);
+            }
+        }
 
         player.sendMessage(ChatColor.GREEN + "Successfully upgraded " + apt.displayName + " to level " + apt.level);
         player.sendMessage(ChatColor.YELLOW + "New income range: " +

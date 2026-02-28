@@ -150,6 +150,16 @@ public class TaskManager {
                                 } catch (Exception ignored) {
                                 }
                             }
+
+                            // Track max level achievement
+                            if (plugin.getAchievementManager() != null) {
+                                int maxLevel = configManager.getLevelConfigs().keySet().stream()
+                                        .mapToInt(Integer::intValue).max().orElse(5);
+                                if (apt.level >= maxLevel) {
+                                    plugin.getAchievementManager().setProgress(apt.owner,
+                                            com.aithor.apartmentcore.achievement.AchievementType.MAX_LEVEL_OWNER, 1);
+                                }
+                            }
                         }
                     }
                 }

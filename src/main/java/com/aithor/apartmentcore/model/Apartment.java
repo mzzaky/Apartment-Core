@@ -389,6 +389,18 @@ public class Apartment {
                     // Update stats
                     ApartmentStats stats = apartmentManager.getStats(id);
                     stats.totalTaxPaid += invoice.amount;
+                    // Track tax achievement
+                    if (plugin.getAchievementManager() != null) {
+                        double totalTax = 0;
+                        for (Apartment a : apartmentManager.getApartments().values()) {
+                            if (owner.equals(a.owner)) {
+                                ApartmentStats s = apartmentManager.getStats(a.id);
+                                if (s != null) totalTax += s.totalTaxPaid;
+                            }
+                        }
+                        plugin.getAchievementManager().setProgress(owner,
+                                com.aithor.apartmentcore.achievement.AchievementType.TAX_CONTRIBUTOR, totalTax);
+                    }
                     if (player.isOnline()) {
                         String paid = plugin.getMessageManager().getMessage("notifications.auto_paid")
                                 .replace("%amount%", configManager.formatMoney(invoice.amount))
@@ -421,6 +433,18 @@ public class Apartment {
                     // Update stats
                     ApartmentStats stats2 = apartmentManager.getStats(id);
                     stats2.totalTaxPaid += i.amount;
+                    // Track tax achievement
+                    if (plugin.getAchievementManager() != null) {
+                        double totalTax = 0;
+                        for (Apartment a : apartmentManager.getApartments().values()) {
+                            if (owner.equals(a.owner)) {
+                                ApartmentStats s = apartmentManager.getStats(a.id);
+                                if (s != null) totalTax += s.totalTaxPaid;
+                            }
+                        }
+                        plugin.getAchievementManager().setProgress(owner,
+                                com.aithor.apartmentcore.achievement.AchievementType.TAX_CONTRIBUTOR, totalTax);
+                    }
                 } else {
                     break; // stop at first unaffordable invoice
                 }

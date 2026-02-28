@@ -32,7 +32,8 @@ public class MainMenuGUI implements GUI {
     private static final int AUCTION_HOUSE_SLOT = 20;
     private static final int RESEARCH_SLOT = 22;
     private static final int STATISTICS_SLOT = 24;
-    private static final int HELP_INFO_SLOT = 31;
+    private static final int ACHIEVEMENTS_SLOT = 30;
+    private static final int HELP_INFO_SLOT = 32;
 
     public MainMenuGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         this.player = player;
@@ -61,6 +62,7 @@ public class MainMenuGUI implements GUI {
         addAuctionHouse();
         addResearch();
         addStatistics();
+        addAchievements();
         addHelpInfo();
 
         // Add player info
@@ -308,6 +310,42 @@ public class MainMenuGUI implements GUI {
         inventory.setItem(STATISTICS_SLOT, item);
     }
 
+    private void addAchievements() {
+        if (plugin.getAchievementManager() == null || !plugin.getAchievementManager().isEnabled()) {
+            ItemStack item = new ItemBuilder(Material.BARRIER)
+                    .name("&c Achievements")
+                    .lore(
+                            "&7Achievement system is disabled",
+                            "",
+                            "&c Not available")
+                    .build();
+            inventory.setItem(ACHIEVEMENTS_SLOT, item);
+            return;
+        }
+
+        com.aithor.apartmentcore.achievement.AchievementManager am = plugin.getAchievementManager();
+        com.aithor.apartmentcore.achievement.PlayerAchievementData data = am.getPlayerData(player.getUniqueId());
+        int completed = data.getCompletedCount();
+        int total = data.getTotalCount();
+        String percentage = total > 0 ? String.format("%.0f%%", (completed * 100.0 / total)) : "0%";
+        String progressBar = com.aithor.apartmentcore.gui.utils.GUIUtils.createProgressBar(completed, total, 15);
+
+        ItemStack item = new ItemBuilder(Material.NETHER_STAR)
+                .name("&6 Achievements")
+                .lore(
+                        "&7Track your milestones and earn rewards",
+                        "",
+                        "&e Achievement Progress:",
+                        "&7 Completed: &f" + completed + "&7/&f" + total + " &7(" + percentage + ")",
+                        "&7 " + progressBar,
+                        "",
+                        "&a Click to view")
+                .glow()
+                .build();
+
+        inventory.setItem(ACHIEVEMENTS_SLOT, item);
+    }
+
     private void addHelpInfo() {
         ItemStack item = new ItemBuilder(Material.ENCHANTED_BOOK)
                 .name("&6❓ Help & Info")
@@ -385,6 +423,16 @@ public class MainMenuGUI implements GUI {
 
         if (slot == STATISTICS_SLOT) {
             plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openStatistics(player));
+            return;
+        }
+
+        if (slot == ACHIEVEMENTS_SLOT) {
+            if (plugin.getAchievementManager() != null && plugin.getAchievementManager().isEnabled()) {
+                plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openAchievements(player));
+            } else {
+                GUIUtils.sendMessage(player, "&cAchievement system is disabled!");
+                GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+            }
             return;
         }
 

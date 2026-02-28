@@ -466,6 +466,19 @@ public class ApartmentManager {
             ApartmentStats stats = getStats(apt.id);
             stats.totalIncomeGenerated += income;
 
+            // Track income achievement
+            if (plugin.getAchievementManager() != null) {
+                double totalIncome = 0;
+                for (Apartment a : apartments.values()) {
+                    if (apt.owner.equals(a.owner)) {
+                        ApartmentStats s = getStats(a.id);
+                        if (s != null) totalIncome += s.totalIncomeGenerated;
+                    }
+                }
+                plugin.getAchievementManager().setProgress(apt.owner,
+                        com.aithor.apartmentcore.achievement.AchievementType.INCOME_MILLIONAIRE, totalIncome);
+            }
+
             // Send notification to player if online
             org.bukkit.OfflinePlayer offlinePlayer = org.bukkit.Bukkit.getOfflinePlayer(apt.owner);
             if (offlinePlayer.isOnline()) {
