@@ -53,7 +53,8 @@ public class ApartmentPlaceholder extends PlaceholderExpansion {
     }
 
     private String formatTime(long millis) {
-        if (millis < 0) return "0s";
+        if (millis < 0)
+            return "0s";
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         millis -= TimeUnit.DAYS.toMillis(days);
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
@@ -63,17 +64,20 @@ public class ApartmentPlaceholder extends PlaceholderExpansion {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 
         StringBuilder sb = new StringBuilder();
-        if (days > 0) sb.append(days).append("d ");
-        if (hours > 0) sb.append(hours).append("h ");
-        if (minutes > 0) sb.append(minutes).append("m ");
+        if (days > 0)
+            sb.append(days).append("d ");
+        if (hours > 0)
+            sb.append(hours).append("h ");
+        if (minutes > 0)
+            sb.append(minutes).append("m ");
         sb.append(seconds).append("s");
         return sb.toString().trim();
     }
 
-
     @Override
     public String onPlaceholderRequest(Player player, String params) {
-        if (player == null) return "";
+        if (player == null)
+            return "";
 
         // Handle player-specific placeholders
         if (params.equals("owned_count")) {
@@ -91,18 +95,22 @@ public class ApartmentPlaceholder extends PlaceholderExpansion {
 
         // Handle apartment-specific and statistic placeholders
         String[] parts = params.split("_");
-        if (parts.length < 2) return "";
+        if (parts.length < 2)
+            return "";
 
         // New Statistic Placeholders: %apartmentcore_statistic_<id>_<name>%
         if (parts[0].equalsIgnoreCase("statistic")) {
-            if (parts.length < 3) return "Invalid Stat Placeholder";
+            if (parts.length < 3)
+                return "Invalid Stat Placeholder";
             String aptId = parts[1];
             String statName = String.join("_", Arrays.copyOfRange(parts, 2, parts.length));
             Apartment apt = apartmentManager.getApartment(aptId);
-            if (apt == null) return "N/A";
+            if (apt == null)
+                return "N/A";
 
             ApartmentStats stats = apartmentManager.getStats(aptId);
-            if (stats == null) return "0"; // Default to 0 if no stats
+            if (stats == null)
+                return "0"; // Default to 0 if no stats
 
             return switch (statName) {
                 case "total_tax_paid" -> configManager.formatMoney(stats.totalTaxPaid);
@@ -116,9 +124,9 @@ public class ApartmentPlaceholder extends PlaceholderExpansion {
         String apartmentId = parts[0];
         String infoType = String.join("_", Arrays.copyOfRange(parts, 1, parts.length));
 
-
         Apartment apt = apartmentManager.getApartment(apartmentId);
-        if (apt == null) return "N/A";
+        if (apt == null)
+            return "N/A";
 
         // Handle shop buff placeholders
         if (infoType.startsWith("shop_")) {
@@ -135,39 +143,49 @@ public class ApartmentPlaceholder extends PlaceholderExpansion {
             case "status" -> apt.inactive ? "Inactive" : "Active";
             case "rating" -> {
                 ApartmentRating rating = apartmentManager.getRating(apartmentId);
-                yield rating != null && rating.ratingCount > 0 ?
-                        String.format("%.1f", rating.getAverageRating()) : "N/A";
+                yield rating != null && rating.ratingCount > 0 ? String.format("%.1f", rating.getAverageRating())
+                        : "N/A";
             }
             case "welcome" -> apt.welcomeMessage;
-            case "next_invoice_in" -> { // Replaces tax_due_in for better accuracy
-                if (apt.owner == null) yield "N/A";
+            case "next_invoice_in" -> { // Time until the next tax invoice is generated
+                if (apt.owner == null)
+                    yield "N/A";
                 long now = System.currentTimeMillis();
-                // Time until the next 24-hour cycle for a new bill
-                long nextInvoiceInMs = Math.max(0L, (apt.lastInvoiceAt == 0L ? 0L : (apt.lastInvoiceAt + 86_400_000L) - now));
+                // Use configurable tax interval (ticks * 50 = ms)
+                long taxIntervalMs = Math.max(1000L, configManager.getTaxGenerationInterval() * 50L);
+                long nextInvoiceInMs = Math.max(0L,
+                        (apt.lastInvoiceAt == 0L ? 0L : (apt.lastInvoiceAt + taxIntervalMs) - now));
                 yield formatTime(nextInvoiceInMs);
             }
             case "tax_status" -> {
-                if (apt.owner == null) yield "For Sale";
+                if (apt.owner == null)
+                    yield "For Sale";
                 TaxStatus status = apt.computeTaxStatus(System.currentTimeMillis());
                 yield status.name();
             }
             case "income_in" -> {
-                if (apt.owner == null || apt.inactive) yield "N/A";
-                long nextIncomeMillis = plugin.getLastIncomeGenerationTime() + 50000;
+                if (apt.owner == null || apt.inactive)
+                    yield "N/A";
+                // Use configurable income interval (ticks * 50 = ms)
+                long incomeIntervalMs = Math.max(1000L, configManager.getIncomeGenerationInterval() * 50L);
+                long lastGen = plugin.getLastIncomeGenerationTime();
+                long nextIncomeMillis = lastGen <= 0 ? System.currentTimeMillis() + incomeIntervalMs
+                        : lastGen + incomeIntervalMs;
                 long incomeTimeRemaining = nextIncomeMillis - System.currentTimeMillis();
                 yield incomeTimeRemaining > 0 ? formatTime(incomeTimeRemaining) : "Now";
             }
             default -> "Invalid Placeholder";
         };
     }
-    
+
     /**
-     * Refresh placeholders cache/heartbeat (currently no caching; acts as a heartbeat).
+     * Refresh placeholders cache/heartbeat (currently no caching; acts as a
+     * heartbeat).
      */
     public void refresh() {
         lastRefreshAt = System.currentTimeMillis();
     }
-    
+
     /**
      * Handle shop-related placeholders
      * Patterns:
@@ -177,20 +195,21 @@ public class ApartmentPlaceholder extends PlaceholderExpansion {
      * - shop_tax_reduction: Total tax reduction percentage
      * - shop_income_speed: Total income speed bonus (tick reduction)
      * - shop_max_messages: Total max messages bonus
-     * - shop_<item>_tier: Tier of specific shop item (premium_kitchen, luxury_furniture, etc.)
+     * - shop_<item>_tier: Tier of specific shop item (premium_kitchen,
+     * luxury_furniture, etc.)
      * - shop_<item>_value: Buff value of specific shop item
      */
     private String handleShopPlaceholder(Apartment apt, String infoType) {
         if (plugin.getShopManager() == null) {
             return "0";
         }
-        
+
         var shopManager = plugin.getShopManager();
         var shopData = shopManager.getShopData(apt.id);
-        
+
         // Remove "shop_" prefix
         String shopParam = infoType.substring(5);
-        
+
         return switch (shopParam) {
             case "total_investment" -> configManager.formatMoney(shopData.getTotalMoneySpent());
             case "income_bonus" -> String.format("%.1f", shopManager.getIncomeBonusPercentage(apt.id));
@@ -198,23 +217,33 @@ public class ApartmentPlaceholder extends PlaceholderExpansion {
             case "tax_reduction" -> String.format("%.1f", shopManager.getTaxReductionPercentage(apt.id));
             case "income_speed" -> String.format("%.0f", shopManager.getIncomeSpeedBonus(apt.id));
             case "max_messages" -> String.valueOf(shopManager.getMaxMessagesBonus(apt.id));
-            
+
             // Specific item placeholders
-            case "premium_kitchen_tier" -> String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.PREMIUM_KITCHEN));
-            case "premium_kitchen_value" -> String.format("%.1f%%", shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.PREMIUM_KITCHEN));
-            
-            case "luxury_furniture_tier" -> String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.LUXURY_FURNITURE));
-            case "luxury_furniture_value" -> configManager.formatMoney(shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.LUXURY_FURNITURE));
-            
-            case "solar_panel_tier" -> String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.SOLAR_PANEL_SYSTEM));
-            case "solar_panel_value" -> String.format("%.1f%%", shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.SOLAR_PANEL_SYSTEM));
-            
-            case "high_speed_internet_tier" -> String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.HIGH_SPEED_INTERNET));
-            case "high_speed_internet_value" -> String.format("%.0f", shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.HIGH_SPEED_INTERNET));
-            
-            case "extra_living_room_tier" -> String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.EXTRA_LIVING_ROOM));
-            case "extra_living_room_value" -> String.format("%.0f", shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.EXTRA_LIVING_ROOM));
-            
+            case "premium_kitchen_tier" ->
+                String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.PREMIUM_KITCHEN));
+            case "premium_kitchen_value" ->
+                String.format("%.1f%%", shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.PREMIUM_KITCHEN));
+
+            case "luxury_furniture_tier" ->
+                String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.LUXURY_FURNITURE));
+            case "luxury_furniture_value" -> configManager
+                    .formatMoney(shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.LUXURY_FURNITURE));
+
+            case "solar_panel_tier" ->
+                String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.SOLAR_PANEL_SYSTEM));
+            case "solar_panel_value" -> String.format("%.1f%%",
+                    shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.SOLAR_PANEL_SYSTEM));
+
+            case "high_speed_internet_tier" ->
+                String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.HIGH_SPEED_INTERNET));
+            case "high_speed_internet_value" -> String.format("%.0f",
+                    shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.HIGH_SPEED_INTERNET));
+
+            case "extra_living_room_tier" ->
+                String.valueOf(shopData.getTier(com.aithor.apartmentcore.shop.ShopItem.EXTRA_LIVING_ROOM));
+            case "extra_living_room_value" ->
+                String.format("%.0f", shopData.getBuffValue(com.aithor.apartmentcore.shop.ShopItem.EXTRA_LIVING_ROOM));
+
             default -> "0";
         };
     }

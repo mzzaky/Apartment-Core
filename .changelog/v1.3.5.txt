@@ -1,0 +1,65 @@
+v1.3.5 - Achievement Visual Effects & Configurable Tax
+====================================================
+Date: 2026-02-28
+
+[Added]
+- Added `Vault Expansion` shop item to `shop.yml` which increases the apartment's maximum income capacity by a percentage (2.5% per tier).
+  * Implemented `INCOME_CAPACITY` enum in `ShopBuffType.java` to handle capacity percentage buffs.
+  * Added `VAULT_EXPANSION` to `ShopItem.java` using the `ENDER_CHEST` material icon.
+  * Updated `ApartmentShopManager` and `ApartmentManager` to calculate and apply the new capacity buff to apartment income generation.
+  * Updated `ApartmentShopGUI` to display the new `Vault Expansion` shop item and its active buffs.
+  * Updated `ApartmentStatisticsGUI` to show the active capacity buff multiplier applied from the shop on the "Final Math" and "Other Stats" panels.
+- Achievement unlock now triggers 4 distinct effects:
+  * Sound effect (configurable Bukkit sound, volume & pitch)
+  * Title message (configurable header, subheader, fade timings)
+  * Action bar / toast message (configurable format string)
+  * Animated BossBar that drains over a set duration (configurable color, style, duration)
+- Added detailed unlock timestamp (date and time with seconds) to the Achievement GUI lore for completed achievements.
+- Added multi-reward system for achievements. Rewards now support multiple entries per achievement with 3 types:
+  * `[money] <amount>`     - Give money via economy
+  * `[exp] <amount>`       - Give experience points
+  * `[console] <command>`  - Execute a console command (%player% placeholder supported)
+  Backward compatible: old single `reward: <number>` config still works.
+- **Configurable GUI Lore:** The layout and formatting of achievement items in the GUI are now fully customizable via `achievements.yml`.
+  * Define global defaults under `achievements.format`.
+  * Override defaults on a per-achievement basis under `definitions.<achievement>.format`.
+  * Includes support for completed, in-progress, and disabled states, plus dynamic placeholders like `{progress_bar}`, `{percentage}`, and `{completed_date}`.
+
+[Changed]
+- **Comprehensive Apartment Statistics GUI:**
+  Completely overhauled the `Apartment Statistics` menu layout to provide deeper insights into the apartment economy.
+  * Transformed from a functional menu with action buttons into a detailed, multi-panel statistics overview (expanded to a 54-slot inventory).
+  * **Base Stats Panel:** Displays raw apartment attributes from the level config (min/max income, base capacity, tax rate).
+  * **Shop Buffs Panel:** Shows all applied shop upgrades (Tiers 1-5) and their cumulative effects on income, tax, and guestbook space.
+  * **Research Buffs Panel:** Lists active player-wide research buffs (e.g., Capital Growth, Tax Efficiency) and their current tier bonuses.
+  * **Final Math Panel:** Provides a step-by-step mathematical breakdown of how final income per cycle, income capacity, and tax are calculated by sequentially stacking all buffs (Flat -> Shop% -> CapitalGrowth%).
+  * **Other Stats Panel:** Summarizes lifetime earnings, total tax paid, pending income (with % of capacity), and active invoices/status.
+  * Action buttons (Claim Income, Tax Mgmt, Auto-Pay toggle) have been removed from this view to centralize apartment management inside the `Apartment Details` menu.
+- **Tax System Configurable Percentage:** 
+  The required base tax amount (previously hardcoded at 2.5% of apartment price per level) is now fully configurable under the `apartment-levels` section in `config.yml`.
+  * Each level now accepts a `tax-percentage` value (e.g., `2.5` for Level 1, `5.0` for Level 2). This percentage determines the base invoice amount before any other multipliers (like late fees, shop buffs, or research effects).
+
+[Fixed]
+- Fixed a bug where the tax generation timer would reset without generating a new tax bill after a server restart. The `last-minecraft-day` value is now properly loaded from storage.
+- Fixed a bug causing the income generation timer in the GUI to incorrectly display "Soon..." right after server startup. The timer will now correctly display the full interval countdown.
+- Corrected the tax countdown timer display in the GUI to use real-world time instead of Minecraft ticks, keeping it consistent with the actual tax invoice generation logic.
+- Completely overhauled TaskManager scheduling for Income and Tax events to use true real-time epoch tracking instead of simple Bukkit task delays. This guarantees timers are 100% accurate, synchronizes flawlessly with MyApartmentsGUI, and ensures backdated tasks are caught up properly if the server is offline.
+- Removed redundant tax evaluation executions in `processDailyUpdates` to prevent double-charging invoices.
+- MyApartmentsGUI "Next Income In" lore is now tax-status aware. It will display a clear warning (OVERDUE, INACTIVE, REPOSSESSION) instead of a countdown if income is blocked due to unpaid taxes, and will hide unrelated research buffs.
+- Implemented the missing "High Speed Internet" shop buff functionality. It now correctly amplifies income amounts sequentially to mathematically compensate for tick interval reductions, maintaining server performance without breaking the global timer logic.
+- Fixed an issue where `buff_values` and `costs` for Shop Items (including "High Speed Internet") were hardcoded in the plugin enum. They are now fully dynamic and read in real-time from `shop.yml`.
+- Fixed a similar issue in the Research system where `effect-per-tier`, `effect-per-tier-fee`, and `effect-per-tier-commission` math logic was statically hardcoded. Value multipliers are now strictly parsed directly from `research.yml` to allow endless configurability.
+
+[Configuration]
+- New section `achievements.effects` in achievements.yml:
+  * `sound`      - toggle, sound name, volume, pitch
+  * `title`      - toggle, header, subheader, fade-in, stay, fade-out (all in ticks)
+  * `action-bar` - toggle, format string (supports {achievement} placeholder)
+  * `bossbar`    - toggle, title, color, style, duration-ticks
+- New field `tax-percentage` in config.yml under each apartment level setting.
+- All effects support `enabled: false` to individually disable them.
+- Plugin logs a warning if an invalid sound or bossbar color/style name is configured.
+
+[Technical]
+- `AchievementManager` now reads and caches all effect config fields on load/reload.
+- Models updated to use the dynamic `taxPercentage` value from `LevelConfig` instead of the hardcoded multiplier.

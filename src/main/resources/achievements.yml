@@ -1,5 +1,6 @@
 # ============================================
 # ApartmentCore - Achievements Configuration
+# Version: 1.3.5
 # ============================================
 # This file controls the Achievement system.
 # Each achievement has configurable targets, rewards, and display settings.
@@ -8,13 +9,102 @@
 achievements:
   enabled: true
 
+  # -------------------------------------------------------
+  # Effect Settings - customise every visual/audio effect
+  # that triggers when a player unlocks an achievement.
+  # -------------------------------------------------------
+  effects:
+
+    # Sound played on achievement unlock
+    sound:
+      enabled: true
+      # Any Bukkit Sound enum name (see: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html)
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+      volume: 1.0
+      pitch: 1.0
+
+    # Title + subtitle shown on screen
+    title:
+      enabled: true
+      # Supports & colour codes
+      header: "&6&lAchievement Unlocked!"
+      # {achievement} is replaced with the achievement name
+      subheader: "&e{achievement}"
+      fade-in: 10    # ticks
+      stay: 70       # ticks
+      fade-out: 20   # ticks
+
+    # Action-bar (toast) message shown above the hotbar
+    action-bar:
+      enabled: true
+      # {achievement} is replaced with the achievement name
+      format: "&a✨ &e{achievement} &a✨"
+
+    bossbar:
+      enabled: true
+      # Title shown inside the bossbar. {achievement} is replaced with the achievement name
+      title: "&6&lAchievement Unlocked: &e{achievement}"
+      # Available colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+      color: "YELLOW"
+      # Available styles: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+      style: "SOLID"
+      # How many ticks until the bossbar disappears (20 ticks = 1 second)
+      # The bar drains linearly from full to empty over this duration
+      duration-ticks: 80
+
+  # -------------------------------------------------------
+  # GUI Lore Formats - customise the layout of the GUI items
+  # -------------------------------------------------------
+  format:
+    disabled:
+      - "&7{description}"
+      - ""
+      - "&c&lDISABLED"
+    completed:
+      - "&7{description}"
+      - ""
+      - "&a&lCOMPLETED"
+      - ""
+      - "&eProgress: &a{progress_formatted} &7/ &f{target_formatted}"
+      - "&7{progress_bar} &a100%"
+      - ""
+      - "&7Unlocked: &f{completed_date}"
+      - ""
+      - "&6Rewards: &7(Claimed)"
+      - "{rewards}"
+    in-progress:
+      - "&7{description}"
+      - ""
+      - "&eProgress: &f{progress_formatted} &7/ &f{target_formatted}"
+      - "&7{progress_bar} &f{percentage}%"
+      - ""
+      - "&7Remaining: &c{remaining_formatted}"
+      - ""
+      - "&6Rewards:"
+      - "{rewards}"
+      
+    # Represents the layout and formatting of individual rewards inserted to {rewards} placeholder
+    reward-money: "&6  💰 {amount}"
+    reward-exp: "&b  ✨ {amount} EXP"
+    reward-console: "&d  🎁 Special Reward"
+
+
 # Achievement definitions
 # Each achievement tracks a specific player milestone.
-# - enabled: Whether this achievement is active
-# - target: The numeric goal the player must reach
-# - icon: The Minecraft material used as the GUI icon
-# - reward: Money rewarded upon completion (0 = no reward)
-# - broadcast: Whether to announce completion to all online players
+# - enabled:    Whether this achievement is active
+# - target:     The numeric goal the player must reach
+# - icon:       The Minecraft material used as the GUI icon
+# - broadcast:  Whether to announce completion to all online players
+# - rewards:    List of rewards granted upon completion.
+#               Supported types:
+#                 [money] <amount>    - Deposit money via Vault economy
+#                 [exp] <amount>      - Give experience points
+#                 [console] <command> - Run a console command (%player% is replaced with the player name)
+#               Example:
+#                 rewards:
+#                   - "[money] 5000"
+#                   - "[exp] 1000"
+#                   - "[console] give %player% diamond 10"
 
 definitions:
   income_millionaire:
@@ -23,8 +113,23 @@ definitions:
     description: "Accumulate $1,000,000 in total apartment income"
     icon: GOLD_BLOCK
     target: 1000000
-    reward: 50000
     broadcast: true
+    rewards:
+      - "[money] 50000"
+      - "[exp] 1000"
+      - "[console] give %player% gold_ingot 32"
+    # Overrides the global format for just this achievement
+    format:
+      in-progress:
+        - "&7Get rich or die tryin'!"
+        - ""
+        - "&eMoolah: &f{progress_formatted} &7/ &f{target_formatted}"
+        - "&7{progress_bar} &f{percentage}%"
+        - ""
+        - "&cNeed {remaining_formatted} more..."
+        - ""
+        - "&6If you complete this, you get:"
+        - "{rewards}"
 
   tax_contributor:
     enabled: true
@@ -32,8 +137,34 @@ definitions:
     description: "Pay a total of $1,000,000 in apartment taxes"
     icon: EMERALD_BLOCK
     target: 1000000
-    reward: 50000
     broadcast: true
+    rewards:
+      - "[money] 50000"
+      - "[exp] 1000"
+      - "[console] give %player% emerald 32"
+    format:
+      in-progress:
+        - "&7Support the city!"
+        - ""
+        - "&aTaxes Paid: &f{progress_formatted} &7/ &f{target_formatted}"
+        - "&7{progress_bar} &f{percentage}%"
+        - ""
+        - "&cJust {remaining_formatted} to go."
+        - ""
+        - "&6Milestone Rewards:"
+        - "{rewards}"
+      completed:
+        - "&7Support the city!"
+        - ""
+        - "&a&lCITIZEN OF THE YEAR"
+        - ""
+        - "&eTaxes Paid: &a{progress_formatted} &7/ &f{target_formatted}"
+        - "&7{progress_bar} &a100%"
+        - ""
+        - "&7Awarded on: &f{completed_date}"
+        - ""
+        - "&6Rewards: &7(Claimed)"
+        - "{rewards}"
 
   sales_tycoon:
     enabled: true
@@ -41,8 +172,22 @@ definitions:
     description: "Earn $1,000,000 from apartment sales"
     icon: DIAMOND_BLOCK
     target: 1000000
-    reward: 50000
     broadcast: true
+    rewards:
+      - "[money] 50000"
+      - "[exp] 1000"
+      - "[console] give %player% diamond 10"
+    format:
+      in-progress:
+        - "&7Sell high, buy low!"
+        - ""
+        - "&bSales: &f{progress_formatted} &7/ &f{target_formatted}"
+        - "&7{progress_bar} &f{percentage}%"
+        - ""
+        - "&6Sell &c{remaining_formatted} &6more to become a Tycoon!"
+        - ""
+        - "&6Tycoon Rewards:"
+        - "{rewards}"
 
   research_master:
     enabled: true
@@ -50,8 +195,22 @@ definitions:
     description: "Complete any research to its maximum tier"
     icon: ENCHANTING_TABLE
     target: 1
-    reward: 50000
     broadcast: true
+    rewards:
+      - "[money] 50000"
+      - "[exp] 2000"
+      - "[console] give %player% experience_bottle 16"
+    format:
+      in-progress:
+        - "&7Knowledge is power."
+        - ""
+        - "&dResearch Tier: &f{progress_formatted} &7/ &f{target_formatted}"
+        - "&7{progress_bar} &f{percentage}%"
+        - ""
+        - "&cMax out a research to unlock:"
+        - ""
+        - "&6Rewards:"
+        - "{rewards}"
 
   max_level_owner:
     enabled: true
@@ -59,5 +218,19 @@ definitions:
     description: "Own an apartment at the maximum level"
     icon: BEACON
     target: 1
-    reward: 50000
     broadcast: true
+    rewards:
+      - "[money] 50000"
+      - "[exp] 2000"
+      - "[console] give %player% beacon 1"
+    format:
+      in-progress:
+        - "&7Reach the absolute peak!"
+        - ""
+        - "&bMax Level Owned: &f{progress_formatted} &7/ &f{target_formatted}"
+        - "&7{progress_bar} &f{percentage}%"
+        - ""
+        - "&cUpgrade an apartment to max level!"
+        - ""
+        - "&6Peak Rewards:"
+        - "{rewards}"

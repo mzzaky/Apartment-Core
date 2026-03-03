@@ -49,6 +49,9 @@ public class ResearchManager {
     private final Map<ResearchType, Double> costMultiplier = new ConcurrentHashMap<>();
     private final Map<ResearchType, Long> durationBase = new ConcurrentHashMap<>();
     private final Map<ResearchType, Double> durationMultiplier = new ConcurrentHashMap<>();
+    private final Map<ResearchType, Double> effectPerTier = new ConcurrentHashMap<>();
+    private final Map<ResearchType, Double> effectPerTierFee = new ConcurrentHashMap<>();
+    private final Map<ResearchType, Double> effectPerTierCommission = new ConcurrentHashMap<>();
 
     private boolean enabled;
 
@@ -99,6 +102,16 @@ public class ResearchManager {
                         costMultiplier.put(type, sec.getDouble("cost-multiplier", 3.0));
                         durationBase.put(type, (long) sec.getDouble("duration-base", 3600));
                         durationMultiplier.put(type, sec.getDouble("duration-multiplier", 2.5));
+                        if (sec.contains("effect-per-tier")) {
+                            effectPerTier.put(type, sec.getDouble("effect-per-tier"));
+                        } else {
+                            // Defaults if missing or logic matches exactly
+                            effectPerTier.put(type, type == ResearchType.EXPANSION_PLAN ? 1.0 : 5.0);
+                        }
+                        if (sec.contains("effect-per-tier-fee"))
+                            effectPerTierFee.put(type, sec.getDouble("effect-per-tier-fee", 5.0));
+                        if (sec.contains("effect-per-tier-commission"))
+                            effectPerTierCommission.put(type, sec.getDouble("effect-per-tier-commission", 1.0));
                     }
                 }
             }
@@ -244,7 +257,8 @@ public class ResearchManager {
         if (plugin.getAchievementManager() != null) {
             int maxedCount = 0;
             for (ResearchType rt : ResearchType.values()) {
-                if (data.isMaxTier(rt)) maxedCount++;
+                if (data.isMaxTier(rt))
+                    maxedCount++;
             }
             if (maxedCount > 0) {
                 plugin.getAchievementManager().setProgress(playerId,
@@ -268,7 +282,8 @@ public class ResearchManager {
         PlayerResearchData data = playerData.get(playerId);
         if (data == null)
             return 0.0;
-        return data.getCompletedTier(ResearchType.REVENUE_ACCELERATION) * 5.0;
+        return data.getCompletedTier(ResearchType.REVENUE_ACCELERATION)
+                * effectPerTier.getOrDefault(ResearchType.REVENUE_ACCELERATION, 5.0);
     }
 
     /**
@@ -279,7 +294,8 @@ public class ResearchManager {
         PlayerResearchData data = playerData.get(playerId);
         if (data == null)
             return 0.0;
-        return data.getCompletedTier(ResearchType.CAPITAL_GROWTH) * 5.0;
+        return data.getCompletedTier(ResearchType.CAPITAL_GROWTH)
+                * effectPerTier.getOrDefault(ResearchType.CAPITAL_GROWTH, 5.0);
     }
 
     /**
@@ -290,7 +306,8 @@ public class ResearchManager {
         PlayerResearchData data = playerData.get(playerId);
         if (data == null)
             return 0.0;
-        return data.getCompletedTier(ResearchType.TAX_EFFICIENCY) * 5.0;
+        return data.getCompletedTier(ResearchType.TAX_EFFICIENCY)
+                * effectPerTier.getOrDefault(ResearchType.TAX_EFFICIENCY, 5.0);
     }
 
     /**
@@ -301,7 +318,8 @@ public class ResearchManager {
         PlayerResearchData data = playerData.get(playerId);
         if (data == null)
             return 0;
-        return data.getCompletedTier(ResearchType.EXPANSION_PLAN);
+        return (int) (data.getCompletedTier(ResearchType.EXPANSION_PLAN)
+                * effectPerTier.getOrDefault(ResearchType.EXPANSION_PLAN, 1.0));
     }
 
     /**
@@ -312,7 +330,8 @@ public class ResearchManager {
         PlayerResearchData data = playerData.get(playerId);
         if (data == null)
             return 0.0;
-        return data.getCompletedTier(ResearchType.CAPACITY_EXPANSION) * 5.0;
+        return data.getCompletedTier(ResearchType.CAPACITY_EXPANSION)
+                * effectPerTier.getOrDefault(ResearchType.CAPACITY_EXPANSION, 5.0);
     }
 
     /**
@@ -323,7 +342,8 @@ public class ResearchManager {
         PlayerResearchData data = playerData.get(playerId);
         if (data == null)
             return 0.0;
-        return data.getCompletedTier(ResearchType.AUCTION_EFFICIENCY) * 5.0;
+        return data.getCompletedTier(ResearchType.AUCTION_EFFICIENCY)
+                * effectPerTierFee.getOrDefault(ResearchType.AUCTION_EFFICIENCY, 5.0);
     }
 
     /**
@@ -335,7 +355,8 @@ public class ResearchManager {
         PlayerResearchData data = playerData.get(playerId);
         if (data == null)
             return 0.0;
-        return data.getCompletedTier(ResearchType.AUCTION_EFFICIENCY) * 1.0;
+        return data.getCompletedTier(ResearchType.AUCTION_EFFICIENCY)
+                * effectPerTierCommission.getOrDefault(ResearchType.AUCTION_EFFICIENCY, 1.0);
     }
 
     // ===========================

@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -184,19 +183,31 @@ public class MyApartmentsGUI extends PaginatedGUI {
             }
         }
 
-        long intervalMs = plugin.getConfigManager().getIncomeGenerationInterval() * 50L;
-        long nextIncomeMs = plugin.getLastIncomeGenerationTime() + intervalMs;
-        long remainingMs = nextIncomeMs - now;
-        String nextIncomeDisplay = remainingMs > 0 ? GUIUtils.formatTime(remainingMs) : "Soon...";
+        long intervalMs = Math.max(1000L, plugin.getConfigManager().getIncomeGenerationInterval() * 50L);
+        long lastGen = plugin.getLastIncomeGenerationTime();
+        boolean canGenerateIncome = apartment.canGenerateIncome(now);
+        String nextIncomeDisplay;
+        if (!canGenerateIncome) {
+            // Income is blocked due to tax status — don't show a countdown
+            nextIncomeDisplay = null;
+        } else if (lastGen <= 0) {
+            // Task hasn't fired yet since startup — show full interval
+            nextIncomeDisplay = GUIUtils.formatTime(intervalMs);
+        } else {
+            long nextIncomeMs = lastGen + intervalMs;
+            long remainingMs = nextIncomeMs - now;
+            nextIncomeDisplay = remainingMs > 0 ? GUIUtils.formatTime(remainingMs) : "Soon...";
+        }
 
-        String nextTaxDisplay = "Unknown";
-        World mainWorld = plugin.getServer().getWorlds().isEmpty() ? null : plugin.getServer().getWorlds().get(0);
-        if (mainWorld != null) {
-            long ticksPerDay = Math.max(1, plugin.getConfigManager().getTaxGenerationInterval());
-            long currentTick = mainWorld.getFullTime();
-            long nextDayTick = ((currentTick / ticksPerDay) + 1) * ticksPerDay;
-            long remainingTicks = nextDayTick - currentTick;
-            long remainingTaxMs = remainingTicks * 50L;
+        // Tax countdown — use real-time milliseconds, consistent with tickTaxInvoices()
+        long taxIntervalMs = Math.max(1000L, plugin.getConfigManager().getTaxGenerationInterval() * 50L);
+        String nextTaxDisplay;
+        if (apartment.lastInvoiceAt <= 0) {
+            // No invoice issued yet — show full interval
+            nextTaxDisplay = GUIUtils.formatTime(taxIntervalMs);
+        } else {
+            long nextTaxMs = apartment.lastInvoiceAt + taxIntervalMs;
+            long remainingTaxMs = nextTaxMs - now;
             nextTaxDisplay = remainingTaxMs > 0 ? GUIUtils.formatTime(remainingTaxMs) : "Soon...";
         }
 
@@ -224,21 +235,41 @@ public class MyApartmentsGUI extends PaginatedGUI {
         lore.add("&e💰 Financial Info:");
         lore.add("&7• Pending Income: &a" + plugin.getConfigManager().formatMoney(apartment.pendingIncome) +
                 " &7/ &a" + plugin.getConfigManager().formatMoney(capacity));
-        String nextIncomeLine = "&7• Next Income In: &a" + nextIncomeDisplay;
-        if (capitalGrowthBonus > 0 || revenueAccelerationBonus > 0) {
-            nextIncomeLine += " &7(";
-            if (capitalGrowthBonus > 0) {
-                nextIncomeLine += "&a+" + String.format("%.0f%%", capitalGrowthBonus) + " &7CG";
+        if (!canGenerateIncome) {
+            // Income is blocked — show status-specific warning message
+            String blockedReason;
+            switch (taxStatus) {
+                case OVERDUE:
+                    blockedReason = "&c⚠ Income halted (taxes overdue)";
+                    break;
+                case INACTIVE:
+                    blockedReason = "&4✖ Income halted (apartment inactive)";
+                    break;
+                case REPOSSESSION:
+                    blockedReason = "&4💀 Income halted (repossession imminent)";
+                    break;
+                default:
+                    blockedReason = "&cIncome halted";
+                    break;
             }
-            if (capitalGrowthBonus > 0 && revenueAccelerationBonus > 0) {
-                nextIncomeLine += "&7, ";
+            lore.add("&7• Next Income In: " + blockedReason);
+        } else {
+            String nextIncomeLine = "&7• Next Income In: &a" + nextIncomeDisplay;
+            if (capitalGrowthBonus > 0 || revenueAccelerationBonus > 0) {
+                nextIncomeLine += " &7(";
+                if (capitalGrowthBonus > 0) {
+                    nextIncomeLine += "&a+" + String.format("%.0f%%", capitalGrowthBonus) + " &7CG";
+                }
+                if (capitalGrowthBonus > 0 && revenueAccelerationBonus > 0) {
+                    nextIncomeLine += "&7, ";
+                }
+                if (revenueAccelerationBonus > 0) {
+                    nextIncomeLine += "&a-" + String.format("%.0f%%", revenueAccelerationBonus) + " &7RA";
+                }
+                nextIncomeLine += "&7)";
             }
-            if (revenueAccelerationBonus > 0) {
-                nextIncomeLine += "&a-" + String.format("%.0f%%", revenueAccelerationBonus) + " &7RA";
-            }
-            nextIncomeLine += "&7)";
+            lore.add(nextIncomeLine);
         }
-        lore.add(nextIncomeLine);
         lore.add("&7• Next Tax In: &c" + nextTaxDisplay);
         lore.add("&7• Outstanding Taxes: &c" + plugin.getConfigManager().formatMoney(totalUnpaid));
         lore.add("&7• Auto-pay: " + (apartment.autoTaxPayment ? "&aEnabled" : "&cDisabled"));

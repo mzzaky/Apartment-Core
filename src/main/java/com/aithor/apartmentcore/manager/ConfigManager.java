@@ -140,7 +140,8 @@ public class ConfigManager {
                             levelSection.getDouble("max-income"),
                             levelSection.getDouble("upgrade-cost"),
                             levelSection.getDouble("income-capacity", level * 10000.0),
-                            levelSection.getLong("upgrade-duration", 0L)));
+                            levelSection.getLong("upgrade-duration", 0L),
+                            levelSection.getDouble("tax-percentage", level * 2.5)));
                 }
             }
         }

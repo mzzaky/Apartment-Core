@@ -96,7 +96,8 @@ public class AchievementGUI implements GUI {
 
     private void addSummary() {
         AchievementManager am = plugin.getAchievementManager();
-        if (am == null) return;
+        if (am == null)
+            return;
 
         PlayerAchievementData data = am.getPlayerData(player.getUniqueId());
         int completed = data.getCompletedCount();
@@ -123,7 +124,8 @@ public class AchievementGUI implements GUI {
 
     private void addAchievementItem(AchievementType type, int slot) {
         AchievementManager am = plugin.getAchievementManager();
-        if (am == null) return;
+        if (am == null)
+            return;
 
         PlayerAchievementData data = am.getPlayerData(player.getUniqueId());
         boolean isCompleted = data.isCompleted(type);
@@ -133,7 +135,6 @@ public class AchievementGUI implements GUI {
         String description = am.getAchievementDescription(type);
         double target = am.getAchievementTarget(type);
         double progress = data.getProgress(type);
-        double reward = am.getAchievementReward(type);
         Material icon = am.getAchievementIcon(type);
 
         // Compute real-time progress from live data
@@ -142,39 +143,74 @@ public class AchievementGUI implements GUI {
             progress = liveProgress;
         }
 
+        // Build reward lore lines (shared between completed & in-progress)
+        List<String> rewardLore = new ArrayList<>();
+        for (String entry : am.getAchievementRewards(type)) {
+            String trimmed = entry.trim();
+            try {
+                if (trimmed.toLowerCase().startsWith("[money]")) {
+                    double amount = Double.parseDouble(trimmed.substring(7).trim());
+                    rewardLore.add(am.getFormatRewardMoney().replace("{amount}",
+                            plugin.getConfigManager().formatMoney(amount)));
+                } else if (trimmed.toLowerCase().startsWith("[exp]")) {
+                    int exp = Integer.parseInt(trimmed.substring(5).trim());
+                    rewardLore.add(am.getFormatRewardExp().replace("{amount}", String.valueOf(exp)));
+                } else if (trimmed.toLowerCase().startsWith("[console]")) {
+                    rewardLore.add(am.getFormatRewardConsole());
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        List<String> formatList;
+        if (!isEnabled) {
+            formatList = am.getFormatDisabled(type);
+        } else if (isCompleted) {
+            formatList = am.getFormatCompleted(type);
+        } else {
+            formatList = am.getFormatInProgress(type);
+        }
+
         List<String> lore = new ArrayList<>();
-        lore.add("&7" + description);
-        lore.add("");
+        double pct = target > 0 ? Math.min(1.0, progress / target) : 0;
+        String progressBar = GUIUtils.createProgressBar(isCompleted ? 1 : progress, isCompleted ? 1 : target, 20);
+
+        String completedDate = "Unknown";
+        if (isCompleted && data.getCompletedAt(type) > 0) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm:ss");
+            completedDate = sdf.format(new Date(data.getCompletedAt(type)));
+        }
+
+        for (String line : formatList) {
+            if (line.contains("{rewards}")) {
+                if (!rewardLore.isEmpty()) {
+                    lore.addAll(rewardLore);
+                }
+                continue;
+            }
+
+            line = line.replace("{description}", description)
+                    .replace("{progress_formatted}", formatProgressValue(type, isCompleted ? target : progress))
+                    .replace("{target_formatted}", formatProgressValue(type, target))
+                    .replace("{progress_bar}", progressBar)
+                    .replace("{percentage}", String.format("%.1f", pct * 100))
+                    .replace("{remaining_formatted}", formatProgressValue(type, Math.max(0, target - progress)))
+                    .replace("{completed_date}", completedDate);
+
+            lore.add(ChatColor.translateAlternateColorCodes('&', line));
+        }
 
         if (!isEnabled) {
-            // Disabled achievement
             Material disabledIcon = Material.BARRIER;
             ItemStack item = new ItemBuilder(disabledIcon)
                     .name("&c" + name)
-                    .lore("&7" + description, "", "&c&lDISABLED")
+                    .lore(lore)
                     .build();
             inventory.setItem(slot, item);
             return;
         }
 
         if (isCompleted) {
-            lore.add("&a&lCOMPLETED");
-            lore.add("");
-            lore.add("&eProgress: &a" + formatProgressValue(type, target) + " &7/ &f" + formatProgressValue(type, target));
-            String progressBar = GUIUtils.createProgressBar(1, 1, 20);
-            lore.add("&7" + progressBar + " &a100%");
-
-            if (data.getCompletedAt(type) > 0) {
-                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
-                lore.add("");
-                lore.add("&7Completed: &f" + sdf.format(new Date(data.getCompletedAt(type))));
-            }
-
-            if (reward > 0) {
-                lore.add("");
-                lore.add("&6Reward: &a" + plugin.getConfigManager().formatMoney(reward) + " &7(Claimed)");
-            }
-
             ItemStack item = new ItemBuilder(icon)
                     .name("&a&l" + name)
                     .lore(lore)
@@ -182,26 +218,13 @@ public class AchievementGUI implements GUI {
                     .build();
             inventory.setItem(slot, item);
         } else {
-            // In progress
-            lore.add("&eProgress: &f" + formatProgressValue(type, progress) + " &7/ &f" + formatProgressValue(type, target));
-
-            double pct = target > 0 ? Math.min(1.0, progress / target) : 0;
-            String progressBar = GUIUtils.createProgressBar(progress, target, 20);
-            lore.add("&7" + progressBar + " &f" + String.format("%.1f%%", pct * 100));
-
-            double remaining = Math.max(0, target - progress);
-            lore.add("");
-            lore.add("&7Remaining: &c" + formatProgressValue(type, remaining));
-
-            if (reward > 0) {
-                lore.add("");
-                lore.add("&6Reward: &e" + plugin.getConfigManager().formatMoney(reward));
-            }
-
             Material progressIcon = Material.GRAY_DYE;
-            if (pct >= 0.75) progressIcon = Material.LIME_DYE;
-            else if (pct >= 0.50) progressIcon = Material.YELLOW_DYE;
-            else if (pct >= 0.25) progressIcon = Material.ORANGE_DYE;
+            if (pct >= 0.75)
+                progressIcon = Material.LIME_DYE;
+            else if (pct >= 0.50)
+                progressIcon = Material.YELLOW_DYE;
+            else if (pct >= 0.25)
+                progressIcon = Material.ORANGE_DYE;
 
             ItemStack item = new ItemBuilder(progressIcon)
                     .name("&e" + name)
@@ -220,24 +243,31 @@ public class AchievementGUI implements GUI {
         switch (type) {
             case INCOME_MILLIONAIRE: {
                 double total = 0;
-                for (com.aithor.apartmentcore.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
-                    if (!uuid.equals(a.owner)) continue;
+                for (com.aithor.apartmentcore.model.Apartment a : plugin.getApartmentManager().getApartments()
+                        .values()) {
+                    if (!uuid.equals(a.owner))
+                        continue;
                     var st = plugin.getApartmentManager().getStats(a.id);
-                    if (st != null) total += st.totalIncomeGenerated;
+                    if (st != null)
+                        total += st.totalIncomeGenerated;
                 }
                 return total;
             }
             case TAX_CONTRIBUTOR: {
                 double total = 0;
-                for (com.aithor.apartmentcore.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
-                    if (!uuid.equals(a.owner)) continue;
+                for (com.aithor.apartmentcore.model.Apartment a : plugin.getApartmentManager().getApartments()
+                        .values()) {
+                    if (!uuid.equals(a.owner))
+                        continue;
                     var st = plugin.getApartmentManager().getStats(a.id);
-                    if (st != null) total += st.totalTaxPaid;
+                    if (st != null)
+                        total += st.totalTaxPaid;
                 }
                 return total;
             }
             case SALES_TYCOON: {
-                // Sales progress is tracked in achievement data only (cumulative from sell events)
+                // Sales progress is tracked in achievement data only (cumulative from sell
+                // events)
                 AchievementManager am = plugin.getAchievementManager();
                 if (am != null) {
                     return am.getPlayerData(uuid).getProgress(AchievementType.SALES_TYCOON);
@@ -245,11 +275,15 @@ public class AchievementGUI implements GUI {
                 return 0;
             }
             case RESEARCH_MASTER: {
-                if (plugin.getResearchManager() == null) return 0;
-                com.aithor.apartmentcore.research.PlayerResearchData rd = plugin.getResearchManager().getPlayerData(uuid);
+                if (plugin.getResearchManager() == null)
+                    return 0;
+                com.aithor.apartmentcore.research.PlayerResearchData rd = plugin.getResearchManager()
+                        .getPlayerData(uuid);
                 int maxedCount = 0;
-                for (com.aithor.apartmentcore.research.ResearchType rt : com.aithor.apartmentcore.research.ResearchType.values()) {
-                    if (rd.isMaxTier(rt)) maxedCount++;
+                for (com.aithor.apartmentcore.research.ResearchType rt : com.aithor.apartmentcore.research.ResearchType
+                        .values()) {
+                    if (rd.isMaxTier(rt))
+                        maxedCount++;
                 }
                 return maxedCount;
             }
@@ -257,7 +291,8 @@ public class AchievementGUI implements GUI {
                 int maxLevelCount = 0;
                 int maxLevel = plugin.getConfigManager().getLevelConfigs().keySet().stream()
                         .mapToInt(Integer::intValue).max().orElse(5);
-                for (com.aithor.apartmentcore.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
+                for (com.aithor.apartmentcore.model.Apartment a : plugin.getApartmentManager().getApartments()
+                        .values()) {
                     if (uuid.equals(a.owner) && a.level >= maxLevel) {
                         maxLevelCount++;
                     }

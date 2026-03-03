@@ -2,7 +2,6 @@ package com.aithor.apartmentcore.manager;
 
 import com.aithor.apartmentcore.ApartmentCore;
 
-import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -49,20 +48,36 @@ public class TaskManager {
             plugin.debug("Income generation disabled via features.income-generation");
             return;
         }
-        long period = Math.max(1L, configManager.getIncomeGenerationInterval()); // ticks
         BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
-                plugin.setLastIncomeGenerationTime(System.currentTimeMillis());
-                apartmentManager.generateIncome();
+                long intervalMs = Math.max(1000L, configManager.getIncomeGenerationInterval() * 50L);
+                long now = System.currentTimeMillis();
+                long lastGen = plugin.getLastIncomeGenerationTime();
+
+                if (lastGen <= 0) {
+                    plugin.setLastIncomeGenerationTime(now);
+                    return;
+                }
+
+                boolean changed = false;
+                while (now - plugin.getLastIncomeGenerationTime() >= intervalMs) {
+                    plugin.setLastIncomeGenerationTime(plugin.getLastIncomeGenerationTime() + intervalMs);
+                    apartmentManager.generateIncome();
+                    changed = true;
+                }
+
+                // If we generated income behind the scenes, we could save the timer here if
+                // needed
             }
         };
         if (configManager.isPerformanceUseAsync()) {
-            task.runTaskTimerAsynchronously(plugin, period, period);
-            plugin.debug("Income task scheduled ASYNC every " + period + " ticks");
+            // Check every 100 ticks (5 seconds)
+            task.runTaskTimerAsynchronously(plugin, 100L, 100L);
+            plugin.debug("Income task scheduled ASYNC (checking every 5s)");
         } else {
-            task.runTaskTimer(plugin, period, period);
-            plugin.debug("Income task scheduled SYNC every " + period + " ticks");
+            task.runTaskTimer(plugin, 100L, 100L);
+            plugin.debug("Income task scheduled SYNC (checking every 5s)");
         }
     }
 
@@ -71,34 +86,50 @@ public class TaskManager {
      * Respects:
      * - features.tax-system
      * - settings.tax-generation-interval
+     *
+     * Uses real-time milliseconds to track the tax cycle so that changes to
+     * income-generation-interval do NOT affect when taxes are processed.
      */
     private void startDailyUpdateTask() {
-        // Check every 100 ticks (5 seconds) for day changes
+        // Check every 600 ticks (30 seconds) whether a full tax interval has elapsed
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (!configManager.isFeatureTaxSystem()) {
                     return; // tax system disabled
                 }
-                World mainWorld = plugin.getServer().getWorlds().isEmpty() ? null
-                        : plugin.getServer().getWorlds().get(0);
-                if (mainWorld == null)
-                    return;
 
-                long ticksPerDay = Math.max(1, configManager.getTaxGenerationInterval());
-                long currentDay = mainWorld.getFullTime() / ticksPerDay;
+                long now = System.currentTimeMillis();
+
+                // 1) Tick taxes for every apartment individually based on their specific
+                // lastInvoiceAt timestamp
+                for (com.aithor.apartmentcore.model.Apartment apt : apartmentManager.getApartments().values()) {
+                    if (apt.owner != null) {
+                        apt.tickTaxInvoices(plugin.getEconomy(), plugin, configManager, apartmentManager);
+                    }
+                }
+
+                long taxIntervalMs = Math.max(1000L, configManager.getTaxGenerationInterval() * 50L);
                 long lastMinecraftDay = plugin.getLastMinecraftDay();
 
-                if (currentDay > lastMinecraftDay) {
-                    plugin.debug(
-                            "Minecraft day changed (ticksPerDay=" + ticksPerDay + "). Processing daily updates...");
+                // On first startup it is 0, so we seed it to now (no immediate trigger).
+                if (lastMinecraftDay <= 0) {
+                    plugin.setLastMinecraftDay(now);
+                    return;
+                }
 
-                    apartmentManager.processDailyUpdates();
+                // 2) Process global daily updates (like apartment age)
+                if (now - lastMinecraftDay >= taxIntervalMs) {
+                    plugin.debug("Global tax interval elapsed (taxIntervalMs=" + taxIntervalMs
+                            + "ms). Processing global daily updates (age)...");
 
-                    plugin.setLastMinecraftDay(currentDay);
+                    while (now - plugin.getLastMinecraftDay() >= taxIntervalMs) {
+                        apartmentManager.processDailyUpdates();
+                        plugin.setLastMinecraftDay(plugin.getLastMinecraftDay() + taxIntervalMs);
+                    }
                 }
             }
-        }.runTaskTimer(plugin, 100L, 100L);
+        }.runTaskTimer(plugin, 600L, 600L); // Check every 30 seconds
     }
 
     /**

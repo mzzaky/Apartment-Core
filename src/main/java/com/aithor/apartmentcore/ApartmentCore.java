@@ -14,6 +14,7 @@ import com.aithor.apartmentcore.placeholder.ApartmentPlaceholder;
 import com.aithor.apartmentcore.achievement.AchievementManager;
 import com.aithor.apartmentcore.research.ResearchManager;
 import com.aithor.apartmentcore.shop.ApartmentShopManager;
+import com.aithor.apartmentcore.util.SplashArt;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -50,10 +51,15 @@ public class ApartmentCore extends JavaPlugin {
 
     private long lastMinecraftDay = 0L;
     private long lastRentClaimTime = System.currentTimeMillis();
-    private long lastIncomeGenerationTime = System.currentTimeMillis();
+    // Initialised to 0 so the GUI shows the full interval countdown on first open
+    // instead of "Soon...". The first income-task tick will update it immediately.
+    private long lastIncomeGenerationTime = 0L;
 
     @Override
     public void onEnable() {
+        // Print startup splash banner
+        SplashArt.print(this);
+
         // Ensure default config exists and load configuration
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
@@ -97,7 +103,7 @@ public class ApartmentCore extends JavaPlugin {
         } else {
             debug("GUI system is disabled via config.");
         }
-        
+
         // Shop system
         this.shopManager = new ApartmentShopManager(this, apartmentManager, economy, configManager, dataManager);
 
@@ -143,7 +149,10 @@ public class ApartmentCore extends JavaPlugin {
             taskManager.cancelAllTasks();
         }
         if (auctionTask != null) {
-            try { auctionTask.cancel(); } catch (Throwable ignored) {}
+            try {
+                auctionTask.cancel();
+            } catch (Throwable ignored) {
+            }
             auctionTask = null;
         }
         if (apartmentManager != null) {
@@ -157,19 +166,31 @@ public class ApartmentCore extends JavaPlugin {
             auctionManager = null;
         }
         if (guiManager != null) {
-            try { guiManager.closeAllGUIs(); } catch (Throwable ignored) {}
+            try {
+                guiManager.closeAllGUIs();
+            } catch (Throwable ignored) {
+            }
             guiManager = null;
         }
         if (shopManager != null) {
-            try { shopManager.saveShopData(); } catch (Throwable ignored) {}
+            try {
+                shopManager.saveShopData();
+            } catch (Throwable ignored) {
+            }
             shopManager = null;
         }
         if (researchManager != null) {
-            try { researchManager.shutdown(); } catch (Throwable ignored) {}
+            try {
+                researchManager.shutdown();
+            } catch (Throwable ignored) {
+            }
             researchManager = null;
         }
         if (achievementManager != null) {
-            try { achievementManager.shutdown(); } catch (Throwable ignored) {}
+            try {
+                achievementManager.shutdown();
+            } catch (Throwable ignored) {
+            }
             achievementManager = null;
         }
         log("ApartmentCore disabled.");
@@ -281,7 +302,7 @@ public class ApartmentCore extends JavaPlugin {
     public GUIManager getGUIManager() {
         return guiManager;
     }
-    
+
     public ApartmentShopManager getShopManager() {
         return shopManager;
     }
@@ -315,7 +336,8 @@ public class ApartmentCore extends JavaPlugin {
                     if (auctionManager != null) {
                         auctionManager.processEndedAuctions();
                     }
-                } catch (Throwable ignored) {}
+                } catch (Throwable ignored) {
+                }
             }, 20L * 60L, 20L * 60L);
             debug("Auction system initialized.");
         } catch (Throwable t) {
@@ -328,11 +350,17 @@ public class ApartmentCore extends JavaPlugin {
      */
     public void shutdownAuctionSystem() {
         if (auctionTask != null) {
-            try { auctionTask.cancel(); } catch (Throwable ignored) {}
+            try {
+                auctionTask.cancel();
+            } catch (Throwable ignored) {
+            }
             auctionTask = null;
         }
         if (auctionManager != null) {
-            try { auctionManager.saveAuctions(); } catch (Throwable ignored) {}
+            try {
+                auctionManager.saveAuctions();
+            } catch (Throwable ignored) {
+            }
             auctionManager = null;
         }
         debug("Auction system shut down.");

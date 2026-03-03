@@ -82,11 +82,11 @@ items:
       tier_5: 45000
     # Buff values for each tier (tick reduction)
     buff_values:
-      tier_1: 1.0
-      tier_2: 2.0
-      tier_3: 3.0
-      tier_4: 4.0
-      tier_5: 5.0
+      tier_1: 20.0
+      tier_2: 40.0
+      tier_3: 60.0
+      tier_4: 80.0
+      tier_5: 100.0
   
   extra_living_room:
     display_name: "Extra Living Room"
@@ -105,6 +105,24 @@ items:
       tier_3: 30.0
       tier_4: 40.0
       tier_5: 50.0
+
+  vault_expansion:
+    display_name: "Vault Expansion"
+    description: "Increases your apartment's maximum income capacity"
+    icon: "ENDER_CHEST"
+    costs:
+      tier_1: 6000
+      tier_2: 14000
+      tier_3: 24000
+      tier_4: 38000
+      tier_5: 60000
+    # Buff values for each tier (capacity increase %)
+    buff_values:
+      tier_1: 2.5
+      tier_2: 5.0
+      tier_3: 7.5
+      tier_4: 10.0
+      tier_5: 12.5
 
 # GUI Configuration
 gui:

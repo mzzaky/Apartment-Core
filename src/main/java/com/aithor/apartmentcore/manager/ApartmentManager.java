@@ -181,6 +181,24 @@ public class ApartmentManager {
         }
 
         plugin.debug("Loaded " + apartments.size() + " apartments from storage");
+
+        // Restore the last-tax-run timestamp.
+        // New format stores epoch-ms (e.g. 1_700_000_000_000L).
+        // Old format stored a Minecraft day number (small integer like 24).
+        // We treat any value below year-2000 epoch (946_684_800_000L) as stale/legacy
+        // and reset to 0 so TaskManager seeds it on the first check tick without
+        // triggering an immediate processDailyUpdates() call.
+        long savedDay = dataManager.getDataConfig().getLong("last-minecraft-day", -1L);
+        if (savedDay >= 946_684_800_000L) {
+            // Valid epoch-ms from the new format — restore it.
+            plugin.setLastMinecraftDay(savedDay);
+            plugin.debug("Restored lastMinecraftDay (epoch-ms)=" + savedDay + " from storage");
+        } else {
+            // Legacy Minecraft-day number or missing — reset so TaskManager seeds safely.
+            plugin.setLastMinecraftDay(0L);
+            plugin.debug("Resetting lastMinecraftDay (legacy/missing value=" + savedDay
+                    + "); TaskManager will seed on first tick.");
+        }
     }
 
     /**
@@ -292,6 +310,8 @@ public class ApartmentManager {
         dataManager.getDataConfig().set("apartments", null);
         dataManager.getDataConfig().set("last-minecraft-day", plugin.getLastMinecraftDay());
         dataManager.getDataConfig().set("last-rent-claim-time", plugin.getLastRentClaimTime());
+        // Persist income timer so GUI countdown survives server restarts
+        dataManager.getDataConfig().set("last-income-generation-time", plugin.getLastIncomeGenerationTime());
 
         for (Apartment apt : apartments.values()) {
             String path = "apartments." + apt.id + ".";
@@ -429,11 +449,20 @@ public class ApartmentManager {
 
             // --- Income Capacity Check ---
             double baseCapacity = configManager.getIncomeCapacity(apt.level);
+
+            // Research Buffs
             double researchBonusPercentage = 0.0;
             if (plugin.getResearchManager() != null) {
                 researchBonusPercentage = plugin.getResearchManager().getIncomeCapacityBonus(apt.owner);
             }
-            double capacity = baseCapacity * (1.0 + (researchBonusPercentage / 100.0));
+
+            // Shop Buffs
+            double shopBonusPercentage = 0.0;
+            if (plugin.getShopManager() != null) {
+                shopBonusPercentage = plugin.getShopManager().getIncomeCapacityBonusPercentage(apt.id);
+            }
+
+            double capacity = baseCapacity * (1.0 + ((researchBonusPercentage + shopBonusPercentage) / 100.0));
 
             if (apt.pendingIncome >= capacity) {
                 // Vault is full; skip generation and notify player once per cycle
@@ -472,7 +501,8 @@ public class ApartmentManager {
                 for (Apartment a : apartments.values()) {
                     if (apt.owner.equals(a.owner)) {
                         ApartmentStats s = getStats(a.id);
-                        if (s != null) totalIncome += s.totalIncomeGenerated;
+                        if (s != null)
+                            totalIncome += s.totalIncomeGenerated;
                     }
                 }
                 plugin.getAchievementManager().setProgress(apt.owner,
@@ -517,10 +547,6 @@ public class ApartmentManager {
     public void processDailyUpdates() {
         for (Apartment apt : apartments.values()) {
             if (apt.owner != null) {
-                // Process taxes (new invoice-based system; safe to call daily as it is
-                // time-driven)
-                apt.tickTaxInvoices(economy, plugin, configManager, this);
-
                 // Increment age
                 ApartmentStats stats = getStats(apt.id);
                 stats.ownershipAgeDays++;

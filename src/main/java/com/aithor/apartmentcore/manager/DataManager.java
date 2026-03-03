@@ -29,7 +29,6 @@ public class DataManager {
     private FileConfiguration statsConfig;
     private File statsFile;
 
-
     public DataManager(ApartmentCore plugin, ConfigManager configManager) {
         this.plugin = plugin;
         this.configManager = configManager;
@@ -63,13 +62,17 @@ public class DataManager {
             plugin.setLastMinecraftDay(lastMinecraftDay);
             plugin.setLastRentClaimTime(lastRentClaimTime);
 
+            // Load last income generation time so GUI countdown survives server restarts
+            long lastIncomeGenerationTime = dataConfig.getLong("last-income-generation-time", 0L);
+            plugin.setLastIncomeGenerationTime(lastIncomeGenerationTime);
+
             plugin.debug("Data file loaded successfully");
         } catch (IOException e) {
             plugin.getLogger().severe("Could not create apartments.yml: " + e.getMessage());
             dataConfig = new YamlConfiguration(); // Create empty config to prevent null
         }
     }
-    
+
     /**
      * Load the guestbook data file.
      */
@@ -112,7 +115,6 @@ public class DataManager {
         }
     }
 
-
     /**
      * Save data file
      */
@@ -129,7 +131,7 @@ public class DataManager {
             plugin.getLogger().severe("Could not save apartments: " + e.getMessage());
         }
     }
-    
+
     /**
      * Save the guestbook data file.
      */
@@ -180,7 +182,8 @@ public class DataManager {
      * Create backup of apartment data
      */
     public void createBackup(String type) {
-        if (!configManager.isBackupEnabled()) return;
+        if (!configManager.isBackupEnabled())
+            return;
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
@@ -247,7 +250,7 @@ public class DataManager {
     public FileConfiguration getDataConfig() {
         return dataConfig;
     }
-    
+
     public FileConfiguration getGuestBookConfig() {
         return guestBookConfig;
     }
@@ -255,7 +258,6 @@ public class DataManager {
     public FileConfiguration getStatsConfig() {
         return statsConfig;
     }
-
 
     public File getDataFile() {
         return dataFile;

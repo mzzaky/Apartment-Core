@@ -848,7 +848,10 @@ public class CommandHandler implements TabCompleter {
         double baseAmount = apt.price * basePercent;
         long nowTs = System.currentTimeMillis();
         TaxStatus taxStatus = apt.computeTaxStatus(nowTs);
-        long nextInvoiceInMs = Math.max(0L, (apt.lastInvoiceAt == 0L ? 0L : (apt.lastInvoiceAt + 86_400_000L) - nowTs));
+        // Use configurable tax interval (ticks * 50 = ms)
+        long taxIntervalMs = Math.max(1000L, configManager.getTaxGenerationInterval() * 50L);
+        long nextInvoiceInMs = Math.max(0L,
+                (apt.lastInvoiceAt == 0L ? 0L : (apt.lastInvoiceAt + taxIntervalMs) - nowTs));
         long unpaidCount = apt.taxInvoices == null ? 0 : apt.taxInvoices.stream().filter(inv -> !inv.isPaid()).count();
         double totalUnpaid = apt.getTotalUnpaid();
 
@@ -881,7 +884,11 @@ public class CommandHandler implements TabCompleter {
             sender.sendMessage(ChatColor.YELLOW + "New Invoice In: " + ChatColor.WHITE +
                     (nextInvoiceInMs > 0 ? formatTime(nextInvoiceInMs) : "Soon"));
 
-            long nextIncomeMillis = plugin.getLastIncomeGenerationTime() + 50000L; // 50 seconds
+            // Next income countdown using configurable interval
+            long incomeIntervalMs = Math.max(1000L, configManager.getIncomeGenerationInterval() * 50L);
+            long lastGen = plugin.getLastIncomeGenerationTime();
+            long nextIncomeMillis = lastGen <= 0L ? System.currentTimeMillis() + incomeIntervalMs
+                    : lastGen + incomeIntervalMs;
             long incomeTimeRemaining = nextIncomeMillis - System.currentTimeMillis();
             sender.sendMessage(ChatColor.YELLOW + "Next Income In: " + ChatColor.WHITE +
                     (incomeTimeRemaining > 0 ? formatTime(incomeTimeRemaining) : "Now"));
@@ -1376,7 +1383,8 @@ public class CommandHandler implements TabCompleter {
                     for (Apartment a : apartmentManager.getApartments().values()) {
                         if (player.getUniqueId().equals(a.owner)) {
                             ApartmentStats s = apartmentManager.getStats(a.id);
-                            if (s != null) totalInc += s.totalIncomeGenerated;
+                            if (s != null)
+                                totalInc += s.totalIncomeGenerated;
                         }
                     }
                     plugin.getAchievementManager().setProgress(player.getUniqueId(),
@@ -1537,7 +1545,8 @@ public class CommandHandler implements TabCompleter {
             for (Apartment a : apartmentManager.getApartments().values()) {
                 if (player.getUniqueId().equals(a.owner)) {
                     ApartmentStats s = apartmentManager.getStats(a.id);
-                    if (s != null) totalTax += s.totalTaxPaid;
+                    if (s != null)
+                        totalTax += s.totalTaxPaid;
                 }
             }
             plugin.getAchievementManager().setProgress(player.getUniqueId(),

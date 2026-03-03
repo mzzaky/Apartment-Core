@@ -682,7 +682,7 @@
         <h1>Changelog</h1>
         <p>Track all updates, improvements, and bug fixes for ApartmentCore</p>
         <div class="current-version">
-            <span>Latest Version: v1.3.3</span>
+            <span>Latest Version: v1.3.5</span>
         </div>
     </div>
 
@@ -696,7 +696,9 @@
         <nav class="side-nav">
             <div class="nav-title">Version History</div>
             <ul class="nav-list">
-                <li><a href="#v1-3-3" class="active">v1.3.3 <span class="version-badge">Research</span></a></li>
+                <li><a href="#v1-3-5" class="active">v1.3.5 <span class="version-badge">Feature Update</span></a></li>
+                <li><a href="#v1-3-4">v1.3.4 <span class="version-badge">Massive Update</span></a></li>
+                <li><a href="#v1-3-3">v1.3.3 <span class="version-badge">Research</span></a></li>
                 <li><a href="#v1-3-2">v1.3.2 <span class="version-badge">Shop</span></a></li>
                 <li><a href="#v1-3-1">v1.3.1 <span class="version-badge">Stats</span></a></li>
                 <li><a href="#v1-3-0">v1.3.0 <span class="version-badge">GUI</span></a></li>
@@ -713,8 +715,471 @@
         </nav>
 
         <main class="main-content">
-            <!-- Version 1.3.3 (Latest - Open by default) -->
-            <section class="version-section" id="v1-3-3">
+            <!-- Version 1.3.5 (Latest - Open by default) -->
+            <section class="version-section" id="v1-3-5">
+                <div class="version-header" onclick="toggleVersion('v1-3-5')">
+                    <div class="version-header-left">
+                        <div class="version-title">
+                            <h2>Version 1.3.5</h2>
+                            <span class="version-type feature">Feature Update</span>
+                        </div>
+                        <div class="release-date">February 28, 2026</div>
+                    </div>
+                    <div class="version-toggle">
+                        <span class="version-toggle-icon">▼</span>
+                        <span class="version-toggle-text">Minimize</span>
+                    </div>
+                </div>
+
+                <div class="version-content">
+                    <div class="overview-box">
+                        <div class="overview-title">Release Overview</div>
+                        <div class="overview-grid">
+                            <div class="overview-stat">
+                                <div class="stat-label">Changes</div>
+                                <div class="stat-value">22+</div>
+                            </div>
+                            <div class="overview-stat">
+                                <div class="stat-label">New Feature</div>
+                                <div class="stat-value">Capacity Buff, Achievement Effects</div>
+                            </div>
+                            <div class="overview-stat">
+                                <div class="stat-label">Type</div>
+                                <div class="stat-value">Feature Update</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Added / Feature -->
+                    <div class="change-category">
+                        <div class="category-header added">
+                            <div class="category-icon added">+</div>
+                            <div class="category-title">New Features</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item">Added <code>Vault Expansion</code> shop item to
+                                <code>shop.yml</code> which increases the apartment's maximum income capacity by a
+                                percentage (2.5% per tier).
+                                <ul>
+                                    <li class="sub-item">Implemented <code>INCOME_CAPACITY</code> enum in
+                                        <code>ShopBuffType.java</code> to handle capacity percentage buffs.</li>
+                                    <li class="sub-item">Added <code>VAULT_EXPANSION</code> to
+                                        <code>ShopItem.java</code> using the <code>ENDER_CHEST</code> material icon.
+                                    </li>
+                                    <li class="sub-item">Updated <code>ApartmentShopManager</code> and
+                                        <code>ApartmentManager</code> to calculate and apply the new capacity buff to
+                                        apartment income generation.</li>
+                                    <li class="sub-item">Updated <code>ApartmentShopGUI</code> to display the new
+                                        <code>Vault Expansion</code> shop item and its active buffs.</li>
+                                    <li class="sub-item">Updated <code>ApartmentStatisticsGUI</code> to show the active
+                                        capacity buff multiplier applied from the shop on the "Final Math" and "Other
+                                        Stats" panels.</li>
+                                </ul>
+                            </li>
+                            <li class="change-item">Achievement unlock now triggers 4 distinct effects:
+                                <ul>
+                                    <li class="sub-item">Sound effect (configurable Bukkit sound, volume &amp; pitch)
+                                    </li>
+                                    <li class="sub-item">Title message (configurable header, subheader, fade timings)
+                                    </li>
+                                    <li class="sub-item">Action bar / toast message (configurable format string)</li>
+                                    <li class="sub-item">Animated BossBar that drains over a set duration (configurable
+                                        color, style, duration)</li>
+                                </ul>
+                            </li>
+                            <li class="change-item">Added detailed unlock timestamp (date and time with seconds) to the
+                                Achievement GUI lore for completed achievements.</li>
+                            <li class="change-item">Added multi-reward system for achievements. Rewards now support
+                                multiple entries per achievement with 3 types:
+                                <ul>
+                                    <li class="sub-item"><code>[money] &lt;amount&gt;</code> - Give money via economy
+                                    </li>
+                                    <li class="sub-item"><code>[exp] &lt;amount&gt;</code> - Give experience points</li>
+                                    <li class="sub-item"><code>[console] &lt;command&gt;</code> - Execute a console
+                                        command (%player% placeholder supported)</li>
+                                    <li class="sub-item">Backward compatible: old single
+                                        <code>reward: &lt;number&gt;</code> config still works.</li>
+                                </ul>
+                            </li>
+                            <li class="change-item"><strong>Configurable GUI Lore:</strong> The layout and formatting of
+                                achievement items in the GUI are now fully customizable via
+                                <code>achievements.yml</code>.
+                                <ul>
+                                    <li class="sub-item">Define global defaults under <code>achievements.format</code>.
+                                    </li>
+                                    <li class="sub-item">Override defaults on a per-achievement basis under
+                                        <code>definitions.&lt;achievement&gt;.format</code>.</li>
+                                    <li class="sub-item">Includes support for completed, in-progress, and disabled
+                                        states, plus dynamic placeholders like <code>{progress_bar}</code>,
+                                        <code>{percentage}</code>, and <code>{completed_date}</code>.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Changed -->
+                    <div class="change-category">
+                        <div class="category-header improved">
+                            <div class="category-icon improved">↑</div>
+                            <div class="category-title">Changed</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item"><strong>Comprehensive Apartment Statistics GUI:</strong> Completely
+                                overhauled the <code>Apartment Statistics</code> menu layout to provide deeper insights
+                                into the apartment economy.
+                                <ul>
+                                    <li class="sub-item">Transformed from a functional menu with action buttons into a
+                                        detailed, multi-panel statistics overview (expanded to a 54-slot inventory).
+                                    </li>
+                                    <li class="sub-item"><strong>Base Stats Panel:</strong> Displays raw apartment
+                                        attributes from the level config (min/max income, base capacity, tax rate).</li>
+                                    <li class="sub-item"><strong>Shop Buffs Panel:</strong> Shows all applied shop
+                                        upgrades (Tiers 1-5) and their cumulative effects on income, tax, and guestbook
+                                        space.</li>
+                                    <li class="sub-item"><strong>Research Buffs Panel:</strong> Lists active player-wide
+                                        research buffs (e.g., Capital Growth, Tax Efficiency) and their current tier
+                                        bonuses.</li>
+                                    <li class="sub-item"><strong>Final Math Panel:</strong> Provides a step-by-step
+                                        mathematical breakdown of how final income per cycle, income capacity, and tax
+                                        are calculated by sequentially stacking all buffs (Flat -&gt; Shop% -&gt;
+                                        CapitalGrowth%).</li>
+                                    <li class="sub-item"><strong>Other Stats Panel:</strong> Summarizes lifetime
+                                        earnings, total tax paid, pending income (with % of capacity), and active
+                                        invoices/status.</li>
+                                    <li class="sub-item">Action buttons (Claim Income, Tax Mgmt, Auto-Pay toggle) have
+                                        been removed from this view to centralize apartment management inside the
+                                        <code>Apartment Details</code> menu.</li>
+                                </ul>
+                            </li>
+                            <li class="change-item"><strong>Tax System Configurable Percentage:</strong> The required
+                                base tax amount (previously hardcoded at 2.5% of apartment price per level) is now fully
+                                configurable under the <code>apartment-levels</code> section in <code>config.yml</code>.
+                                <ul>
+                                    <li class="sub-item">Each level now accepts a <code>tax-percentage</code> value
+                                        (e.g., <code>2.5</code> for Level 1, <code>5.0</code> for Level 2). This
+                                        percentage determines the base invoice amount before any other multipliers (like
+                                        late fees, shop buffs, or research effects).</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Fixed -->
+                    <div class="change-category">
+                        <div class="category-header fixed">
+                            <div class="category-icon fixed">✕</div>
+                            <div class="category-title">Fixed</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item">Fixed a bug where the tax generation timer would reset without
+                                generating a new tax bill after a server restart. The <code>last-minecraft-day</code>
+                                value is now properly loaded from storage.</li>
+                            <li class="change-item">Fixed a bug causing the income generation timer in the GUI to
+                                incorrectly display "Soon..." right after server startup. The timer will now correctly
+                                display the full interval countdown.</li>
+                            <li class="change-item">Corrected the tax countdown timer display in the GUI to use
+                                real-world time instead of Minecraft ticks, keeping it consistent with the actual tax
+                                invoice generation logic.</li>
+                            <li class="change-item">Completely overhauled TaskManager scheduling for Income and Tax
+                                events to use true real-time epoch tracking instead of simple Bukkit task delays. This
+                                guarantees timers are 100% accurate, synchronizes flawlessly with MyApartmentsGUI, and
+                                ensures backdated tasks are caught up properly if the server is offline.</li>
+                            <li class="change-item">Removed redundant tax evaluation executions in
+                                <code>processDailyUpdates</code> to prevent double-charging invoices.</li>
+                            <li class="change-item">MyApartmentsGUI "Next Income In" lore is now tax-status aware. It
+                                will display a clear warning (OVERDUE, INACTIVE, REPOSSESSION) instead of a countdown if
+                                income is blocked due to unpaid taxes, and will hide unrelated research buffs.</li>
+                            <li class="change-item">Implemented the missing "High Speed Internet" shop buff
+                                functionality. It now correctly amplifies income amounts sequentially to mathematically
+                                compensate for tick interval reductions, maintaining server performance without breaking
+                                the global timer logic.</li>
+                            <li class="change-item">Fixed an issue where <code>buff_values</code> and <code>costs</code>
+                                for Shop Items (including "High Speed Internet") were hardcoded in the plugin enum. They
+                                are now fully dynamic and read in real-time from <code>shop.yml</code>.</li>
+                            <li class="change-item">Fixed a similar issue in the Research system where
+                                <code>effect-per-tier</code>, <code>effect-per-tier-fee</code>, and
+                                <code>effect-per-tier-commission</code> math logic was statically hardcoded. Value
+                                multipliers are now strictly parsed directly from <code>research.yml</code> to allow
+                                endless configurability.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Configuration -->
+                    <div class="change-category">
+                        <div class="category-header enhanced">
+                            <div class="category-icon enhanced">⚙</div>
+                            <div class="category-title">Configuration</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item">New section <code>achievements.effects</code> in achievements.yml:
+                                <ul>
+                                    <li class="sub-item"><code>sound</code> - toggle, sound name, volume, pitch</li>
+                                    <li class="sub-item"><code>title</code> - toggle, header, subheader, fade-in, stay,
+                                        fade-out (all in ticks)</li>
+                                    <li class="sub-item"><code>action-bar</code> - toggle, format string (supports
+                                        {achievement} placeholder)</li>
+                                    <li class="sub-item"><code>bossbar</code> - toggle, title, color, style,
+                                        duration-ticks</li>
+                                </ul>
+                            </li>
+                            <li class="change-item">New field <code>tax-percentage</code> in config.yml under each
+                                apartment level setting.</li>
+                            <li class="change-item">All effects support <code>enabled: false</code> to individually
+                                disable them.</li>
+                            <li class="change-item">Plugin logs a warning if an invalid sound or bossbar color/style
+                                name is configured.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Technical -->
+                    <div class="change-category">
+                        <div class="category-header improved">
+                            <div class="category-icon improved">↑</div>
+                            <div class="category-title">Technical</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item"><code>AchievementManager</code> now reads and caches all effect
+                                config fields on load/reload.</li>
+                            <li class="change-item">Models updated to use the dynamic <code>taxPercentage</code> value
+                                from <code>LevelConfig</code> instead of the hardcoded multiplier.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Version 1.3.4 -->
+            <section class="version-section collapsed" id="v1-3-4">
+                <div class="version-header" onclick="toggleVersion('v1-3-4')">
+                    <div class="version-header-left">
+                        <div class="version-title">
+                            <h2>Version 1.3.4</h2>
+                            <span class="version-type update">Massive Update</span>
+                        </div>
+                        <div class="release-date">February 28, 2026</div>
+                    </div>
+                    <div class="version-toggle">
+                        <span class="version-toggle-icon">▼</span>
+                        <span class="version-toggle-text">Minimize</span>
+                    </div>
+                </div>
+
+                <div class="version-content">
+                    <div class="overview-box">
+                        <div class="overview-title">Release Overview</div>
+                        <div class="overview-grid">
+                            <div class="overview-stat">
+                                <div class="stat-label">Changes</div>
+                                <div class="stat-value">56+</div>
+                            </div>
+                            <div class="overview-stat">
+                                <div class="stat-label">New Feature</div>
+                                <div class="stat-value">Achievements, Market</div>
+                            </div>
+                            <div class="overview-stat">
+                                <div class="stat-label">Type</div>
+                                <div class="stat-value">Massive Update</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Added / Feature -->
+                    <div class="change-category">
+                        <div class="category-header added">
+                            <div class="category-icon added">+</div>
+                            <div class="category-title">New Features</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item">Added Income Capacity mechanism so apartment income cannot
+                                accumulate infinitely; each apartment level has a maximum <code>pendingIncome</code>
+                                accumulation limit (Level 1 = 10,000, Level 2 = 20,000, etc., increasing by 10,000 per
+                                level).</li>
+                            <li class="change-item">Automatic income generation is stopped when
+                                <code>pendingIncome</code> reaches full capacity; new income will not be added until the
+                                player claims it.</li>
+                            <li class="change-item">If income exceeds remaining capacity, the value is automatically
+                                clamped so <code>pendingIncome</code> never exceeds the level limit.</li>
+                            <li class="change-item">Online players receive a chat notification
+                                <code>[Capacity Full]</code> when their apartment's income vault is full, along with
+                                level capacity info.</li>
+                            <li class="change-item">Added <code>income-capacity</code> field to each level in the
+                                <code>apartment-levels</code> block in <code>config.yml</code> for easy per-level
+                                capacity configuration.</li>
+                            <li class="change-item">Added a duration system to the apartment upgrade process; upgrades
+                                are no longer instant but require completion time.</li>
+                            <li class="change-item">Added <code>upgrade-duration</code> config attribute (in ticks) in
+                                <code>config.yml</code> for each level in <code>apartment-levels</code> (0 = instant).
+                            </li>
+                            <li class="change-item">Added a special confirmation GUI (<code>UpgradeConfirmGUI</code>)
+                                that appears when a player presses the Upgrade button. This GUI presents Price,
+                                Remaining Duration, and Estimated New Income info before final confirmation.</li>
+                            <li class="change-item">Changed the upgrade button in the <code>ApartmentDetailsGUI</code>
+                                to a remaining time indicator (<strong>Upgrading...</strong>) when the apartment is in
+                                the level renovation phase.</li>
+                            <li class="change-item">Added an automatic checker in <code>TaskManager.java</code> that
+                                processes apartments that finish upgrading every second (20 ticks), accompanied by Title
+                                notification and <strong>Level-Up</strong> sound effects for online players.</li>
+                            <li class="change-item">Added <strong>Quick Sell</strong> mechanism: apartment owners can
+                                directly sell their apartment back to the government using the existing
+                                <code>sell-percentage</code> configuration in <code>config.yml</code> (default 70% of
+                                purchase price).</li>
+                            <li class="change-item">Added <strong>Market Sell</strong> mechanism: apartment owners can
+                                post listings in the apartment browser so other players can buy the apartment with an
+                                ownership transfer mechanism. The listing price matches the original apartment price,
+                                and the payment goes directly to the seller.</li>
+                            <li class="change-item">In <code>ApartmentBrowserGUI</code>, market listings display seller
+                                information, apartment rating, apartment level, income range, and a
+                                <code>📢 Market Listing</code> label to distinguish them from government properties.
+                            </li>
+                            <li class="change-item">In <code>ApartmentBrowserGUI</code>, apartments sold/created by
+                                admins (without owners) now display a <code>🏛 Government Property</code> label and
+                                <code>Owner: Government</code> on the item lore.</li>
+                            <li class="change-item">Changed the <code>/ac sell &lt;apartment_id&gt;</code> command to
+                                <code>/ac sell quick &lt;apartment_id&gt;</code> for quick sell and
+                                <code>/ac sell market &lt;apartment_id&gt;</code> for market sell, and
+                                <code>/ac sell cancel &lt;apartment_id&gt;</code> to cancel a market listing.</li>
+                            <li class="change-item">Added <code>/ac marketbuy &lt;apartment_id&gt;</code> command for
+                                buying an apartment from a market listing (with confirmation mechanism).</li>
+                            <li class="change-item">In <code>ApartmentDetailsGUI</code>, the Sell button is replaced
+                                with two separate buttons: <code>⚡ Quick Sell</code> (slot 24) and
+                                <code>📢 Market Sell</code> (slot 25). If the apartment is already listed on the market,
+                                the Market Sell button changes to <code>Listed on Market</code> with an option to click
+                                to cancel the listing.</li>
+                            <li class="change-item">In <code>ApartmentDetailsGUI</code>, added a
+                                <code>🛒 Buy from Market</code> button for non-owners when the apartment is listed on
+                                the market, displaying seller info and market price.</li>
+                            <li class="change-item">Added <code>Vault Capacity</code> (<code>income-capacity</code>)
+                                info to the info item lore in <code>ApartmentDetailsGUI</code> (apartment detail menu).
+                            </li>
+                            <li class="change-item">Improved the <code>Pending Income</code> display format in
+                                <code>MyApartmentsGUI</code> to also show the maximum limit /
+                                <code>Vault Capacity</code> (example: <code>$1,000 / $10,000</code>).</li>
+                            <li class="change-item">Changed the Market Sell mechanism in
+                                <code>ApartmentDetailsGUI</code>. Now when a player clicks the Market Sell button, the
+                                GUI will close and the game will ask the player to input a <code>custom price</code>
+                                (desired selling price) via chat, accompanied by price format validation. The player can
+                                type 'cancel' to cancel the listing process.</li>
+                            <li class="change-item">Added a new research type <code>capacity_expansion</code> (Vault
+                                Expansion) to the Research System, which provides a +5% Income Capacity bonus per tier.
+                                This research recipe is made expensive with the longest research time duration.</li>
+                            <li class="change-item">Added research bonus calculation display to the
+                                <code>Next Income In</code> item lore in <code>MyApartmentsGUI</code>, displaying the
+                                percentage bonus of <code>capital_growth</code> (CG) and
+                                <code>revenue_acceleration</code> (RA) for players who have completed the research
+                                (example: <code>(+15% CG, -10% RA)</code>).</li>
+                            <li class="change-item">Added admin command
+                                <code>/ac admin set research &lt;factory_id&gt; &lt;research_id&gt; &lt;tier&gt;</code>
+                                to manually increase research level, useful for testing or events.</li>
+                            <li class="change-item">Added total research level amount info (<code>Research Lv</code>)
+                                owned by the seller to the lore item of apartments sold on the market
+                                (<code>ApartmentBrowserGUI</code>).</li>
+                            <li class="change-item">Added <code>tax_efficiency</code> (Tax Efficiency) buff effect
+                                display to the tax value lore item in <code>TaxManagementGUI</code>, displaying the tax
+                                reduction percentage from research (example: <code>-15% (Research)</code>) on the Tax
+                                Overview, Apartment Tax Item, and Invoice Item.</li>
+                            <li class="change-item">Added full tab completion for the
+                                <code>/ac admin set research &lt;factory_id&gt; &lt;research_id&gt; &lt;tier&gt;</code>
+                                command, supporting auto-complete for apartment IDs, research types
+                                (<code>ResearchType</code>), and maximum tier limits.</li>
+                            <li class="change-item">Added a complete <strong>Achievement</strong> system with 5
+                                achievement types: Income Millionaire (accumulate $1,000,000 income), Tax Contributor
+                                (accumulate $1,000,000 tax), Sales Tycoon (accumulate $1,000,000 sales), Research Master
+                                (complete 1 research to max tier), and Max Level Owner (own 1 max level apartment).</li>
+                            <li class="change-item">Added a custom <strong>AchievementGUI</strong> showing real-time
+                                progress bars, completion percentages, and reward info for each achievement.</li>
+                            <li class="change-item">Connected the Achievement GUI to the Main Menu GUI with a Nether
+                                Star button in slot 30, showing a summary of the player's achievement progress.</li>
+                            <li class="change-item">Added real-time achievement tracking on related events: income
+                                claim, tax payment (manual &amp; auto-pay), apartment sales (quick &amp; market sell),
+                                research completion, and apartment upgrade to max level.</li>
+                            <li class="change-item">Added achievement unlocked notification with chat message, title
+                                screen, and sound effect (<code>UI_TOAST_CHALLENGE_COMPLETE</code>) when players
+                                complete an achievement.</li>
+                            <li class="change-item">Added a global broadcast system that announces achievement
+                                completions to all online players.</li>
+                            <li class="change-item">Added automatic money rewards when an achievement is completed
+                                (default: $50,000 per achievement, configurable).</li>
+                        </ul>
+                    </div>
+
+                    <!-- Fixed -->
+                    <div class="change-category">
+                        <div class="category-header fixed">
+                            <div class="category-icon fixed">✕</div>
+                            <div class="category-title">Fixed</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item">Followed the simple dev log writing format.</li>
+                            <li class="change-item">Made the Claim Income button in the Apartment Details GUI stay
+                                visible (grayed out) even if there is no income to claim.</li>
+                            <li class="change-item">Fixed the tax mechanism timer which previously always used 24 hours
+                                (real-world time), now it is purely synchronized using the
+                                <code>tax-generation-interval</code> interval set in <code>config.yml</code>.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Chores / Internal -->
+                    <div class="change-category">
+                        <div class="category-header improved">
+                            <div class="category-icon improved">↑</div>
+                            <div class="category-title">Chores &amp; Internal</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item">Added <code>incomeCapacity</code> field to
+                                <code>LevelConfig.java</code> model and updated its constructor.</li>
+                            <li class="change-item">Added <code>getIncomeCapacity(int level)</code> method to
+                                <code>ConfigManager.java</code> as a helper with an automatic fallback value
+                                (<code>level × 10,000</code>).</li>
+                            <li class="change-item">Updated <code>generateIncome()</code> method in
+                                <code>ApartmentManager.java</code> to respect capacity limits and send capacity full
+                                notifications.</li>
+                            <li class="change-item">Added <code>notifications.income_capacity_full</code> message entry
+                                in <code>messages.yml</code>.</li>
+                            <li class="change-item">Modified <code>Apartment.java</code> and
+                                <code>ApartmentManager.java</code> to permanently save <code>upgradeInProgress</code>
+                                status and <code>upgradeCompleteAt</code> deadline to <code>data.yml</code> so progress
+                                is not lost upon restart.</li>
+                            <li class="change-item">Added <code>marketListing</code>, <code>marketPrice</code>, and
+                                <code>marketListedAt</code> fields to the <code>Apartment.java</code> model to save
+                                market listing state.</li>
+                            <li class="change-item">Updated <code>ApartmentManager.java</code> to load/save market
+                                listing fields from/to <code>data.yml</code>.</li>
+                            <li class="change-item">Added handlers <code>handleMarketSellCommand()</code>,
+                                <code>handleCancelMarketCommand()</code>, and <code>handleMarketBuyCommand()</code> to
+                                <code>ApartmentCommandService.java</code>.</li>
+                            <li class="change-item">Added <code>market_buy</code> case to the confirm handler in
+                                <code>CommandHandler.java</code> and <code>ApartmentCommandService.java</code> for the
+                                market purchase confirmation process.</li>
+                            <li class="change-item">Updated tab completion in <code>CommandHandler.java</code> to
+                                support <code>sell quick|market|cancel</code> subcommands.</li>
+                            <li class="change-item">Updated sell usage message in <code>messages.yml</code>.</li>
+                            <li class="change-item">Reset market listing fields upon quick sell, repossession, and
+                                market buy processes to keep the state consistent.</li>
+                            <li class="change-item">Added <code>achievements.yml</code> configuration file to control
+                                all achievement features: enable/disable per achievement, target, reward, icon, and
+                                broadcast.</li>
+                            <li class="change-item">Added <code>com.aithor.apartmentcore.achievement</code> package with
+                                <code>AchievementType</code>, <code>PlayerAchievementData</code>, and
+                                <code>AchievementManager</code> classes.</li>
+                            <li class="change-item">Added achievement data persistence to
+                                <code>data/achievement_data.yml</code> file with auto-save on shutdown.</li>
+                            <li class="change-item">Updated <code>ApartmentCore.java</code> for initialization and
+                                shutdown of <code>AchievementManager</code>.</li>
+                            <li class="change-item">Updated <code>MainMenuGUI.java</code> to add the Achievement button
+                                and shift the Help &amp; Info button position.</li>
+                            <li class="change-item">Updated <code>GUIManager.java</code> to support
+                                <code>openAchievements(Player)</code> method.</li>
+                            <li class="change-item">Added achievement tracking in <code>ApartmentManager.java</code>,
+                                <code>ApartmentCommandService.java</code>, <code>CommandHandler.java</code>,
+                                <code>Apartment.java</code>, <code>TaskManager.java</code>,
+                                <code>ResearchManager.java</code>, <code>TaxManagementGUI.java</code>, and
+                                <code>StatisticsGUI.java</code>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Version 1.3.3 -->
+            <section class="version-section collapsed" id="v1-3-3">
                 <div class="version-header" onclick="toggleVersion('v1-3-3')">
                     <div class="version-header-left">
                         <div class="version-title">
@@ -762,31 +1227,38 @@
                             <li class="change-item">Moved configuration and backup data files
                                 (<code>apartments.yml</code>, <code>guestbook.yml</code>,
                                 <code>apartments-stats.yml</code>, <code>shop_data.yml</code>, and backup lists) into a
-                                new <code>/data/</code> subfolder for a cleaner plugin directory structure.</li>
+                                new <code>/data/</code> subfolder for a cleaner plugin directory structure.
+                            </li>
                             <li class="change-item">Removed the unused <code>animations</code> block from the GUI
                                 section of <code>config.yml</code>.</li>
                             <li class="change-item">Moved the message/language configuration block from
-                                <code>config.yml</code> to <code>messages.yml</code> for better organization.</li>
+                                <code>config.yml</code> to <code>messages.yml</code> for better organization.
+                            </li>
                             <li class="change-item">Simplified the guide comments inside <code>config.yml</code> to make
                                 the config file more concise and readable.</li>
                             <li class="change-item">Performed a comprehensive audit of <code>config.yml</code>, removing
                                 unused attributes (e.g., <code>penalty-percentage</code>, <code>ticks-per-hour</code>,
                                 <code>placeholderapi.update-interval</code>) and the unimplemented <code>database</code>
-                                section.</li>
+                                section.
+                            </li>
                             <li class="change-item">Restructured <code>config.yml</code> by merging the
                                 <code>limits</code>, <code>income</code>, and <code>time</code> sections under a unified
-                                <code>settings</code> category for easier navigation.</li>
+                                <code>settings</code> category for easier navigation.
+                            </li>
                             <li class="change-item">Renamed the <code>ticks-per-day</code> parameter to
                                 <code>tax-generation-interval</code> to better reflect its purpose, and moved it under
-                                the <code>settings</code> category.</li>
+                                the <code>settings</code> category.
+                            </li>
                             <li class="change-item">Updated <code>ConfigManager.java</code> and
                                 <code>MessageManager.java</code> to fully support the new <code>messages.yml</code>
-                                message separation and the updated <code>settings</code> structure.</li>
+                                message separation and the updated <code>settings</code> structure.
+                            </li>
                             <li class="change-item">Updated all GUI and Command code references to align with the new
                                 configuration key paths.</li>
                             <li class="change-item">Changed the active-state material for the factory menu
                                 (<strong>MyFactory GUI</strong>) from <strong>emerald_block</strong> to
-                                <strong>diamond</strong>.</li>
+                                <strong>diamond</strong>.
+                            </li>
                             <li class="change-item">Removed <code>apartment_gui.yml</code> and all code logic that
                                 depended on it; the GUI now uses internal default settings.</li>
                         </ul>
@@ -859,10 +1331,12 @@
                             </li>
                             <li class="change-item">Research costs scale exponentially:
                                 <code>cost = base &times; multiplier^(tier-1)</code>. Default base values range from
-                                $50,000 to $150,000.</li>
+                                $50,000 to $150,000.
+                            </li>
                             <li class="change-item">Research durations scale exponentially:
                                 <code>duration = base &times; multiplier^(tier-1)</code>. Default base values range from
-                                1h to 3h.</li>
+                                1h to 3h.
+                            </li>
                             <li class="change-item">Players can only run one research at a time; completion is checked
                                 every second.</li>
                             <li class="change-item">On research completion, the player receives a chat notification,
@@ -887,7 +1361,8 @@
                                 <ul>
                                     <li class="sub-item"><code>ApartmentCore.java</code> — Added
                                         <code>ResearchManager</code> field, initialization in <code>onEnable()</code>,
-                                        shutdown in <code>onDisable()</code>, and getter method.</li>
+                                        shutdown in <code>onDisable()</code>, and getter method.
+                                    </li>
                                     <li class="sub-item"><code>GUIManager.java</code> — Added
                                         <code>openResearch(Player)</code> method and <code>ResearchGUI</code> import.
                                     </li>
@@ -897,18 +1372,21 @@
                                     <li class="sub-item"><code>Apartment.java</code> — Applied Capital Growth &amp;
                                         Revenue Acceleration buffs in <code>getHourlyIncomeWithShopBuffs()</code>;
                                         applied Tax Efficiency reduction in
-                                        <code>computeBaseTaxAmountWithShopBuffs()</code>.</li>
+                                        <code>computeBaseTaxAmountWithShopBuffs()</code>.
+                                    </li>
                                     <li class="sub-item"><code>AuctionManager.java</code> — Applied Auction Efficiency
                                         buff to reduce auction fee in <code>createAuction()</code> and commission rate
                                         in <code>processAuctionEnd()</code>.</li>
                                     <li class="sub-item"><code>CommandHandler.java</code> &amp;
                                         <code>ApartmentCommandService.java</code> — Applied Expansion Plan buff to the
-                                        max apartment ownership limit in the buy command.</li>
+                                        max apartment ownership limit in the buy command.
+                                    </li>
                                     <li class="sub-item"><code>messages.yml</code> — Added <code>research.*</code>
                                         message entries: started, completed, already_active, max_tier,
                                         insufficient_funds, disabled, no_permission.</li>
                                     <li class="sub-item"><code>plugin.yml</code> — Added
-                                        <code>apartmentcore.research</code> permission (default: true).</li>
+                                        <code>apartmentcore.research</code> permission (default: true).
+                                    </li>
                                 </ul>
                             </li>
                         </ul>

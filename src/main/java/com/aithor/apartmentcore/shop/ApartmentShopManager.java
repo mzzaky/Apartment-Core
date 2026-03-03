@@ -180,6 +180,15 @@ public class ApartmentShopManager {
     }
 
     /**
+     * Get total income capacity bonus percentage from all shop items for an
+     * apartment
+     */
+    public double getIncomeCapacityBonusPercentage(String apartmentId) {
+        ApartmentShopData data = getShopData(apartmentId);
+        return data.getTotalBuffValue(ShopBuffType.INCOME_CAPACITY);
+    }
+
+    /**
      * Check if apartment has any active income-related buffs
      */
     public boolean hasActiveIncomeBuffs(String apartmentId) {

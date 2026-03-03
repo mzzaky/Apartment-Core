@@ -189,6 +189,15 @@ public class Apartment {
             if (incomeBonus > 0) {
                 baseIncome *= (1.0 + incomeBonus / 100.0);
             }
+
+            // Apply income speed bonus (High Speed Internet)
+            // Compensate for tick reduction by proportionally boosting income over the same
+            // global time
+            double tickReduction = shopManager.getIncomeSpeedBonus(id);
+            long baseInterval = configManager.getIncomeGenerationInterval();
+            if (tickReduction > 0 && tickReduction < baseInterval) {
+                baseIncome *= ((double) baseInterval / (baseInterval - tickReduction));
+            }
         }
 
         // Apply research buffs (player-level permanent bonuses)
@@ -221,25 +230,31 @@ public class Apartment {
     // =========================
 
     /**
-     * Base tax percentage based on level.
-     * Requirement: 2.5% per level (Level 3 = 7.5%).
+     * Base tax percentage based on config level.
+     * Fallback to 2.5% per level if config is null.
      */
-    public double getBaseTaxPercent() {
+    public double getBaseTaxPercent(ConfigManager configManager) {
+        if (configManager != null) {
+            LevelConfig cfg = configManager.getLevelConfig(level);
+            if (cfg != null) {
+                return cfg.taxPercentage / 100.0;
+            }
+        }
         return 0.025 * Math.max(1, level);
     }
 
     /**
      * Base tax amount for a new invoice before multipliers.
      */
-    public double computeBaseTaxAmount() {
-        return price * getBaseTaxPercent();
+    public double computeBaseTaxAmount(ConfigManager configManager) {
+        return price * getBaseTaxPercent(configManager);
     }
 
     /**
      * Base tax amount with shop buffs and research buffs applied (tax reduction)
      */
     public double computeBaseTaxAmountWithShopBuffs(ApartmentCore plugin) {
-        double baseTax = computeBaseTaxAmount();
+        double baseTax = computeBaseTaxAmount(plugin != null ? plugin.getConfigManager() : null);
 
         // Apply shop tax reduction buff
         if (plugin != null && plugin.getShopManager() != null) {
@@ -395,7 +410,8 @@ public class Apartment {
                         for (Apartment a : apartmentManager.getApartments().values()) {
                             if (owner.equals(a.owner)) {
                                 ApartmentStats s = apartmentManager.getStats(a.id);
-                                if (s != null) totalTax += s.totalTaxPaid;
+                                if (s != null)
+                                    totalTax += s.totalTaxPaid;
                             }
                         }
                         plugin.getAchievementManager().setProgress(owner,
@@ -439,7 +455,8 @@ public class Apartment {
                         for (Apartment a : apartmentManager.getApartments().values()) {
                             if (owner.equals(a.owner)) {
                                 ApartmentStats s = apartmentManager.getStats(a.id);
-                                if (s != null) totalTax += s.totalTaxPaid;
+                                if (s != null)
+                                    totalTax += s.totalTaxPaid;
                             }
                         }
                         plugin.getAchievementManager().setProgress(owner,

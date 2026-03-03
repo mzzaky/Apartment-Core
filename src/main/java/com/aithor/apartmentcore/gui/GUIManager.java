@@ -462,8 +462,8 @@ public class GUIManager implements Listener {
         closeGUI(player);
         player.closeInventory();
         pendingMarketPriceInputs.put(player.getUniqueId(), apartmentId);
-        GUIUtils.sendMessage(player, "&eSilakan masukkan angka harga jual untuk &f" + apartmentId + " &edi chat.");
-        GUIUtils.sendMessage(player, "&eKetik '&ccancel&e' jika ingin membatalkan.");
+        GUIUtils.sendMessage(player, "&ePlease enter the selling price for &f" + apartmentId + " &ein chat.");
+        GUIUtils.sendMessage(player, "&eType '&ccancel&e' to cancel.");
     }
 
     @EventHandler
@@ -477,7 +477,7 @@ public class GUIManager implements Listener {
             String message = event.getMessage().trim();
 
             if (message.equalsIgnoreCase("cancel")) {
-                GUIUtils.sendMessage(player, "&cListing market dibatalkan.");
+                GUIUtils.sendMessage(player, "&cMarket listing cancelled.");
                 return;
             }
 
@@ -489,12 +489,12 @@ public class GUIManager implements Listener {
                 }
             } catch (NumberFormatException e) {
                 GUIUtils.sendMessage(player,
-                        "&cFormat harga tidak valid! Harap masukkan angka yang valid dan positif.");
+                        "&cInvalid price format! Please enter a valid and positive number.");
                 GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
                 return;
             }
 
-            // Jalankan command secara synchronous di next-tick (sync thread)
+            // Run the command synchronously on the next tick (sync thread)
             plugin.getServer().getScheduler().runTask(plugin, () -> {
                 plugin.getServer().dispatchCommand(player, "apartmentcore sell market " + apartmentId + " " + price);
             });

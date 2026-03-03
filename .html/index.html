@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApartmentCore Wiki - Home</title>
+    <meta name="description"
+        content="Official documentation and wiki for ApartmentCore — the premium Minecraft apartment management plugin.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #ffd966;
+            --gold-dim: #f4d03f;
+            --gold-faint: rgba(255, 217, 102, 0.08);
+            --gold-border: rgba(255, 217, 102, 0.15);
+            --gold-border-hover: rgba(255, 217, 102, 0.4);
+            --bg-dark: #0a0c10;
+            --bg-mid: #111316;
+            --bg-card: rgba(255, 255, 255, 0.025);
+            --text-primary: #e4e6ea;
+            --text-muted: #9ca3af;
+            --green: #22c55e;
+            --blue: #3b82f6;
+            --purple: #a855f7;
+            --red: #ef4444;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0c10 0%, #111316 50%, #1a1d23 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ─── Background glow ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 15% 10%, rgba(255, 217, 102, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 80%, rgba(244, 208, 63, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── Scrollbar ─── */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+            border-radius: 6px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        /* ─── Floating particles ─── */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(255, 217, 102, 0.35);
+            pointer-events: none;
+            animation: floatUp 22s infinite linear;
+            z-index: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            8% {
+                opacity: 1;
+            }
+
+            92% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-120px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* ─── NAV ─── */
+        .wiki-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 12, 16, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gold-border);
+            padding: 0 32px;
+        }
+
+        .nav-inner {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(255, 217, 102, 0.3);
+        }
+
+        .nav-logo-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.3px;
+        }
+
+        .nav-logo-version {
+            font-size: 11px;
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--green);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 8px 16px;
+            border-radius: 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+            background: var(--gold-faint);
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim)) !important;
+            color: #111316 !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 14px rgba(255, 217, 102, 0.25);
+            transition: all 0.25s ease !important;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 217, 102, 0.4) !important;
+            background: rgba(0, 0, 0, 0) !important;
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 110px 24px 90px;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 18px;
+            background: rgba(255, 217, 102, 0.1);
+            border: 1px solid var(--gold-border);
+            border-radius: 30px;
+            color: var(--gold);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 28px;
+            animation: fadeDown 0.6s ease both;
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.6rem, 6vw, 4.2rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 24px;
+            animation: fadeDown 0.7s 0.1s ease both;
+        }
+
+        .hero-gradient-text {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 60%, #ffe97a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 580px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+            animation: fadeDown 0.7s 0.2s ease both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            animation: fadeDown 0.7s 0.3s ease both;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+            color: #0a0c10;
+            font-weight: 700;
+            font-size: 15px;
+            border-radius: 14px;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(255, 217, 102, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(255, 217, 102, 0.45);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 14px;
+            text-decoration: none;
+            border: 1px solid var(--gold-border);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold-border-hover);
+            color: var(--gold);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ─── STATS STRIP ─── */
+        .stats-strip {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto 80px;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            animation: fadeDown 0.7s 0.4s ease both;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--gold-border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--gold-border-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* ─── SECTION LAYOUT ─── */
+        .section {
+            position: relative;
+            z-index: 1;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 52px;
+        }
+
+        .section-eyebrow {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 14px;
+            line-height: 1.2;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* ─── FEATURE CARDS ─── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--gold-border);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.04) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            border-color: var(--gold-border-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 217, 102, 0.06);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(255, 217, 102, 0.1);
+            border: 1px solid rgba(255, 217, 102, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            font-size: 22px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            margin-top: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(255, 217, 102, 0.1);
+            color: var(--gold);
+            border: 1px solid rgba(255, 217, 102, 0.2);
+        }
+
+        .feature-badge.green {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--green);
+            border-color: rgba(34, 197, 94, 0.25);
+        }
+
+        .feature-badge.blue {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--blue);
+            border-color: rgba(59, 130, 246, 0.25);
+        }
+
+        .feature-badge.purple {
+            background: rgba(168, 85, 247, 0.1);
+            color: var(--purple);
+            border-color: rgba(168, 85, 247, 0.25);
+        }
+
+        .feature-badge.red {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--red);
+            border-color: rgba(239, 68, 68, 0.25);
+        }
+
+        /* ─── WIKI PAGES ─── */
+        .wiki-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .wiki-card {
+            background: var(--bg-card);
+            border: 1px solid var(--gold-border);
+            border-radius: 20px;
+            padding: 28px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wiki-card::after {
+            content: '→';
+            position: absolute;
+            right: 24px;
+            bottom: 24px;
+            font-size: 18px;
+            color: var(--gold);
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all 0.3s ease;
+        }
+
+        .wiki-card:hover::after {
+            opacity: 1;
+            transform: none;
+        }
+
+        .wiki-card:hover {
+            border-color: var(--gold-border-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .wiki-card-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .wiki-card-icon.gold {
+            background: rgba(255, 217, 102, 0.12);
+            border: 1px solid rgba(255, 217, 102, 0.2);
+        }
+
+        .wiki-card-icon.green {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .wiki-card-icon.blue {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .wiki-card-icon.purple {
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        .wiki-card-icon.red {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .wiki-card-icon.cyan {
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .wiki-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.3;
+        }
+
+        .wiki-card p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .wiki-tag {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ─── CHANGELOG PREVIEW ─── */
+        .changelog-card {
+            background: var(--bg-card);
+            border: 1px solid var(--gold-border);
+            border-radius: 24px;
+            padding: 36px;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .changelog-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .changelog-version {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .changelog-version h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+        }
+
+        .version-tag {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(147, 51, 234, 0.2));
+            color: var(--purple);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .changelog-date {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .changelog-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .cl-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .cl-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .cl-dot.add {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--green);
+        }
+
+        .cl-dot.fix {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--red);
+        }
+
+        .cl-dot.imp {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--blue);
+        }
+
+        /* ─── INSTALL QUICK ─── */
+        .install-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--gold-border);
+            border-radius: 24px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .install-text h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .install-text p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .install-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .install-step {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 217, 102, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .install-step:hover {
+            border-color: var(--gold-border);
+            background: rgba(255, 217, 102, 0.04);
+        }
+
+        .install-num {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+            color: #0a0c10;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .install-step-text strong {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .install-step-text span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ─── DIVIDER ─── */
+        .section-divider {
+            max-width: 1300px;
+            margin: 0 auto 80px;
+            padding: 0 24px;
+        }
+
+        .section-divider hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--gold-border);
+            padding: 40px 32px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .footer-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .footer-links a {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        .footer-copy {
+            font-size: 12px;
+            color: rgba(156, 163, 175, 0.5);
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .wiki-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .install-panel {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wiki-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 80px 24px 60px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .changelog-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .hero h1 {
+                font-size: 1.9rem;
+            }
+        }
+
+        /* Reduce-motion */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Particles (minimal, lightweight) -->
+    <div class="particle" style="left:8%;  width:3px; height:3px; animation-delay:0s;  animation-duration:24s;"></div>
+    <div class="particle" style="left:22%; width:2px; height:2px; animation-delay:5s;  animation-duration:20s;"></div>
+    <div class="particle" style="left:45%; width:3px; height:3px; animation-delay:10s; animation-duration:26s;"></div>
+    <div class="particle" style="left:68%; width:2px; height:2px; animation-delay:3s;  animation-duration:22s;"></div>
+    <div class="particle" style="left:87%; width:3px; height:3px; animation-delay:8s;  animation-duration:18s;"></div>
+
+    <!-- ─── NAV ─── -->
+    <nav class="wiki-nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">
+                <div class="nav-logo-icon">🏢</div>
+                <span class="nav-logo-text">ApartmentCore</span>
+                <span class="nav-logo-version">v1.3.4</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="command.html">Commands</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="tax_system.html">Tax</a></li>
+                <li><a href="auction.html">Auction</a></li>
+                <li><a href="changelog.html">Changelog</a></li>
+                <li><a href="https://www.spigotmc.org" target="_blank" class="nav-cta">Download</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section class="hero">
+        <div class="hero-eyebrow">
+            <span>🏆</span> Official Documentation Wiki
+        </div>
+        <h1>
+            The <span class="hero-gradient-text">Premium Apartment</span><br>Plugin for Minecraft
+        </h1>
+        <p>
+            ApartmentCore transforms your Minecraft server economy with a full-featured
+            property management system — from passive income to a live player market.
+        </p>
+        <div class="hero-buttons">
+            <a href="installation.html" class="btn-primary">
+                🚀 Get Started
+            </a>
+            <a href="changelog.html" class="btn-secondary">
+                📋 Changelog
+            </a>
+        </div>
+    </section>
+
+    <!-- ─── STATS ─── -->
+    <div class="stats-strip">
+        <div class="stat-card">
+            <div class="stat-number">5</div>
+            <div class="stat-label">Apartment Levels</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">12+</div>
+            <div class="stat-label">Shop Upgrades</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Research Types</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">56+</div>
+            <div class="stat-label">Features (v1.3.4)</div>
+        </div>
+    </div>
+
+    <!-- ─── FEATURES ─── -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-eyebrow">Core Features</div>
+            <h2 class="section-title">Everything your server economy needs</h2>
+            <p class="section-subtitle">A complete property ecosystem, fully configurable and optimised for performance.
+            </p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🏙️</div>
+                <h3>Apartment Converter</h3>
+                <p>Convert any WorldGuard region into a purchasable, income-generating apartment instantly via admin
+                    command.</p>
+                <span class="feature-badge">Admin Tool</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Passive Income System</h3>
+                <p>Apartments generate income on a configurable tick interval, with per-level rates and vault capacity
+                    limits.</p>
+                <span class="feature-badge green">Economy</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⬆️</div>
+                <h3>5-Tier Level System</h3>
+                <p>Upgrade apartments across 5 levels with timed renovation phases, a custom confirmation GUI, and
+                    level-up effects.</p>
+                <span class="feature-badge blue">Progression</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧾</div>
+                <h3>Dynamic Tax System</h3>
+                <p>Fully configurable progressive taxes per apartment level, with auto-pay, penalties, and
+                    research-based reductions.</p>
+                <span class="feature-badge red">Tax</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📢</div>
+                <h3>Player Market</h3>
+                <p>Owners can list apartments for custom prices in a live player market. Quick-sell or market-sell with
+                    ownership transfer.</p>
+                <span class="feature-badge purple">Market</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3>Research System</h3>
+                <p>4 research branches — Capital Growth, Revenue Acceleration, Tax Efficiency, and Vault Expansion —
+                    with multi-tier upgrades.</p>
+                <span class="feature-badge blue">Research</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛒</div>
+                <h3>Apartment Shop</h3>
+                <p>Purchase premium amenities for individual apartments: Smart HVAC, High-Speed Internet, Solar Panels,
+                    and more.</p>
+                <span class="feature-badge green">Shop</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Achievement System</h3>
+                <p>5 achievement types with progress bars, global broadcast on unlock, sound effects, and configurable
+                    money rewards.</p>
+                <span class="feature-badge purple">Achievements</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Optimised Performance</h3>
+                <p>Async operations, smart caching, and GPU-friendly UI pages. Runs smoothly on low-spec servers.</p>
+                <span class="feature-badge">Performance</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider">
+        <hr>
+    </div>
+
+    <!-- ─── WIKI PAGES ─── -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-eyebrow">Wiki Pages</div>
+            <h2 class="section-title">Browse the documentation</h2>
+            <p class="section-subtitle">Every feature is documented in depth. Pick a page to get started.</p>
+        </div>
+        <div class="wiki-grid">
+            <a href="installation.html" class="wiki-card">
+                <div class="wiki-card-icon gold">🔧</div>
+                <h3>First Installation</h3>
+                <p>Dependencies, step-by-step setup, creating your first apartment, and troubleshooting common issues.
+                </p>
+                <span class="wiki-tag">Setup Guide</span>
+            </a>
+            <a href="command.html" class="wiki-card">
+                <div class="wiki-card-icon blue">⌨️</div>
+                <h3>Commands & Permissions</h3>
+                <p>Full reference for all player and admin commands, with permission nodes and usage examples.</p>
+                <span class="wiki-tag">Reference</span>
+            </a>
+            <a href="shop.html" class="wiki-card">
+                <div class="wiki-card-icon green">🛒</div>
+                <h3>Shop System</h3>
+                <p>Detailed breakdown of all shop items, tier progression, purchase rules, refunds, and configuration.
+                </p>
+                <span class="wiki-tag">Economy</span>
+            </a>
+            <a href="tax_system.html" class="wiki-card">
+                <div class="wiki-card-icon red">🧾</div>
+                <h3>Tax System</h3>
+                <p>How taxes are calculated, auto-pay, progressive penalties, and research-based tax efficiency buffs.
+                </p>
+                <span class="wiki-tag">Economy</span>
+            </a>
+            <a href="auction.html" class="wiki-card">
+                <div class="wiki-card-icon purple">🔨</div>
+                <h3>Auction House</h3>
+                <p>Government confiscation auctions — how delinquent apartments enter the auction pool and bidding
+                    rules.</p>
+                <span class="wiki-tag">Market</span>
+            </a>
+            <a href="changelog.html" class="wiki-card">
+                <div class="wiki-card-icon cyan">📋</div>
+                <h3>Changelog</h3>
+                <p>Full version history for every release — added features, bug fixes, and breaking changes, all
+                    collapsible.</p>
+                <span class="wiki-tag">Updates</span>
+            </a>
+        </div>
+    </section>
+
+    <div class="section-divider">
+        <hr>
+    </div>
+
+    <!-- ─── LATEST CHANGELOG ─── -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-eyebrow">Latest Release</div>
+            <h2 class="section-title">What's new in v1.3.4</h2>
+            <p class="section-subtitle">A massive update packed with new systems and quality-of-life improvements.</p>
+        </div>
+        <div class="changelog-card">
+            <div class="changelog-header">
+                <div class="changelog-version">
+                    <h3>Version 1.3.4</h3>
+                    <span class="version-tag">Massive Update</span>
+                </div>
+                <span class="changelog-date">February 28, 2026</span>
+            </div>
+            <div class="changelog-items">
+                <div class="cl-item">
+                    <div class="cl-dot add">+</div>
+                    <span><strong>Achievement System</strong> — 5 achievement types with progress bars, sound effects,
+                        global broadcasts, and money rewards.</span>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-dot add">+</div>
+                    <span><strong>Player Market</strong> — Owners can list apartments at custom prices; other players
+                        can buy with full ownership transfer.</span>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-dot add">+</div>
+                    <span><strong>Income Capacity</strong> — Per-level income vault limits prevent infinite
+                        accumulation; players get notified when full.</span>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-dot add">+</div>
+                    <span><strong>Upgrade Duration</strong> — Renovations now take configurable time, with a new
+                        confirmation GUI before committing.</span>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-dot add">+</div>
+                    <span><strong>Vault Expansion Research</strong> — New <code
+                            style="background:rgba(255,217,102,0.1);padding:2px 7px;border-radius:5px;color:var(--gold);font-size:12px;">capacity_expansion</code>
+                        research type grants +5% capacity per tier.</span>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-dot fix">✕</div>
+                    <span><strong>Fixed</strong> tax generation interval now syncs correctly with <code
+                            style="background:rgba(255,217,102,0.1);padding:2px 7px;border-radius:5px;color:var(--gold);font-size:12px;">config.yml</code>
+                        instead of being hardcoded to 24 hours.</span>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-dot imp">↑</div>
+                    <span><strong>Improved</strong> Pending Income display in <code
+                            style="background:rgba(255,217,102,0.1);padding:2px 7px;border-radius:5px;color:var(--gold);font-size:12px;">MyApartmentsGUI</code>
+                        now shows <code
+                            style="background:rgba(255,217,102,0.1);padding:2px 7px;border-radius:5px;color:var(--gold);font-size:12px;">$1,000 / $10,000</code>
+                        capacity format.</span>
+                </div>
+            </div>
+            <a href="changelog.html" class="btn-secondary" style="display:inline-flex;">
+                View Full Changelog →
+            </a>
+        </div>
+    </section>
+
+    <div class="section-divider">
+        <hr>
+    </div>
+
+    <!-- ─── QUICK INSTALL ─── -->
+    <section class="section">
+        <div class="install-panel">
+            <div class="install-text">
+                <h2>Get started in<br><span class="hero-gradient-text">minutes</span></h2>
+                <p>
+                    ApartmentCore is designed for painless installation. Drop the JAR in your plugins folder,
+                    restart your server, and you're ready to create your first apartment.
+                </p>
+                <a href="installation.html" class="btn-primary" style="display:inline-flex;">
+                    📖 Full Installation Guide
+                </a>
+            </div>
+            <div class="install-steps">
+                <div class="install-step">
+                    <div class="install-num">1</div>
+                    <div class="install-step-text">
+                        <strong>Install Dependencies</strong>
+                        <span>Vault, WorldGuard, and a Spigot/Paper server ≥ 1.21.4</span>
+                    </div>
+                </div>
+                <div class="install-step">
+                    <div class="install-num">2</div>
+                    <div class="install-step-text">
+                        <strong>Drop the JAR</strong>
+                        <span>Place ApartmentCore.jar in your /plugins folder</span>
+                    </div>
+                </div>
+                <div class="install-step">
+                    <div class="install-num">3</div>
+                    <div class="install-step-text">
+                        <strong>Restart & Configure</strong>
+                        <span>Edit config.yml, create a WorldGuard region, and run /ac admin create</span>
+                    </div>
+                </div>
+                <div class="install-step">
+                    <div class="install-num">4</div>
+                    <div class="install-step-text">
+                        <strong>Go Live!</strong>
+                        <span>Players can now purchase, upgrade, and trade apartments</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── FOOTER ─── -->
+    <footer>
+        <div class="footer-logo">🏢 ApartmentCore</div>
+        <div class="footer-sub">Premium Minecraft Apartment Management Plugin</div>
+        <div class="footer-links">
+            <a href="installation.html">Installation</a>
+            <a href="command.html">Commands</a>
+            <a href="shop.html">Shop</a>
+            <a href="tax_system.html">Tax System</a>
+            <a href="auction.html">Auction</a>
+            <a href="changelog.html">Changelog</a>
+        </div>
+        <div class="footer-copy">© 2026 ApartmentCore Wiki — Built for Minecraft 1.21.4</div>
+    </footer>
+
+</body>
+
+</html>
