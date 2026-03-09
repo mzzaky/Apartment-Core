@@ -1,0 +1,218 @@
+# ============================================================
+#  ApartmentCore - Main Menu GUI Configuration
+# ============================================================
+#  This file controls the appearance and layout of the
+#  Main Menu GUI (/apartmentcore menu).
+#
+#  All values here override the built-in defaults.
+#  Remove or comment out any key to fall back to the
+#  hardcoded default for that specific property.
+#
+#  Color codes: use '&' followed by a color code (e.g. &6 = gold)
+#  Placeholders (resolved at runtime):
+#    {owned_count}          - Number of apartments the player owns
+#    {max_apartments}       - Maximum apartments allowed per player
+#    {pending_income}       - Total pending income (formatted)
+#    {available_count}      - Number of available apartments
+#    {cheapest_price}       - Cheapest apartment price (formatted)
+#    {total_unpaid}         - Total unpaid taxes (formatted)
+#    {overdue_count}        - Number of overdue apartments
+#    {tax_status_color}     - Dynamic color based on tax status (&a or &c)
+#    {tax_status}           - Tax status text ("All Paid" or "Taxes Due!")
+#    {active_auctions}      - Number of active auctions
+#    {auction_commission}   - Auction commission percentage
+#    {research_completed}   - Completed research tiers
+#    {research_max}         - Maximum research tiers
+#    {research_status}      - Current research status line
+#    {achievement_completed}- Completed achievements count
+#    {achievement_total}    - Total achievements count
+#    {achievement_percent}  - Achievement completion percentage
+#    {achievement_bar}      - Achievement progress bar
+#    {lifetime_income}      - Total lifetime income (formatted)
+#    {total_tax_paid}       - Total tax paid (formatted)
+#    {outstanding_taxes}    - Outstanding taxes (formatted)
+#    {player_name}          - Player display name
+#    {plugin_version}       - Plugin version string
+#    {economy_name}         - Economy provider name
+#    {player_balance}       - Player balance (formatted)
+# ============================================================
+
+# GUI title (supports color codes)
+gui_title: "&2ApartmentCore Main Menu"
+
+# GUI size in slots (must be a multiple of 9: 9, 18, 27, 36, 45, 54)
+gui_size: 54
+
+# Border / filler configuration
+border:
+  enabled: true
+  material: GRAY_STAINED_GLASS_PANE
+
+# Player info head (shown at top center)
+player_info:
+  enabled: true
+  slot: 4
+  material: PLAYER_HEAD
+  name: "&6{player_name}"
+  lore:
+    - "&7ApartmentCore v{plugin_version}"
+    - "&7Economy: &f{economy_name}"
+    - ""
+    - "&7Balance: &a{player_balance}"
+
+# ============================================================
+#  Menu Items
+# ============================================================
+#  Each item supports:
+#    slot              - Inventory slot position (0-53)
+#    material          - Bukkit Material name
+#    custom_model_data - Custom model data (integer, optional)
+#    name              - Display name (supports color codes & placeholders)
+#    lore              - List of lore lines (supports color codes & placeholders)
+#    glow              - Whether to add enchantment glow (true/false)
+# ============================================================
+
+items:
+  my_apartments:
+    slot: 11
+    material: DARK_OAK_DOOR
+    custom_model_data: 0
+    name: "&6\u1F3E0 My Apartments"
+    lore:
+      - "&7Manage your owned apartments"
+      - ""
+      - "&e\uD83D\uDCCA Statistics:"
+      - "&7\u2022 Owned: &f{owned_count}&7/&f{max_apartments}"
+      - "&7\u2022 Pending Income: &a{pending_income}"
+      - ""
+      - "&a\u25B6 Click to open"
+    glow: true
+
+  browse_buy:
+    slot: 13
+    material: GOLD_INGOT
+    custom_model_data: 0
+    name: "&6\uD83D\uDED2 Browse & Buy"
+    lore:
+      - "&7Browse available apartments"
+      - ""
+      - "&e\uD83D\uDCCA Market Info:"
+      - "&7\u2022 Available: &f{available_count} &7apartments"
+      - "&7\u2022 Starting from: &a{cheapest_price}"
+      - ""
+      - "&a\u25B6 Click to browse"
+    glow: true
+
+  tax_management:
+    slot: 15
+    material: GREEN_CONCRETE
+    custom_model_data: 0
+    name: "&6\uD83D\uDCB0 Tax Management"
+    lore:
+      - "&7Manage your tax payments"
+      - ""
+      - "&e\uD83D\uDCCA Tax Status:"
+      - "&7\u2022 Status: {tax_status_color}{tax_status}"
+      - "&7\u2022 Total Due: &f{total_unpaid}"
+      - "&7\u2022 Overdue: &f{overdue_count} &7apartments"
+      - ""
+      - "&a\u25B6 Click to manage"
+    glow: true
+
+  auction_house:
+    slot: 20
+    material: SUNFLOWER
+    custom_model_data: 0
+    name: "&6\uD83D\uDD28 Auction House"
+    lore:
+      - "&7Buy and sell apartments via auction"
+      - ""
+      - "&e\uD83D\uDCCA Auction Info:"
+      - "&7\u2022 Active Auctions: &f{active_auctions}"
+      - "&7\u2022 Commission: &f{auction_commission}"
+      - ""
+      - "&a\u25B6 Click to open"
+    glow: true
+    # Shown when auction system is disabled
+    disabled_material: BARRIER
+    disabled_name: "&c\uD83D\uDD28 Auction House"
+    disabled_lore:
+      - "&7Auction system is disabled"
+      - ""
+      - "&c\u2717 Not available"
+
+  research:
+    slot: 22
+    material: ENCHANTING_TABLE
+    custom_model_data: 0
+    name: "&d Research Center"
+    lore:
+      - "&7Conduct research for permanent buffs"
+      - ""
+      - "&e Research Progress:"
+      - "&7 Completed: &f{research_completed}&7/&f{research_max} &7tiers"
+      - "{research_status}"
+      - ""
+      - "&a Click to open"
+    glow: true
+    disabled_material: BARRIER
+    disabled_name: "&c Research Center"
+    disabled_lore:
+      - "&7Research system is disabled"
+      - ""
+      - "&c Not available"
+
+  statistics:
+    slot: 24
+    material: BOOK
+    custom_model_data: 0
+    name: "&6\uD83D\uDCCA Statistics"
+    lore:
+      - "&7Your overall performance"
+      - ""
+      - "&e\uD83D\uDCCB Overview:"
+      - "&7\u2022 Owned: &f{owned_count}"
+      - "&7\u2022 Lifetime Income: &a{lifetime_income}"
+      - "&7\u2022 Total Tax Paid: &c{total_tax_paid}"
+      - "&7\u2022 Pending Income: &a{pending_income}"
+      - "&7\u2022 Outstanding Taxes: &c{outstanding_taxes}"
+      - ""
+      - "&a\u25B6 Click to open"
+    glow: true
+
+  achievements:
+    slot: 30
+    material: NETHER_STAR
+    custom_model_data: 0
+    name: "&6 Achievements"
+    lore:
+      - "&7Track your milestones and earn rewards"
+      - ""
+      - "&e Achievement Progress:"
+      - "&7 Completed: &f{achievement_completed}&7/&f{achievement_total} &7({achievement_percent})"
+      - "&7 {achievement_bar}"
+      - ""
+      - "&a Click to view"
+    glow: true
+    disabled_material: BARRIER
+    disabled_name: "&c Achievements"
+    disabled_lore:
+      - "&7Achievement system is disabled"
+      - ""
+      - "&c Not available"
+
+  help_info:
+    slot: 32
+    material: ENCHANTED_BOOK
+    custom_model_data: 0
+    name: "&6\u2753 Help & Info"
+    lore:
+      - "&7Get help and information"
+      - ""
+      - "&e\uD83D\uDCDA Available Help:"
+      - "&7\u2022 Command reference"
+      - "&7\u2022 FAQ and guides"
+      - "&7\u2022 Contact support"
+      - ""
+      - "&a\u25B6 Click for help"
+    glow: true

@@ -1,0 +1,30 @@
+v1.3.6 - Configurable Main Menu GUI
+====================================
+Date: 2026-03-09
+
+[Ditambahkan]
+- Sistem konfigurasi YAML untuk Main Menu GUI melalui file `custom_gui/main_menu.yml`.
+  * Judul GUI (`gui_title`), ukuran GUI (`gui_size`), dan border sekarang bisa dikonfigurasi.
+  * Setiap item menu mendukung konfigurasi: `slot`, `material`, `custom_model_data`, `name`, `lore`, dan `glow`.
+  * Item yang bisa dinonaktifkan (Auction House, Research, Achievements) mendukung `disabled_material`, `disabled_name`, dan `disabled_lore`.
+  * Player info head (slot, material, name, lore) juga bisa dikonfigurasi.
+  * Mendukung placeholder dinamis seperti `{owned_count}`, `{pending_income}`, `{tax_status}`, dll.
+  * File konfigurasi default otomatis dibuat saat pertama kali plugin dijalankan.
+
+- Class baru `MainMenuConfig.java` sebagai loader konfigurasi dengan fallback ke nilai hardcoded.
+  * Setiap properti yang tidak ada atau tidak valid di file YAML akan menggunakan nilai default bawaan.
+  * Validasi material Bukkit dengan pesan warning di console jika material tidak valid.
+  * Validasi ukuran GUI (harus kelipatan 9, antara 9-54).
+
+[Diubah]
+- `MainMenuGUI.java` sekarang sepenuhnya membaca layout dari file konfigurasi YAML.
+  * Semua nilai hardcoded dijadikan fallback, bukan sumber utama.
+  * Posisi slot item menu sekarang dinamis, mengikuti konfigurasi.
+  * Click handler menggunakan posisi slot dari konfigurasi.
+  * Placeholder di-resolve saat runtime untuk menampilkan data pemain secara dinamis.
+
+- `ApartmentCore.java` menginisialisasi `MainMenuConfig` saat plugin diaktifkan.
+
+[Catatan]
+- Jika file `custom_gui/main_menu.yml` dihapus, plugin akan membuat ulang file default secara otomatis.
+- Semua nilai yang ada di file Java sebelumnya tetap berfungsi sebagai fallback jika konfigurasi tidak lengkap.
