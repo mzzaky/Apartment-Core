@@ -14,6 +14,7 @@ import com.aithor.apartmentcore.placeholder.ApartmentPlaceholder;
 import com.aithor.apartmentcore.achievement.AchievementManager;
 import com.aithor.apartmentcore.research.ResearchManager;
 import com.aithor.apartmentcore.shop.ApartmentShopManager;
+import com.aithor.apartmentcore.gui.config.MainMenuConfig;
 import com.aithor.apartmentcore.util.SplashArt;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.Command;
@@ -44,6 +45,7 @@ public class ApartmentCore extends JavaPlugin {
     private ApartmentShopManager shopManager;
     private ResearchManager researchManager;
     private AchievementManager achievementManager;
+    private MainMenuConfig mainMenuConfig;
     private BukkitTask auctionTask;
 
     private final Map<UUID, Long> commandCooldowns = new ConcurrentHashMap<>();
@@ -96,6 +98,10 @@ public class ApartmentCore extends JavaPlugin {
         } else {
             debug("Auction system is disabled via config.");
         }
+
+        // Custom GUI configurations
+        this.mainMenuConfig = new MainMenuConfig(this);
+        this.mainMenuConfig.load();
 
         // GUI system
         if (this.configManager.isGuiEnabled()) {
@@ -313,6 +319,10 @@ public class ApartmentCore extends JavaPlugin {
 
     public AchievementManager getAchievementManager() {
         return achievementManager;
+    }
+
+    public MainMenuConfig getMainMenuConfig() {
+        return mainMenuConfig;
     }
 
     /**

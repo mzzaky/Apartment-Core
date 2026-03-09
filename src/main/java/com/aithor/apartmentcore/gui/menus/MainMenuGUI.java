@@ -10,37 +10,38 @@ import org.bukkit.inventory.ItemStack;
 
 import com.aithor.apartmentcore.ApartmentCore;
 import com.aithor.apartmentcore.gui.GUIManager;
+import com.aithor.apartmentcore.gui.config.MainMenuConfig;
 import com.aithor.apartmentcore.gui.interfaces.GUI;
 import com.aithor.apartmentcore.gui.items.ItemBuilder;
 import com.aithor.apartmentcore.gui.utils.GUIUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * Main menu GUI - Central hub for all apartment functions
+ * Main menu GUI - Central hub for all apartment functions.
+ * Layout, titles, materials, names, and lore are driven by
+ * {@code custom_gui/main_menu.yml}. Every value falls back to a
+ * hardcoded default when the config key is absent.
  */
 public class MainMenuGUI implements GUI {
 
     private final Player player;
     private final ApartmentCore plugin;
     private final GUIManager guiManager;
+    private final MainMenuConfig menuConfig;
     private final String title;
     private final Inventory inventory;
-
-    // Slot positions
-    private static final int MY_APARTMENTS_SLOT = 11;
-    private static final int BROWSE_BUY_SLOT = 13;
-    private static final int TAX_MANAGEMENT_SLOT = 15;
-    private static final int AUCTION_HOUSE_SLOT = 20;
-    private static final int RESEARCH_SLOT = 22;
-    private static final int STATISTICS_SLOT = 24;
-    private static final int ACHIEVEMENTS_SLOT = 30;
-    private static final int HELP_INFO_SLOT = 32;
 
     public MainMenuGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         this.player = player;
         this.plugin = plugin;
         this.guiManager = guiManager;
-        this.title = ChatColor.translateAlternateColorCodes('&', "&2ApartmentCore Main Menu");
-        this.inventory = Bukkit.createInventory(null, 54, this.title);
+        this.menuConfig = plugin.getMainMenuConfig();
+        this.title = ChatColor.translateAlternateColorCodes('&', menuConfig.getTitle());
+        this.inventory = Bukkit.createInventory(null, menuConfig.getSize(), this.title);
     }
 
     @Override
@@ -49,42 +50,47 @@ public class MainMenuGUI implements GUI {
         player.openInventory(inventory);
     }
 
+    // ── Inventory setup ──────────────────────────────────────────
+
     private void setupInventory() {
         inventory.clear();
 
-        // Add decorative border
-        addBorder();
+        if (menuConfig.isBorderEnabled()) {
+            addBorder();
+        }
 
-        // Add main menu items
-        addMyApartments();
-        addBrowseAndBuy();
-        addTaxManagement();
-        addAuctionHouse();
-        addResearch();
-        addStatistics();
-        addAchievements();
-        addHelpInfo();
+        // Gather all dynamic placeholders once
+        Map<String, String> placeholders = buildPlaceholders();
 
-        // Add player info
-        addPlayerInfo();
+        addConfigItem("my_apartments", placeholders, false);
+        addConfigItem("browse_buy", placeholders, false);
+        addTaxManagementItem(placeholders);
+        addAuctionHouseItem(placeholders);
+        addResearchItem(placeholders);
+        addConfigItem("statistics", placeholders, false);
+        addAchievementItem(placeholders);
+        addConfigItem("help_info", placeholders, false);
+
+        if (menuConfig.isPlayerInfoEnabled()) {
+            addPlayerInfo(placeholders);
+        }
     }
 
+    // ── Border ───────────────────────────────────────────────────
+
     private void addBorder() {
-        ItemStack borderItem = ItemBuilder.filler(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack borderItem = ItemBuilder.filler(menuConfig.getBorderMaterial());
         int rows = Math.max(1, inventory.getSize() / 9);
 
-        // Top border (first row)
         for (int i = 0; i < 9 && i < inventory.getSize(); i++) {
             inventory.setItem(i, borderItem);
         }
 
-        // Bottom border (last row)
         int bottomStart = (rows - 1) * 9;
         for (int i = bottomStart; i < bottomStart + 9 && i < inventory.getSize(); i++) {
             inventory.setItem(i, borderItem);
         }
 
-        // Side borders for intermediate rows
         for (int r = 1; r < rows - 1; r++) {
             int leftIndex = r * 9;
             int rightIndex = r * 9 + 8;
@@ -95,195 +101,161 @@ public class MainMenuGUI implements GUI {
         }
     }
 
-    private void addMyApartments() {
+    // ── Generic config-driven item builder ───────────────────────
+
+    private void addConfigItem(String key, Map<String, String> placeholders, boolean disabled) {
+        Material material;
+        String name;
+        List<String> lore;
+
+        if (disabled) {
+            material = menuConfig.getDisabledMaterial(key);
+            name = menuConfig.getDisabledName(key);
+            lore = menuConfig.getDisabledLore(key);
+        } else {
+            material = menuConfig.getItemMaterial(key);
+            name = menuConfig.getItemName(key);
+            lore = menuConfig.getItemLore(key);
+        }
+
+        int slot = menuConfig.getItemSlot(key);
+        int customModelData = menuConfig.getItemCustomModelData(key);
+        boolean glow = !disabled && menuConfig.getItemGlow(key);
+
+        // Resolve placeholders in name and lore
+        name = replacePlaceholders(name, placeholders);
+        List<String> resolvedLore = new ArrayList<>();
+        for (String line : lore) {
+            resolvedLore.add(replacePlaceholders(line, placeholders));
+        }
+
+        ItemBuilder builder = new ItemBuilder(material)
+                .name(name)
+                .lore(resolvedLore);
+
+        if (customModelData > 0) {
+            builder.modelData(customModelData);
+        }
+        if (glow) {
+            builder.glow();
+        }
+
+        inventory.setItem(slot, builder.build());
+    }
+
+    // ── Items that require conditional logic ─────────────────────
+
+    private void addTaxManagementItem(Map<String, String> placeholders) {
+        // Dynamic material based on tax status
+        double totalUnpaid = plugin.getApartmentManager().getApartments().values().stream()
+                .filter(a -> player.getUniqueId().equals(a.owner))
+                .mapToDouble(a -> a.getTotalUnpaid())
+                .sum();
+
+        // Override material from config default if taxes are due
+        String configMat = menuConfig.getItemMaterial("tax_management").name();
+        if (totalUnpaid > 0 && configMat.equals("GREEN_CONCRETE")) {
+            // Switch to RED_CONCRETE when taxes are due (only if using default material)
+            Material material = Material.RED_CONCRETE;
+            int slot = menuConfig.getItemSlot("tax_management");
+            int customModelData = menuConfig.getItemCustomModelData("tax_management");
+            boolean glow = menuConfig.getItemGlow("tax_management");
+
+            String name = replacePlaceholders(menuConfig.getItemName("tax_management"), placeholders);
+            List<String> resolvedLore = new ArrayList<>();
+            for (String line : menuConfig.getItemLore("tax_management")) {
+                resolvedLore.add(replacePlaceholders(line, placeholders));
+            }
+
+            ItemBuilder builder = new ItemBuilder(material).name(name).lore(resolvedLore);
+            if (customModelData > 0) builder.modelData(customModelData);
+            if (glow) builder.glow();
+            inventory.setItem(slot, builder.build());
+        } else {
+            addConfigItem("tax_management", placeholders, false);
+        }
+    }
+
+    private void addAuctionHouseItem(Map<String, String> placeholders) {
+        boolean disabled = plugin.getAuctionManager() == null || !plugin.getConfigManager().isAuctionEnabled();
+        addConfigItem("auction_house", placeholders, disabled);
+    }
+
+    private void addResearchItem(Map<String, String> placeholders) {
+        boolean disabled = plugin.getResearchManager() == null || !plugin.getResearchManager().isEnabled();
+        addConfigItem("research", placeholders, disabled);
+    }
+
+    private void addAchievementItem(Map<String, String> placeholders) {
+        boolean disabled = plugin.getAchievementManager() == null || !plugin.getAchievementManager().isEnabled();
+        addConfigItem("achievements", placeholders, disabled);
+    }
+
+    private void addPlayerInfo(Map<String, String> placeholders) {
+        int slot = menuConfig.getPlayerInfoSlot();
+        String name = replacePlaceholders(menuConfig.getPlayerInfoName(), placeholders);
+        List<String> resolvedLore = new ArrayList<>();
+        for (String line : menuConfig.getPlayerInfoLore()) {
+            resolvedLore.add(replacePlaceholders(line, placeholders));
+        }
+
+        ItemBuilder builder = new ItemBuilder(menuConfig.getPlayerInfoMaterial())
+                .name(name)
+                .lore(resolvedLore);
+
+        // Apply skull if material is PLAYER_HEAD
+        if (menuConfig.getPlayerInfoMaterial() == Material.PLAYER_HEAD) {
+            builder.skull(player.getName());
+        }
+
+        inventory.setItem(slot, builder.build());
+    }
+
+    // ── Placeholder resolution ───────────────────────────────────
+
+    private Map<String, String> buildPlaceholders() {
+        Map<String, String> map = new HashMap<>();
+
+        // Apartment counts
         long ownedCount = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .count();
+        int maxApartments = plugin.getConfig().getInt("settings.max-apartments-per-player", 5);
 
         double totalPendingIncome = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .mapToDouble(a -> a.pendingIncome)
                 .sum();
 
-        ItemStack item = new ItemBuilder(Material.DARK_OAK_DOOR)
-                .name("&6🏠 My Apartments")
-                .lore(
-                        "&7Manage your owned apartments",
-                        "",
-                        "&e📊 Statistics:",
-                        "&7• Owned: &f" + ownedCount + "&7/&f"
-                                + plugin.getConfig().getInt("settings.max-apartments-per-player", 5),
-                        "&7• Pending Income: &a" + plugin.getConfigManager().formatMoney(totalPendingIncome),
-                        "",
-                        "&a▶ Click to open")
-                .glow()
-                .build();
-
-        inventory.setItem(MY_APARTMENTS_SLOT, item);
-    }
-
-    private void addBrowseAndBuy() {
         long availableCount = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> a.owner == null)
                 .count();
 
-        // Find cheapest apartment
         double cheapestPrice = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> a.owner == null)
                 .mapToDouble(a -> a.price)
                 .min()
                 .orElse(0);
 
-        ItemStack item = new ItemBuilder(Material.GOLD_INGOT)
-                .name("&6🛒 Browse & Buy")
-                .lore(
-                        "&7Browse available apartments",
-                        "",
-                        "&e📊 Market Info:",
-                        "&7• Available: &f" + availableCount + " &7apartments",
-                        "&7• Starting from: &a"
-                                + (cheapestPrice > 0 ? plugin.getConfigManager().formatMoney(cheapestPrice) : "N/A"),
-                        "",
-                        "&a▶ Click to browse")
-                .glow()
-                .build();
-
-        inventory.setItem(BROWSE_BUY_SLOT, item);
-    }
-
-    private void addTaxManagement() {
-        // Calculate total unpaid taxes
+        // Tax info
         double totalUnpaid = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .mapToDouble(a -> a.getTotalUnpaid())
                 .sum();
 
-        // Count overdue apartments
         long overdueCount = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
-                .filter(a -> a.computeTaxStatus(System.currentTimeMillis()).ordinal() >= 1) // OVERDUE or worse
+                .filter(a -> a.computeTaxStatus(System.currentTimeMillis()).ordinal() >= 1)
                 .count();
 
-        Material material = totalUnpaid > 0 ? Material.RED_CONCRETE : Material.GREEN_CONCRETE;
-        String statusColor = totalUnpaid > 0 ? "&c" : "&a";
-        String status = totalUnpaid > 0 ? "Taxes Due!" : "All Paid";
+        String taxStatusColor = totalUnpaid > 0 ? "&c" : "&a";
+        String taxStatus = totalUnpaid > 0 ? "Taxes Due!" : "All Paid";
 
-        ItemStack item = new ItemBuilder(material)
-                .name("&6💰 Tax Management")
-                .lore(
-                        "&7Manage your tax payments",
-                        "",
-                        "&e📊 Tax Status:",
-                        "&7• Status: " + statusColor + status,
-                        "&7• Total Due: &f" + plugin.getConfigManager().formatMoney(totalUnpaid),
-                        "&7• Overdue: &f" + overdueCount + " &7apartments",
-                        "",
-                        "&a▶ Click to manage")
-                .glow()
-                .build();
-
-        inventory.setItem(TAX_MANAGEMENT_SLOT, item);
-    }
-
-    private void addAuctionHouse() {
-        if (plugin.getAuctionManager() == null || !plugin.getConfigManager().isAuctionEnabled()) {
-            ItemStack item = new ItemBuilder(Material.BARRIER)
-                    .name("&c🔨 Auction House")
-                    .lore(
-                            "&7Auction system is disabled",
-                            "",
-                            "&c✗ Not available")
-                    .build();
-            inventory.setItem(AUCTION_HOUSE_SLOT, item);
-            return;
-        }
-
-        int activeAuctions = plugin.getAuctionManager().getActiveAuctions().size();
-
-        ItemStack item = new ItemBuilder(Material.SUNFLOWER)
-                .name("&6🔨 Auction House")
-                .lore(
-                        "&7Buy and sell apartments via auction",
-                        "",
-                        "&e📊 Auction Info:",
-                        "&7• Active Auctions: &f" + activeAuctions,
-                        "&7• Commission: &f"
-                                + String.format("%.1f%%", plugin.getConfigManager().getAuctionCommission() * 100),
-                        "",
-                        "&a▶ Click to open")
-                .glow()
-                .build();
-
-        inventory.setItem(AUCTION_HOUSE_SLOT, item);
-    }
-
-    private void addResearch() {
-        if (plugin.getResearchManager() == null || !plugin.getResearchManager().isEnabled()) {
-            ItemStack item = new ItemBuilder(Material.BARRIER)
-                    .name("&c Research Center")
-                    .lore(
-                            "&7Research system is disabled",
-                            "",
-                            "&c Not available")
-                    .build();
-            inventory.setItem(RESEARCH_SLOT, item);
-            return;
-        }
-
-        com.aithor.apartmentcore.research.ResearchManager rm = plugin.getResearchManager();
-        com.aithor.apartmentcore.research.PlayerResearchData data = rm.getPlayerData(player.getUniqueId());
-
-        int totalCompleted = 0;
-        int totalMax = 0;
-        for (com.aithor.apartmentcore.research.ResearchType type : com.aithor.apartmentcore.research.ResearchType.values()) {
-            totalCompleted += data.getCompletedTier(type);
-            totalMax += type.getMaxTier();
-        }
-
-        String statusLine;
-        if (data.hasActiveResearch()) {
-            statusLine = "&e Researching: &f" + data.getActiveResearch().getDisplayName();
-        } else {
-            statusLine = "&7 No active research";
-        }
-
-        ItemStack item = new ItemBuilder(Material.ENCHANTING_TABLE)
-                .name("&d Research Center")
-                .lore(
-                        "&7Conduct research for permanent buffs",
-                        "",
-                        "&e Research Progress:",
-                        "&7 Completed: &f" + totalCompleted + "&7/&f" + totalMax + " &7tiers",
-                        statusLine,
-                        "",
-                        "&a Click to open")
-                .glow()
-                .build();
-
-        inventory.setItem(RESEARCH_SLOT, item);
-    }
-
-    private void addStatistics() {
-        // Aggregate player stats
-        long ownedCount = plugin.getApartmentManager().getApartments().values().stream()
-                .filter(a -> player.getUniqueId().equals(a.owner))
-                .count();
-
-        double totalPendingIncome = plugin.getApartmentManager().getApartments().values().stream()
-                .filter(a -> player.getUniqueId().equals(a.owner))
-                .mapToDouble(a -> a.pendingIncome)
-                .sum();
-
-        double totalUnpaidTaxes = plugin.getApartmentManager().getApartments().values().stream()
-                .filter(a -> player.getUniqueId().equals(a.owner))
-                .mapToDouble(a -> a.getTotalUnpaid())
-                .sum();
-
+        // Statistics
         double totalIncomeGenerated = 0.0;
         double totalTaxPaid = 0.0;
         for (com.aithor.apartmentcore.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
-            if (!player.getUniqueId().equals(a.owner))
-                continue;
+            if (!player.getUniqueId().equals(a.owner)) continue;
             var st = plugin.getApartmentManager().getStats(a.id);
             if (st != null) {
                 totalIncomeGenerated += st.totalIncomeGenerated;
@@ -291,93 +263,94 @@ public class MainMenuGUI implements GUI {
             }
         }
 
-        ItemStack item = new ItemBuilder(Material.BOOK)
-                .name("&6📊 Statistics")
-                .lore(
-                        "&7Your overall performance",
-                        "",
-                        "&e📋 Overview:",
-                        "&7• Owned: &f" + ownedCount,
-                        "&7• Lifetime Income: &a" + plugin.getConfigManager().formatMoney(totalIncomeGenerated),
-                        "&7• Total Tax Paid: &c" + plugin.getConfigManager().formatMoney(totalTaxPaid),
-                        "&7• Pending Income: &a" + plugin.getConfigManager().formatMoney(totalPendingIncome),
-                        "&7• Outstanding Taxes: &c" + plugin.getConfigManager().formatMoney(totalUnpaidTaxes),
-                        "",
-                        "&a▶ Click to open")
-                .glow()
-                .build();
+        map.put("{owned_count}", String.valueOf(ownedCount));
+        map.put("{max_apartments}", String.valueOf(maxApartments));
+        map.put("{pending_income}", plugin.getConfigManager().formatMoney(totalPendingIncome));
+        map.put("{available_count}", String.valueOf(availableCount));
+        map.put("{cheapest_price}", cheapestPrice > 0 ? plugin.getConfigManager().formatMoney(cheapestPrice) : "N/A");
+        map.put("{total_unpaid}", plugin.getConfigManager().formatMoney(totalUnpaid));
+        map.put("{overdue_count}", String.valueOf(overdueCount));
+        map.put("{tax_status_color}", taxStatusColor);
+        map.put("{tax_status}", taxStatus);
+        map.put("{lifetime_income}", plugin.getConfigManager().formatMoney(totalIncomeGenerated));
+        map.put("{total_tax_paid}", plugin.getConfigManager().formatMoney(totalTaxPaid));
+        map.put("{outstanding_taxes}", plugin.getConfigManager().formatMoney(totalUnpaid));
 
-        inventory.setItem(STATISTICS_SLOT, item);
-    }
-
-    private void addAchievements() {
-        if (plugin.getAchievementManager() == null || !plugin.getAchievementManager().isEnabled()) {
-            ItemStack item = new ItemBuilder(Material.BARRIER)
-                    .name("&c Achievements")
-                    .lore(
-                            "&7Achievement system is disabled",
-                            "",
-                            "&c Not available")
-                    .build();
-            inventory.setItem(ACHIEVEMENTS_SLOT, item);
-            return;
+        // Auction
+        if (plugin.getAuctionManager() != null && plugin.getConfigManager().isAuctionEnabled()) {
+            map.put("{active_auctions}", String.valueOf(plugin.getAuctionManager().getActiveAuctions().size()));
+            map.put("{auction_commission}",
+                    String.format("%.1f%%", plugin.getConfigManager().getAuctionCommission() * 100));
+        } else {
+            map.put("{active_auctions}", "0");
+            map.put("{auction_commission}", "N/A");
         }
 
-        com.aithor.apartmentcore.achievement.AchievementManager am = plugin.getAchievementManager();
-        com.aithor.apartmentcore.achievement.PlayerAchievementData data = am.getPlayerData(player.getUniqueId());
-        int completed = data.getCompletedCount();
-        int total = data.getTotalCount();
-        String percentage = total > 0 ? String.format("%.0f%%", (completed * 100.0 / total)) : "0%";
-        String progressBar = com.aithor.apartmentcore.gui.utils.GUIUtils.createProgressBar(completed, total, 15);
+        // Research
+        if (plugin.getResearchManager() != null && plugin.getResearchManager().isEnabled()) {
+            com.aithor.apartmentcore.research.ResearchManager rm = plugin.getResearchManager();
+            com.aithor.apartmentcore.research.PlayerResearchData data = rm.getPlayerData(player.getUniqueId());
+            int totalCompleted = 0;
+            int totalMax = 0;
+            for (com.aithor.apartmentcore.research.ResearchType type : com.aithor.apartmentcore.research.ResearchType.values()) {
+                totalCompleted += data.getCompletedTier(type);
+                totalMax += type.getMaxTier();
+            }
 
-        ItemStack item = new ItemBuilder(Material.NETHER_STAR)
-                .name("&6 Achievements")
-                .lore(
-                        "&7Track your milestones and earn rewards",
-                        "",
-                        "&e Achievement Progress:",
-                        "&7 Completed: &f" + completed + "&7/&f" + total + " &7(" + percentage + ")",
-                        "&7 " + progressBar,
-                        "",
-                        "&a Click to view")
-                .glow()
-                .build();
+            String statusLine;
+            if (data.hasActiveResearch()) {
+                statusLine = "&e Researching: &f" + data.getActiveResearch().getDisplayName();
+            } else {
+                statusLine = "&7 No active research";
+            }
 
-        inventory.setItem(ACHIEVEMENTS_SLOT, item);
+            map.put("{research_completed}", String.valueOf(totalCompleted));
+            map.put("{research_max}", String.valueOf(totalMax));
+            map.put("{research_status}", statusLine);
+        } else {
+            map.put("{research_completed}", "0");
+            map.put("{research_max}", "0");
+            map.put("{research_status}", "&7 No active research");
+        }
+
+        // Achievements
+        if (plugin.getAchievementManager() != null && plugin.getAchievementManager().isEnabled()) {
+            com.aithor.apartmentcore.achievement.AchievementManager am = plugin.getAchievementManager();
+            com.aithor.apartmentcore.achievement.PlayerAchievementData adata = am.getPlayerData(player.getUniqueId());
+            int completed = adata.getCompletedCount();
+            int total = adata.getTotalCount();
+            String percentage = total > 0 ? String.format("%.0f%%", (completed * 100.0 / total)) : "0%";
+            String progressBar = GUIUtils.createProgressBar(completed, total, 15);
+
+            map.put("{achievement_completed}", String.valueOf(completed));
+            map.put("{achievement_total}", String.valueOf(total));
+            map.put("{achievement_percent}", percentage);
+            map.put("{achievement_bar}", progressBar);
+        } else {
+            map.put("{achievement_completed}", "0");
+            map.put("{achievement_total}", "0");
+            map.put("{achievement_percent}", "0%");
+            map.put("{achievement_bar}", "");
+        }
+
+        // Player info
+        map.put("{player_name}", player.getName());
+        map.put("{plugin_version}", plugin.getDescription().getVersion());
+        map.put("{economy_name}", plugin.getEconomy().getName());
+        map.put("{player_balance}", plugin.getConfigManager().formatMoney(plugin.getEconomy().getBalance(player)));
+
+        return map;
     }
 
-    private void addHelpInfo() {
-        ItemStack item = new ItemBuilder(Material.ENCHANTED_BOOK)
-                .name("&6❓ Help & Info")
-                .lore(
-                        "&7Get help and information",
-                        "",
-                        "&e📚 Available Help:",
-                        "&7• Command reference",
-                        "&7• FAQ and guides",
-                        "&7• Contact support",
-                        "",
-                        "&a▶ Click for help")
-                .glow()
-                .build();
-
-        inventory.setItem(HELP_INFO_SLOT, item);
+    private String replacePlaceholders(String text, Map<String, String> placeholders) {
+        if (text == null) return "";
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            text = text.replace(entry.getKey(), entry.getValue());
+        }
+        return text;
     }
 
-    private void addPlayerInfo() {
-        // Add player head in corner
-        ItemStack playerHead = new ItemBuilder(Material.PLAYER_HEAD)
-                .name("&6" + player.getName())
-                .lore(
-                        "&7ApartmentCore v" + plugin.getDescription().getVersion(),
-                        "&7Economy: &f" + plugin.getEconomy().getName(),
-                        "",
-                        "&7Balance: &a" + plugin.getConfigManager().formatMoney(plugin.getEconomy().getBalance(player)))
-                .skull(player.getName())
-                .build();
-
-        inventory.setItem(4, playerHead);
-    }
+    // ── Click handling (uses config-driven slot positions) ───────
 
     @Override
     public void handleClick(InventoryClickEvent event) {
@@ -386,22 +359,22 @@ public class MainMenuGUI implements GUI {
 
         GUIUtils.playSound(player, GUIUtils.CLICK_SOUND);
 
-        if (slot == MY_APARTMENTS_SLOT) {
+        if (slot == menuConfig.getItemSlot("my_apartments")) {
             plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openMyApartments(player));
             return;
         }
 
-        if (slot == BROWSE_BUY_SLOT) {
+        if (slot == menuConfig.getItemSlot("browse_buy")) {
             plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openApartmentBrowser(player));
             return;
         }
 
-        if (slot == TAX_MANAGEMENT_SLOT) {
+        if (slot == menuConfig.getItemSlot("tax_management")) {
             plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openTaxManagement(player));
             return;
         }
 
-        if (slot == AUCTION_HOUSE_SLOT) {
+        if (slot == menuConfig.getItemSlot("auction_house")) {
             if (plugin.getAuctionManager() != null && plugin.getConfigManager().isAuctionEnabled()) {
                 plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openAuctionHouse(player));
             } else {
@@ -411,7 +384,7 @@ public class MainMenuGUI implements GUI {
             return;
         }
 
-        if (slot == RESEARCH_SLOT) {
+        if (slot == menuConfig.getItemSlot("research")) {
             if (plugin.getResearchManager() != null && plugin.getResearchManager().isEnabled()) {
                 plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openResearch(player));
             } else {
@@ -421,12 +394,12 @@ public class MainMenuGUI implements GUI {
             return;
         }
 
-        if (slot == STATISTICS_SLOT) {
+        if (slot == menuConfig.getItemSlot("statistics")) {
             plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openStatistics(player));
             return;
         }
 
-        if (slot == ACHIEVEMENTS_SLOT) {
+        if (slot == menuConfig.getItemSlot("achievements")) {
             if (plugin.getAchievementManager() != null && plugin.getAchievementManager().isEnabled()) {
                 plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openAchievements(player));
             } else {
@@ -436,7 +409,7 @@ public class MainMenuGUI implements GUI {
             return;
         }
 
-        if (slot == HELP_INFO_SLOT) {
+        if (slot == menuConfig.getItemSlot("help_info")) {
             plugin.getServer().getScheduler().runTask(plugin, () -> {
                 HelpInfoGUI helpInfoGUI = new HelpInfoGUI(player, plugin, guiManager);
                 guiManager.openGUI(player, helpInfoGUI);
@@ -444,6 +417,8 @@ public class MainMenuGUI implements GUI {
             return;
         }
     }
+
+    // ── GUI interface methods ────────────────────────────────────
 
     @Override
     public Inventory getInventory() {
@@ -474,5 +449,4 @@ public class MainMenuGUI implements GUI {
     public void onClose(Player player) {
         // Nothing special needed on close
     }
-
 }
