@@ -168,6 +168,16 @@ public class MyApartmentsGUI extends PaginatedGUI {
                 break;
         }
 
+        // Check for custom icon
+        if (apartment.icon != null && !apartment.icon.isEmpty()) {
+            try {
+                Material customMaterial = Material.valueOf(apartment.icon.toUpperCase());
+                statusMaterial = customMaterial;
+            } catch (IllegalArgumentException e) {
+                // Invalid material, keep default status material
+            }
+        }
+
         // Get rating info
         ApartmentRating rating = plugin.getApartmentManager().getRating(apartment.id);
         String ratingDisplay = rating != null && rating.ratingCount > 0
@@ -217,7 +227,12 @@ public class MyApartmentsGUI extends PaginatedGUI {
         if (plugin.getResearchManager() != null && apartment.owner != null) {
             researchBonusPercentage = plugin.getResearchManager().getIncomeCapacityBonus(apartment.owner);
         }
-        double capacity = baseCapacity * (1.0 + (researchBonusPercentage / 100.0));
+        double shopBonusPercentage = 0.0;
+        if (plugin.getShopManager() != null) {
+            shopBonusPercentage = plugin.getShopManager().getIncomeCapacityBonusPercentage(apartment.id);
+        }
+        double totalBonusPercentage = researchBonusPercentage + shopBonusPercentage;
+        double capacity = baseCapacity * (1.0 + (totalBonusPercentage / 100.0));
 
         // Get research buffs for display
         double capitalGrowthBonus = 0.0;
@@ -231,6 +246,8 @@ public class MyApartmentsGUI extends PaginatedGUI {
         List<String> lore = new ArrayList<>();
         lore.add("&7ID: &f" + apartment.id);
         lore.add("&7Level: &f" + apartment.level + "/5");
+        lore.add("&7Floor: &f" + apartment.floor);
+        lore.add("&7Height: &f" + apartment.height);
         lore.add("");
         lore.add("&e💰 Financial Info:");
         lore.add("&7• Pending Income: &a" + plugin.getConfigManager().formatMoney(apartment.pendingIncome) +

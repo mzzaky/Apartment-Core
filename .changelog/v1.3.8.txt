@@ -1,0 +1,2 @@
+Added:
+- The "Pending Income" capacity in the My Apartments menu now calculates and includes the Vault Expansion stats from the apartment shop.

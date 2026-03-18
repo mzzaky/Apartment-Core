@@ -6,11 +6,14 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Loads and provides access to the main_menu.yml configuration.
@@ -27,23 +30,22 @@ public class MainMenuConfig {
     // ── Hardcoded defaults ────────────────────────────────────────
     private static final String DEF_TITLE = "&2ApartmentCore Main Menu";
     private static final int DEF_SIZE = 54;
-    private static final boolean DEF_BORDER_ENABLED = true;
-    private static final String DEF_BORDER_MATERIAL = "GRAY_STAINED_GLASS_PANE";
 
-    // Player info defaults
-    private static final boolean DEF_PLAYER_INFO_ENABLED = true;
-    private static final int DEF_PLAYER_INFO_SLOT = 4;
-    private static final String DEF_PLAYER_INFO_NAME = "&6{player_name}";
-    private static final List<String> DEF_PLAYER_INFO_LORE = Arrays.asList(
-            "&7ApartmentCore v{plugin_version}",
-            "&7Economy: &f{economy_name}",
-            "",
-            "&7Balance: &a{player_balance}");
 
     // Default item definitions (key → defaults)
     private static final Map<String, ItemDefaults> DEFAULT_ITEMS = new LinkedHashMap<>();
 
     static {
+        DEFAULT_ITEMS.put("player_info", new ItemDefaults(
+                4, "PLAYER_HEAD", 0,
+                "&6{player_name}",
+                Arrays.asList(
+                        "&7ApartmentCore v{plugin_version}",
+                        "&7Economy: &f{economy_name}",
+                        "",
+                        "&7Balance: &a{player_balance}"),
+                false, null, null, null));
+
         DEFAULT_ITEMS.put("my_apartments", new ItemDefaults(
                 11, "DARK_OAK_DOOR", 0,
                 "&6\u1F3E0 My Apartments",
@@ -182,46 +184,31 @@ public class MainMenuConfig {
         return size;
     }
 
-    // ── Border ────────────────────────────────────────────────────
 
-    public boolean isBorderEnabled() {
-        return config != null ? config.getBoolean("border.enabled", DEF_BORDER_ENABLED) : DEF_BORDER_ENABLED;
-    }
-
-    public Material getBorderMaterial() {
-        String mat = config != null ? config.getString("border.material", DEF_BORDER_MATERIAL) : DEF_BORDER_MATERIAL;
-        return parseMaterial(mat, Material.GRAY_STAINED_GLASS_PANE);
-    }
-
-    // ── Player info ───────────────────────────────────────────────
-
-    public boolean isPlayerInfoEnabled() {
-        return config != null ? config.getBoolean("player_info.enabled", DEF_PLAYER_INFO_ENABLED) : DEF_PLAYER_INFO_ENABLED;
-    }
-
-    public int getPlayerInfoSlot() {
-        return config != null ? config.getInt("player_info.slot", DEF_PLAYER_INFO_SLOT) : DEF_PLAYER_INFO_SLOT;
-    }
-
-    public String getPlayerInfoName() {
-        return config != null ? config.getString("player_info.name", DEF_PLAYER_INFO_NAME) : DEF_PLAYER_INFO_NAME;
-    }
-
-    public List<String> getPlayerInfoLore() {
-        if (config != null && config.isList("player_info.lore")) {
-            return config.getStringList("player_info.lore");
-        }
-        return DEF_PLAYER_INFO_LORE;
-    }
-
-    public Material getPlayerInfoMaterial() {
-        if (config != null && config.contains("player_info.material")) {
-            return parseMaterial(config.getString("player_info.material"), Material.PLAYER_HEAD);
-        }
-        return Material.PLAYER_HEAD;
-    }
 
     // ── Menu items ────────────────────────────────────────────────
+
+    public Set<String> getItemsKeys() {
+        Set<String> keys = new LinkedHashSet<>(DEFAULT_ITEMS.keySet());
+        if (config != null && config.isConfigurationSection("items")) {
+            keys.addAll(config.getConfigurationSection("items").getKeys(false));
+        }
+        return keys;
+    }
+
+    public boolean isItemEnabled(String key) {
+        if (config != null && config.contains("items." + key + ".enabled")) {
+            return config.getBoolean("items." + key + ".enabled");
+        }
+        return true;
+    }
+
+    public List<String> getItemCommands(String key) {
+        if (config != null && config.isList("items." + key + ".commands")) {
+            return config.getStringList("items." + key + ".commands");
+        }
+        return Collections.emptyList();
+    }
 
     public int getItemSlot(String key) {
         ItemDefaults def = DEFAULT_ITEMS.get(key);
@@ -230,6 +217,30 @@ public class MainMenuConfig {
             return config.getInt("items." + key + ".slot", fallback);
         }
         return fallback;
+    }
+
+    public List<Integer> getItemSlots(String key) {
+        ItemDefaults def = DEFAULT_ITEMS.get(key);
+        int fallback = def != null ? def.slot : 0;
+        if (config != null && config.contains("items." + key + ".slot")) {
+            if (config.isList("items." + key + ".slot")) {
+                return config.getIntegerList("items." + key + ".slot");
+            } else if (config.isInt("items." + key + ".slot")) {
+                return Collections.singletonList(config.getInt("items." + key + ".slot"));
+            } else if (config.isString("items." + key + ".slot")) {
+                String slotStr = config.getString("items." + key + ".slot");
+                List<Integer> slots = new ArrayList<>();
+                for (String s : slotStr.split(",")) {
+                    try {
+                        slots.add(Integer.parseInt(s.trim()));
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+                if (!slots.isEmpty())
+                    return slots;
+            }
+        }
+        return Collections.singletonList(fallback);
     }
 
     public Material getItemMaterial(String key) {
@@ -282,7 +293,8 @@ public class MainMenuConfig {
     public Material getDisabledMaterial(String key) {
         ItemDefaults def = DEFAULT_ITEMS.get(key);
         Material fallback = def != null && def.disabledMaterial != null
-                ? parseMaterial(def.disabledMaterial, Material.BARRIER) : Material.BARRIER;
+                ? parseMaterial(def.disabledMaterial, Material.BARRIER)
+                : Material.BARRIER;
         if (config != null && config.contains("items." + key + ".disabled_material")) {
             return parseMaterial(config.getString("items." + key + ".disabled_material"), fallback);
         }
@@ -301,7 +313,8 @@ public class MainMenuConfig {
     public List<String> getDisabledLore(String key) {
         ItemDefaults def = DEFAULT_ITEMS.get(key);
         List<String> fallback = def != null && def.disabledLore != null
-                ? def.disabledLore : Collections.singletonList("&7Feature is disabled");
+                ? def.disabledLore
+                : Collections.singletonList("&7Feature is disabled");
         if (config != null && config.isList("items." + key + ".disabled_lore")) {
             return config.getStringList("items." + key + ".disabled_lore");
         }
@@ -311,11 +324,13 @@ public class MainMenuConfig {
     // ── Utilities ─────────────────────────────────────────────────
 
     private Material parseMaterial(String name, Material fallback) {
-        if (name == null || name.isEmpty()) return fallback;
+        if (name == null || name.isEmpty())
+            return fallback;
         try {
             return Material.valueOf(name.toUpperCase());
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("[MainMenuConfig] Invalid material '" + name + "', using fallback: " + fallback.name());
+            plugin.getLogger()
+                    .warning("[MainMenuConfig] Invalid material '" + name + "', using fallback: " + fallback.name());
             return fallback;
         }
     }
@@ -335,8 +350,8 @@ public class MainMenuConfig {
         final List<String> disabledLore;
 
         ItemDefaults(int slot, String material, int customModelData,
-                     String name, List<String> lore, boolean glow,
-                     String disabledMaterial, String disabledName, List<String> disabledLore) {
+                String name, List<String> lore, boolean glow,
+                String disabledMaterial, String disabledName, List<String> disabledLore) {
             this.slot = slot;
             this.material = material;
             this.customModelData = customModelData;

@@ -112,7 +112,9 @@ public class ApartmentManager {
                         aptSection.getDouble("penalty", 0),
                         aptSection.getLong("inactive-since", 0),
                         aptSection.getString("display-name", id),
-                        aptSection.getString("welcome-message", ""));
+                        aptSection.getString("welcome-message", ""),
+                        aptSection.getInt("floor", 1),
+                        aptSection.getInt("height", 1));
 
                 // Load custom teleport location
                 if (aptSection.isConfigurationSection("teleport-location")) {
@@ -172,6 +174,23 @@ public class ApartmentManager {
                     plugin.getLogger()
                             .warning(String.format("Failed reading market listing state for %s: %s", id,
                                     t.getMessage()));
+                }
+
+                // Load custom incomes
+                if (aptSection.isConfigurationSection("custom-incomes")) {
+                    ConfigurationSection incomesSection = aptSection.getConfigurationSection("custom-incomes");
+                    if (incomesSection != null) {
+                        for (String lvlStr : incomesSection.getKeys(false)) {
+                            try {
+                                int lvl = Integer.parseInt(lvlStr);
+                                ConfigurationSection lvlSec = incomesSection.getConfigurationSection(lvlStr);
+                                if (lvlSec != null) {
+                                    apt.customMinIncomes.put(lvl, lvlSec.getDouble("min"));
+                                    apt.customMaxIncomes.put(lvl, lvlSec.getDouble("max"));
+                                }
+                            } catch (NumberFormatException ignored) {}
+                        }
+                    }
                 }
 
                 apartments.put(id, apt);
@@ -329,6 +348,8 @@ public class ApartmentManager {
             dataManager.getDataConfig().set(path + "inactive-since", apt.inactiveSince);
             dataManager.getDataConfig().set(path + "display-name", apt.displayName);
             dataManager.getDataConfig().set(path + "welcome-message", apt.welcomeMessage);
+            dataManager.getDataConfig().set(path + "floor", apt.floor);
+            dataManager.getDataConfig().set(path + "height", apt.height);
 
             // Save new tax system data
             dataManager.getDataConfig().set(path + "auto-tax-payment", apt.autoTaxPayment);
@@ -349,6 +370,18 @@ public class ApartmentManager {
             dataManager.getDataConfig().set(path + "market-listing", apt.marketListing);
             dataManager.getDataConfig().set(path + "market-price", apt.marketPrice);
             dataManager.getDataConfig().set(path + "market-listed-at", apt.marketListedAt);
+
+            // Save custom incomes
+            if (apt.customMinIncomes != null && !apt.customMinIncomes.isEmpty()) {
+                String ciPath = path + "custom-incomes.";
+                for (Map.Entry<Integer, Double> entry : apt.customMinIncomes.entrySet()) {
+                    int lvl = entry.getKey();
+                    dataManager.getDataConfig().set(ciPath + lvl + ".min", entry.getValue());
+                    dataManager.getDataConfig().set(ciPath + lvl + ".max", apt.customMaxIncomes.getOrDefault(lvl, entry.getValue()));
+                }
+            } else {
+                 dataManager.getDataConfig().set(path + "custom-incomes", null);
+            }
 
             // Save custom teleport location
             if (apt.hasCustomTeleport) {

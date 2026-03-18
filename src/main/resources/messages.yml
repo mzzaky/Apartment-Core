@@ -86,6 +86,9 @@ notifications:
   rent_generated: "{prefix}&a&l[Rent]&r &7Your apartment &e%apartment% &7generated &f%amount% &7income!"
   rent_generated_with_buff: "{prefix}&a&l[Rent]&r &7Your apartment &e%apartment% &7generated &f%amount% &7income &a(+&f%flat_buff% &aflat + &f%percentage_buff%% &apercentage from shop buffs)&7!"
   income_capacity_full: "{prefix}&6&l[Capacity Full]&r &7Your apartment &e%apartment% &7has reached its income vault capacity of &f%capacity%&7! Claim your income to continue generating rent."
+  upgrade_title: "&aUPGRADE COMPLETED!"
+  upgrade_subtitle: "&e%apartment% &e➔ Level %level%"
+  upgrade_actionbar: "&bApartment successfully upgraded to level %level%!"
 
 # Shop System Messages
 shop:

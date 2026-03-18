@@ -38,10 +38,10 @@
 # ============================================================
 
 # GUI title (supports color codes)
-gui_title: "&2ApartmentCore Main Menu"
+gui_title: "&f<shift:-8>ꑨ"
 
 # GUI size in slots (must be a multiple of 9: 9, 18, 27, 36, 45, 54)
-gui_size: 54
+gui_size: 45
 
 # ============================================================
 #  Menu Items
@@ -55,7 +55,7 @@ gui_size: 54
 #    lore              - List of lore lines (supports color codes & placeholders)
 #    glow              - Whether to add enchantment glow (true/false)
 #    commands          - List of commands to execute when clicked (for custom items).
-#                        Prefix with [console] , [player] , [op] , [message] , or [close].
+#                        Prefix with [console] , [player] , [message] , or [close].
 # ============================================================
 
 # Example of a custom item (uncomment to use):
@@ -71,23 +71,23 @@ gui_size: 54
 #      - "[close]"
 
 items:
+# Player info head (shown at top center)
   player_info:
-    slot: 4
-    material: PLAYER_HEAD
-    custom_model_data: 0
+    enabled: true
+    slot: 21
+    material: GOLD_NUGGET
+    custom_model_data: 7000
     name: "&6{player_name}"
     lore:
       - "&7ApartmentCore v{plugin_version}"
       - "&7Economy: &f{economy_name}"
       - ""
       - "&7Balance: &a{player_balance}"
-    glow: false
-
   my_apartments:
-    slot: 11
-    material: DARK_OAK_DOOR
-    custom_model_data: 0
-    name: "&6\u1F3E0 My Apartments"
+    slot: "0, 1, 2, 9, 10, 11, 18, 19, 20"
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&6My Apartments"
     lore:
       - "&7Manage your owned apartments"
       - ""
@@ -96,12 +96,12 @@ items:
       - "&7\u2022 Pending Income: &a{pending_income}"
       - ""
       - "&a\u25B6 Click to open"
-    glow: true
+    glow: false
 
   browse_buy:
-    slot: 13
-    material: GOLD_INGOT
-    custom_model_data: 0
+    slot: "27, 28, 29, 30"
+    material: GOLD_NUGGET
+    custom_model_data: 7000
     name: "&6\uD83D\uDED2 Browse & Buy"
     lore:
       - "&7Browse available apartments"
@@ -114,10 +114,10 @@ items:
     glow: true
 
   tax_management:
-    slot: 15
-    material: GREEN_CONCRETE
-    custom_model_data: 0
-    name: "&6\uD83D\uDCB0 Tax Management"
+    slot: "4, 5, 6, 7, 8"
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&6 Invoice Center"
     lore:
       - "&7Manage your tax payments"
       - ""
@@ -130,10 +130,10 @@ items:
     glow: true
 
   auction_house:
-    slot: 20
-    material: SUNFLOWER
-    custom_model_data: 0
-    name: "&6\uD83D\uDD28 Auction House"
+    slot: "35, 34, 33, 32, 31"
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&6Marketplace (Auction)"
     lore:
       - "&7Buy and sell apartments via auction"
       - ""
@@ -142,7 +142,7 @@ items:
       - "&7\u2022 Commission: &f{auction_commission}"
       - ""
       - "&a\u25B6 Click to open"
-    glow: true
+    glow: false
     # Shown when auction system is disabled
     disabled_material: BARRIER
     disabled_name: "&c\uD83D\uDD28 Auction House"
@@ -152,9 +152,9 @@ items:
       - "&c\u2717 Not available"
 
   research:
-    slot: 22
-    material: ENCHANTING_TABLE
-    custom_model_data: 0
+    slot: "22, 23, 24, 25, 26"
+    material: GOLD_NUGGET
+    custom_model_data: 7000
     name: "&d Research Center"
     lore:
       - "&7Conduct research for permanent buffs"
@@ -164,7 +164,7 @@ items:
       - "{research_status}"
       - ""
       - "&a Click to open"
-    glow: true
+    glow: false
     disabled_material: BARRIER
     disabled_name: "&c Research Center"
     disabled_lore:
@@ -173,9 +173,9 @@ items:
       - "&c Not available"
 
   statistics:
-    slot: 24
-    material: BOOK
-    custom_model_data: 0
+    slot: "13, 14, 15, 16, 17"
+    material: GOLD_NUGGET
+    custom_model_data: 7000
     name: "&6\uD83D\uDCCA Statistics"
     lore:
       - "&7Your overall performance"
@@ -191,10 +191,10 @@ items:
     glow: true
 
   achievements:
-    slot: 30
-    material: NETHER_STAR
-    custom_model_data: 0
-    name: "&6 Achievements"
+    slot: 12
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&6Achievements"
     lore:
       - "&7Track your milestones and earn rewards"
       - ""
@@ -203,7 +203,7 @@ items:
       - "&7 {achievement_bar}"
       - ""
       - "&a Click to view"
-    glow: true
+    glow: false
     disabled_material: BARRIER
     disabled_name: "&c Achievements"
     disabled_lore:
@@ -212,10 +212,10 @@ items:
       - "&c Not available"
 
   help_info:
-    slot: 32
-    material: ENCHANTED_BOOK
-    custom_model_data: 0
-    name: "&6\u2753 Help & Info"
+    slot: 3
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&6Help & Info"
     lore:
       - "&7Get help and information"
       - ""
@@ -225,4 +225,94 @@ items:
       - "&7\u2022 Contact support"
       - ""
       - "&a\u25B6 Click for help"
-    glow: true
+    glow: false
+
+  custom_premium_shop:
+    slot: 36
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&aPremium Shop"
+    lore:
+      - "&cclick to open this pɑnel!"
+    commands:
+      - "gen open premium_shop %player%"
+
+  custom_discord:
+    slot: 37
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&aJoin Our Discord!"
+    lore:
+      - "&cclick to get invite link!"
+    commands:
+      - "tellraw %player% {\"text\":\"Click here to visit the Time Warp store!\",\"color\":\"aqua\",\"underlined\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://www.google.com\"}}"
+
+  custom_achievement:
+    slot: 38
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&eAchievement"
+    lore:
+      - "&cclick to open this pɑnel!"
+    commands:
+      - "codex"
+
+  custom_pets:
+    slot: 39
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&ePets"
+    lore:
+      - "&cclick to open this pɑnel!"
+    commands:
+      - "dm open l_mcpets %player%"
+
+  custom_bank_center:
+    slot: 40
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&eBank Center"
+    lore:
+      - "&cclick to open this pɑnel!"
+    commands:
+      - "bank"
+
+  custom_factory_center:
+    slot: 41
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&eFactory Center"
+    lore:
+      - "&cclick to this the pɑnel!"
+    commands:
+      - "fc hub"
+
+  custom_apartment_center:
+    slot: 42
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&eApartment Center"
+    lore:
+      - "&cclick to open this pɑnel!"
+    commands:
+      - "ac gui"
+
+  custom_job_center:
+    slot: 43
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&eJob Center"
+    lore:
+      - "&ccoming soon!"
+    commands:
+      - "[close]"
+
+  custom_main_menu:
+    slot: 44
+    material: GOLD_NUGGET
+    custom_model_data: 7000
+    name: "&4Main Menu"
+    lore:
+      - "&cclick to leave the pɑnel!"
+    commands:
+      - "gen open main_menu %player%"

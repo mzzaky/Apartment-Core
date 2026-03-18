@@ -46,6 +46,7 @@ public class ApartmentDetailsGUI implements GUI {
     private static final int SET_TELEPORT_SLOT = 23;
     private static final int QUICK_SELL_SLOT = 24;
     private static final int MARKET_SELL_SLOT = 25;
+    private static final int CHANGE_ICON_SLOT = 26;
     private static final int GUESTBOOK_SLOT = 28;
     private static final int STATISTICS_SLOT = 30;
     private static final int TAX_INFO_SLOT = 32;
@@ -114,6 +115,8 @@ public class ApartmentDetailsGUI implements GUI {
         lore.add("&7ID: &f" + apartmentId);
         lore.add("&7Owner: &f" + ownerName);
         lore.add("&7Location: &f" + apartment.worldName);
+        lore.add("&7Floor: &f" + apartment.floor);
+        lore.add("&7Height: &f" + apartment.height);
         lore.add("");
 
         // Financial info
@@ -130,8 +133,12 @@ public class ApartmentDetailsGUI implements GUI {
         if (levelConfig != null) {
             lore.add("&e📊 Level Information:");
             lore.add("&7• Current Level: &f" + apartment.level + "/5");
-            lore.add("&7• Hourly Income: &a" + plugin.getConfigManager().formatMoney(levelConfig.minIncome) +
-                    " &7- &a" + plugin.getConfigManager().formatMoney(levelConfig.maxIncome));
+            lore.add("&7• Hourly Income: &a"
+                    + plugin.getConfigManager()
+                            .formatMoney(apartment.getMinIncome(plugin.getConfigManager(), apartment.level))
+                    +
+                    " &7- &a" + plugin.getConfigManager()
+                            .formatMoney(apartment.getMaxIncome(plugin.getConfigManager(), apartment.level)));
             lore.add("&7• Vault Capacity: &a" + plugin.getConfigManager().formatMoney(levelConfig.incomeCapacity));
 
             if (apartment.level < 5) {
@@ -290,8 +297,15 @@ public class ApartmentDetailsGUI implements GUI {
                                     "&7Upgrade to level " + (apartment.level + 1),
                                     "",
                                     "&7Cost: &e" + plugin.getConfigManager().formatMoney(nextLevel.upgradeCost),
-                                    "&7New Income: &a" + plugin.getConfigManager().formatMoney(nextLevel.minIncome) +
-                                            " &7- &a" + plugin.getConfigManager().formatMoney(nextLevel.maxIncome),
+                                    "&7New Income: &a"
+                                            + plugin.getConfigManager()
+                                                    .formatMoney(apartment.getMinIncome(plugin.getConfigManager(),
+                                                            apartment.level + 1))
+                                            +
+                                            " &7- &a"
+                                            + plugin.getConfigManager()
+                                                    .formatMoney(apartment.getMaxIncome(plugin.getConfigManager(),
+                                                            apartment.level + 1)),
                                     "",
                                     canAffordUpgrade ? "&a▶ Click to upgrade" : "&cInsufficient funds")
                             .glow()
@@ -393,6 +407,19 @@ public class ApartmentDetailsGUI implements GUI {
                         .build();
                 inventory.setItem(MARKET_SELL_SLOT, marketSellItem);
             }
+
+            // Change Icon
+            String currentIcon = apartment.icon != null ? apartment.icon : "Default (based on status)";
+            ItemStack changeIconItem = new ItemBuilder(Material.PAINTING)
+                    .name("&a🎨 Change Icon")
+                    .lore(
+                            "&7Change the apartment's icon in GUIs",
+                            "",
+                            "&7Current Icon: &f" + currentIcon,
+                            "",
+                            "&a▶ Click to change")
+                    .build();
+            inventory.setItem(CHANGE_ICON_SLOT, changeIconItem);
         }
 
         // Guestbook (everyone can view, owners can manage)
@@ -546,6 +573,10 @@ public class ApartmentDetailsGUI implements GUI {
                 handleMarketSell(apartment);
                 break;
 
+            case CHANGE_ICON_SLOT:
+                handleChangeIcon();
+                break;
+
             case GUESTBOOK_SLOT:
                 guiManager.openGuestbook(player, apartmentId);
                 break;
@@ -651,6 +682,11 @@ public class ApartmentDetailsGUI implements GUI {
             // List on market: request custom price from user
             guiManager.requestMarketPriceInput(player, apartmentId);
         }
+    }
+
+    private void handleChangeIcon() {
+        // Request icon input from player via chat
+        guiManager.requestIconInput(player, apartmentId);
     }
 
     private void handleStatistics() {

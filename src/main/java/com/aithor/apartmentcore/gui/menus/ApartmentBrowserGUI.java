@@ -246,11 +246,12 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
                 ? String.format("%.1f⭐ (%d reviews)", avgRating, rating.ratingCount)
                 : "No ratings yet";
 
-        // Get level config for income display
         var levelConfig = plugin.getConfigManager().getLevelConfig(apartment.level);
         String incomeRange = levelConfig != null
-                ? plugin.getConfigManager().formatMoney(levelConfig.minIncome) + " - "
-                        + plugin.getConfigManager().formatMoney(levelConfig.maxIncome)
+                ? plugin.getConfigManager()
+                        .formatMoney(apartment.getMinIncome(plugin.getConfigManager(), apartment.level)) + " - "
+                        + plugin.getConfigManager()
+                                .formatMoney(apartment.getMaxIncome(plugin.getConfigManager(), apartment.level))
                 : "Unknown";
 
         boolean isMarketListing = apartment.marketListing && apartment.owner != null;
@@ -269,6 +270,16 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
 
         // Determine material based on listing type
         Material itemMaterial = isMarketListing ? Material.OAK_DOOR : Material.DARK_OAK_DOOR;
+
+        // Check for custom icon (only for market listings where apartment has an owner)
+        if (isMarketListing && apartment.owner != null && apartment.icon != null && !apartment.icon.isEmpty()) {
+            try {
+                Material customMaterial = Material.valueOf(apartment.icon.toUpperCase());
+                itemMaterial = customMaterial;
+            } catch (IllegalArgumentException e) {
+                // Invalid material, keep default material
+            }
+        }
 
         // Build lore
         List<String> lore = new ArrayList<>();
@@ -289,6 +300,8 @@ public class ApartmentBrowserGUI extends PaginatedGUI {
         // Property details
         lore.add("&e💰 Price: &f" + plugin.getConfigManager().formatMoney(displayPrice));
         lore.add("&e📊 Level: &f" + apartment.level + "/5");
+        lore.add("&e🏢 Floor: &f" + apartment.floor);
+        lore.add("&e📏 Height: &f" + apartment.height);
 
         String incomeLine = "&e💸 Income: &f" + incomeRange + "/hour";
         lore.add(incomeLine);

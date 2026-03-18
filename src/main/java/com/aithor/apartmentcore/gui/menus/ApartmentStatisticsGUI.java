@@ -147,11 +147,13 @@ public class ApartmentStatisticsGUI implements GUI {
         lore.add("&7• Display Name: &f" + apt.displayName);
         lore.add("&7• Level: &f" + apt.level + " &7/ 5");
         lore.add("&7• Purchase Price: &f" + plugin.getConfigManager().formatMoney(apt.price));
+        lore.add("&7• Floor: &f" + apt.floor);
+        lore.add("&7• Height: &f" + apt.height);
         lore.add("");
         lore.add("&e💰 Base Income (per cycle):");
         if (cfg != null) {
-            lore.add("&7• Min Income: &a" + plugin.getConfigManager().formatMoney(cfg.minIncome));
-            lore.add("&7• Max Income: &a" + plugin.getConfigManager().formatMoney(cfg.maxIncome));
+            lore.add("&7• Min Income: &a" + plugin.getConfigManager().formatMoney(apt.getMinIncome(plugin.getConfigManager(), apt.level)));
+            lore.add("&7• Max Income: &a" + plugin.getConfigManager().formatMoney(apt.getMaxIncome(plugin.getConfigManager(), apt.level)));
             lore.add("&7• Income Capacity: &b" + plugin.getConfigManager().formatMoney(cfg.incomeCapacity));
         } else {
             lore.add("&c• Level config not found (level: " + apt.level + ")");
@@ -292,8 +294,8 @@ public class ApartmentStatisticsGUI implements GUI {
             lore.add("&cLevel config not found — cannot calculate final stats.");
         } else {
             // --- Income calculation ---
-            double baseMin = cfg.minIncome;
-            double baseMax = cfg.maxIncome;
+            double baseMin = apt.getMinIncome(plugin.getConfigManager(), apt.level);
+            double baseMax = apt.getMaxIncome(plugin.getConfigManager(), apt.level);
             double baseAvg = (baseMin + baseMax) / 2.0;
 
             double shopFlatBonus = plugin.getShopManager() != null ? plugin.getShopManager().getBaseIncomeBonus(apt.id)

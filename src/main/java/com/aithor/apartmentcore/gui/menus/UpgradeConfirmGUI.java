@@ -46,7 +46,9 @@ public class UpgradeConfirmGUI implements GUI {
         inventory.clear();
 
         Apartment apt = plugin.getApartmentManager().getApartment(apartmentId);
-        if (apt == null || apt.level >= 5) {
+        int maxLevel = plugin.getConfigManager().getLevelConfigs().keySet().stream()
+                .mapToInt(Integer::intValue).max().orElse(5);
+        if (apt == null || apt.level >= maxLevel) {
             player.closeInventory();
             return;
         }
@@ -75,8 +77,8 @@ public class UpgradeConfirmGUI implements GUI {
                         "&7Cost: &e" + plugin.getConfigManager().formatMoney(levelConfig.upgradeCost),
                         "&7Duration: &6" + durationStr,
                         "",
-                        "&7New Income: &a" + plugin.getConfigManager().formatMoney(levelConfig.minIncome) +
-                                " &7- &a" + plugin.getConfigManager().formatMoney(levelConfig.maxIncome))
+                        "&7New Income: &a" + plugin.getConfigManager().formatMoney(apt.getMinIncome(plugin.getConfigManager(), apt.level + 1)) +
+                                " &7- &a" + plugin.getConfigManager().formatMoney(apt.getMaxIncome(plugin.getConfigManager(), apt.level + 1)))
                 .glow()
                 .build();
         inventory.setItem(INFO_SLOT, infoItem);

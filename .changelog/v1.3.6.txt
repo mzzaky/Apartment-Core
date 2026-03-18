@@ -2,6 +2,12 @@ v1.3.6 - Configurable Main Menu GUI
 ====================================
 Date: 2026-03-09
 
+[balancing]
+- mengubah durasi default upgrade apartment menjadi 1-5 hari (memperbaharui informasi comment help pada configurasi)
+- Pesan notifikasi upgrade apartment sekarang dapat diubah secara bebas menggunakan file `messages.yml` (sebelumnya hardcoded)
+- batas maksimal level apartment sekarang diambil secara dinamis berdasarkan \`config.yml\` (tidak lagi dibatasi mentok di angka 5).
+- mengubah default \`tax-percentage\` untuk apartment level-1 menjadi 2.5 (sebelumnya 40).
+
 [Ditambahkan]
 - Sistem konfigurasi YAML untuk Main Menu GUI melalui file `custom_gui/main_menu.yml`.
   * Judul GUI (`gui_title`), ukuran GUI (`gui_size`), dan border sekarang bisa dikonfigurasi.
@@ -10,6 +16,10 @@ Date: 2026-03-09
   * Player info head (slot, material, name, lore) juga bisa dikonfigurasi.
   * Mendukung placeholder dinamis seperti `{owned_count}`, `{pending_income}`, `{tax_status}`, dll.
   * File konfigurasi default otomatis dibuat saat pertama kali plugin dijalankan.
+  * Mendukung penambahan Custom Item baru yang dapat didaftarkan pada GUI `main_menu.yml`.
+  * Mendukung properti `enabled: true/false` untuk menyembunyikan item bawaan maupun custom.
+  * Mendukung pengaturan Multi-slot untuk 1 item (baik berupa Angka tunggal, Array List, maupun String dengan koma separator).
+  * Mendukung fitur `commands:` untuk mengeksekusi aksi khusus pada Custom Item (mendukung format `[console]`, `[player]`, `[message]`, dan `[close]`).
 
 - Class baru `MainMenuConfig.java` sebagai loader konfigurasi dengan fallback ke nilai hardcoded.
   * Setiap properti yang tidak ada atau tidak valid di file YAML akan menggunakan nilai default bawaan.

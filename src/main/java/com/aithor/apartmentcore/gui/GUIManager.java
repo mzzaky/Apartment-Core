@@ -12,8 +12,10 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.Material;
 
 import com.aithor.apartmentcore.ApartmentCore;
+import com.aithor.apartmentcore.model.Apartment;
 import com.aithor.apartmentcore.gui.interfaces.GUI;
 import com.aithor.apartmentcore.gui.menus.AchievementGUI;
 import com.aithor.apartmentcore.gui.menus.ApartmentBrowserGUI;
@@ -39,6 +41,7 @@ public class GUIManager implements Listener {
     private final Map<UUID, GUI> openGUIs;
     private final Map<Inventory, GUI> inventoryToGUI;
     private final Map<UUID, String> pendingMarketPriceInputs;
+    private final Map<UUID, String> pendingIconInputs;
     private int refreshTaskId = -1;
 
     public GUIManager(ApartmentCore plugin) {
@@ -46,6 +49,7 @@ public class GUIManager implements Listener {
         this.openGUIs = new HashMap<>();
         this.inventoryToGUI = new HashMap<>();
         this.pendingMarketPriceInputs = new HashMap<>();
+        this.pendingIconInputs = new HashMap<>();
 
         // Register event listener
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -466,6 +470,21 @@ public class GUIManager implements Listener {
         GUIUtils.sendMessage(player, "&eType '&ccancel&e' to cancel.");
     }
 
+    /**
+     * Request icon input from player
+     * 
+     * @param player      The player to request input from
+     * @param apartmentId The apartment ID to set the icon for
+     */
+    public void requestIconInput(Player player, String apartmentId) {
+        closeGUI(player);
+        player.closeInventory();
+        pendingIconInputs.put(player.getUniqueId(), apartmentId);
+        GUIUtils.sendMessage(player, "&ePlease enter the material name for the apartment icon.");
+        GUIUtils.sendMessage(player, "&eExample: &fDIAMOND_BLOCK, EMERALD, GOLD_INGOT, etc.");
+        GUIUtils.sendMessage(player, "&eType '&ccancel&e' to cancel.");
+    }
+
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
@@ -497,6 +516,55 @@ public class GUIManager implements Listener {
             // Run the command synchronously on the next tick (sync thread)
             plugin.getServer().getScheduler().runTask(plugin, () -> {
                 plugin.getServer().dispatchCommand(player, "apartmentcore sell market " + apartmentId + " " + price);
+            });
+        }
+
+        // Handle icon input
+        if (pendingIconInputs.containsKey(uuid)) {
+            event.setCancelled(true);
+            String apartmentId = pendingIconInputs.remove(uuid);
+            String message = event.getMessage().trim();
+
+            if (message.equalsIgnoreCase("cancel")) {
+                GUIUtils.sendMessage(player, "&cIcon change cancelled.");
+                return;
+            }
+
+            // Validate material
+            Material material;
+            try {
+                material = Material.valueOf(message.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                GUIUtils.sendMessage(player, "&cInvalid material! &f'" + message + "' &cis not a valid material.");
+                GUIUtils.sendMessage(player,
+                        "&ePlease enter a valid material name (e.g., DIAMOND_BLOCK, EMERALD, GOLD_INGOT).");
+                GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+                return;
+            }
+
+            // Update apartment icon
+            Apartment apartment = plugin.getApartmentManager().getApartment(apartmentId);
+            if (apartment == null) {
+                GUIUtils.sendMessage(player, "&cApartment not found!");
+                return;
+            }
+
+            // Check ownership
+            if (!apartment.owner.equals(player.getUniqueId())) {
+                GUIUtils.sendMessage(player, "&cYou don't own this apartment!");
+                GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+                return;
+            }
+
+            apartment.icon = material.name();
+            plugin.getApartmentManager().saveApartments();
+
+            GUIUtils.sendMessage(player, "&aApartment icon updated to &f" + material.name() + "&a!");
+            GUIUtils.playSound(player, GUIUtils.SUCCESS_SOUND);
+
+            // Reopen the apartment details GUI
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                openApartmentDetails(player, apartmentId);
             });
         }
     }

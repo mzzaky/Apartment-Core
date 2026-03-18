@@ -49,30 +49,41 @@ apartment-levels:
     min-income: 100
     max-income: 200
     upgrade-cost: 1000
-    upgrade-duration: 1200      # 1 minute to upgrade from level 2 → 3
+    upgrade-duration: 1728000      # 1 day to upgrade from level 1 → 2
     income-capacity: 20000   # Maximum pending income that can accumulate (Level 2 = 20,000)
     tax-percentage: 5.0      # Tax percentage applied to apartment price
   level-3:
     min-income: 200
     max-income: 300
     upgrade-cost: 2000
-    upgrade-duration: 3600      # 3 minutes to upgrade from level 3 → 4
+    upgrade-duration: 3456000      # 2 day to upgrade from level 2 → 3
     income-capacity: 30000   # Maximum pending income that can accumulate (Level 3 = 30,000)
     tax-percentage: 7.5      # Tax percentage applied to apartment price
   level-4:
     min-income: 300
     max-income: 400
     upgrade-cost: 3000
-    upgrade-duration: 7200      # 6 minutes to upgrade from level 4 → 5
+    upgrade-duration: 5184000      # 3 day to upgrade from level 3 → 4
     income-capacity: 40000   # Maximum pending income that can accumulate (Level 4 = 40,000)
     tax-percentage: 10.0     # Tax percentage applied to apartment price
   level-5:
     min-income: 400
     max-income: 500
     upgrade-cost: 5000
-    upgrade-duration: 0         # Max level - no further upgrade
+    upgrade-duration: 8640000         # 3 day to upgrade from level 3 → 4
     income-capacity: 50000   # Maximum pending income that can accumulate (Level 5 = 50,000)
     tax-percentage: 12.5     # Tax percentage applied to apartment price
+
+
+# YOU CAN INCREASE APARTMENT MAX LEVEL BY USING THE SAME FORMAT LIKE THIS
+#  level-6:
+#    min-income: 1000
+#    max-income: 1500
+#    upgrade-cost: 5000
+#    upgrade-duration: 8640000
+#    income-capacity: 50000
+#    tax-percentage: 12.5    
+
 
 # -----------------------------------------------------------------
 # GUI

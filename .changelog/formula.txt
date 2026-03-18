@@ -1,0 +1,9 @@
+floor * height * 100 = apartment_price
+
+floor * 5 + height = min-income
+
+min-income * 1.5 + (height*level) = max-income
+
+min-income previous level + floor * level = min_income
+
+

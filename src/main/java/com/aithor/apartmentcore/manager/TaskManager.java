@@ -172,12 +172,19 @@ public class TaskManager {
                                 try {
                                     ownerPlayer.playSound(ownerPlayer.getLocation(),
                                             org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-                                    ownerPlayer.sendTitle(org.bukkit.ChatColor.GREEN + "UPGRADE BERHASIL!",
-                                            org.bukkit.ChatColor.YELLOW + apt.displayName + " ➔ Level " + apt.level, 10,
-                                            70, 20);
+                                    String title = plugin.getMessageManager().getMessage("notifications.upgrade_title")
+                                            .replace("%apartment%", apt.displayName)
+                                            .replace("%level%", String.valueOf(apt.level));
+                                    String subtitle = plugin.getMessageManager().getMessage("notifications.upgrade_subtitle")
+                                            .replace("%apartment%", apt.displayName)
+                                            .replace("%level%", String.valueOf(apt.level));
+                                    String actionBar = plugin.getMessageManager().getMessage("notifications.upgrade_actionbar")
+                                            .replace("%apartment%", apt.displayName)
+                                            .replace("%level%", String.valueOf(apt.level));
+
+                                    ownerPlayer.sendTitle(title, subtitle, 10, 70, 20);
                                     ownerPlayer.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
-                                            new net.md_5.bungee.api.chat.TextComponent(org.bukkit.ChatColor.AQUA
-                                                    + "Apartment berhasil di upgrade ke level " + apt.level + "!"));
+                                            new net.md_5.bungee.api.chat.TextComponent(actionBar));
                                 } catch (Exception ignored) {
                                 }
                             }

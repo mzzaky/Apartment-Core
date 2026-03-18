@@ -261,11 +261,13 @@ public class AuctionHouseGUI extends PaginatedGUI {
             lore.add("");
             lore.add("&e🏠 Apartment Details:");
             lore.add("&7• Level: &f" + apartment.level + "/5");
+            lore.add("&7• Floor: &f" + apartment.floor);
+            lore.add("&7• Height: &f" + apartment.height);
             
             LevelConfig levelConfig = plugin.getConfigManager().getLevelConfig(apartment.level);
             if (levelConfig != null) {
-                lore.add("&7• Income: &a" + plugin.getConfigManager().formatMoney(levelConfig.minIncome) + 
-                         " &7- &a" + plugin.getConfigManager().formatMoney(levelConfig.maxIncome) + "/hour");
+                lore.add("&7• Income: &a" + plugin.getConfigManager().formatMoney(apartment.getMinIncome(plugin.getConfigManager(), apartment.level)) + 
+                         " &7- &a" + plugin.getConfigManager().formatMoney(apartment.getMaxIncome(plugin.getConfigManager(), apartment.level)) + "/hour");
             }
             
             ApartmentRating rating = plugin.getApartmentManager().getRating(apartment.id);
@@ -464,10 +466,12 @@ public class AuctionHouseGUI extends PaginatedGUI {
         
         if (apartment != null) {
             GUIUtils.sendMessage(player, "&7Level: &f" + apartment.level + "/5");
+            GUIUtils.sendMessage(player, "&7Floor: &f" + apartment.floor);
+            GUIUtils.sendMessage(player, "&7Height: &f" + apartment.height);
             LevelConfig levelConfig = plugin.getConfigManager().getLevelConfig(apartment.level);
             if (levelConfig != null) {
-                GUIUtils.sendMessage(player, "&7Income: &a" + plugin.getConfigManager().formatMoney(levelConfig.minIncome) + 
-                                   " &7- &a" + plugin.getConfigManager().formatMoney(levelConfig.maxIncome) + "/hour");
+                GUIUtils.sendMessage(player, "&7Income: &a" + plugin.getConfigManager().formatMoney(apartment.getMinIncome(plugin.getConfigManager(), apartment.level)) + 
+                                   " &7- &a" + plugin.getConfigManager().formatMoney(apartment.getMaxIncome(plugin.getConfigManager(), apartment.level)) + "/hour");
             }
         }
         

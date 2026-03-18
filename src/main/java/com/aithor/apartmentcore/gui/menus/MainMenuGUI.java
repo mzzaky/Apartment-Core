@@ -34,6 +34,7 @@ public class MainMenuGUI implements GUI {
     private final MainMenuConfig menuConfig;
     private final String title;
     private final Inventory inventory;
+    private final Map<Integer, String> slotMap = new HashMap<>();
 
     public MainMenuGUI(Player player, ApartmentCore plugin, GUIManager guiManager) {
         this.player = player;
@@ -54,52 +55,32 @@ public class MainMenuGUI implements GUI {
 
     private void setupInventory() {
         inventory.clear();
+        slotMap.clear();
 
-        if (menuConfig.isBorderEnabled()) {
-            addBorder();
-        }
+
 
         // Gather all dynamic placeholders once
         Map<String, String> placeholders = buildPlaceholders();
 
-        addConfigItem("my_apartments", placeholders, false);
-        addConfigItem("browse_buy", placeholders, false);
-        addTaxManagementItem(placeholders);
-        addAuctionHouseItem(placeholders);
-        addResearchItem(placeholders);
-        addConfigItem("statistics", placeholders, false);
-        addAchievementItem(placeholders);
-        addConfigItem("help_info", placeholders, false);
+        for (String key : menuConfig.getItemsKeys()) {
+            if (!menuConfig.isItemEnabled(key))
+                continue;
 
-        if (menuConfig.isPlayerInfoEnabled()) {
-            addPlayerInfo(placeholders);
+            if (key.equals("tax_management")) {
+                addTaxManagementItem(placeholders);
+            } else if (key.equals("auction_house")) {
+                addAuctionHouseItem(placeholders);
+            } else if (key.equals("research")) {
+                addResearchItem(placeholders);
+            } else if (key.equals("achievements")) {
+                addAchievementItem(placeholders);
+            } else {
+                addConfigItem(key, placeholders, false);
+            }
         }
     }
 
-    // ── Border ───────────────────────────────────────────────────
 
-    private void addBorder() {
-        ItemStack borderItem = ItemBuilder.filler(menuConfig.getBorderMaterial());
-        int rows = Math.max(1, inventory.getSize() / 9);
-
-        for (int i = 0; i < 9 && i < inventory.getSize(); i++) {
-            inventory.setItem(i, borderItem);
-        }
-
-        int bottomStart = (rows - 1) * 9;
-        for (int i = bottomStart; i < bottomStart + 9 && i < inventory.getSize(); i++) {
-            inventory.setItem(i, borderItem);
-        }
-
-        for (int r = 1; r < rows - 1; r++) {
-            int leftIndex = r * 9;
-            int rightIndex = r * 9 + 8;
-            if (leftIndex < inventory.getSize())
-                inventory.setItem(leftIndex, borderItem);
-            if (rightIndex < inventory.getSize())
-                inventory.setItem(rightIndex, borderItem);
-        }
-    }
 
     // ── Generic config-driven item builder ───────────────────────
 
@@ -118,7 +99,7 @@ public class MainMenuGUI implements GUI {
             lore = menuConfig.getItemLore(key);
         }
 
-        int slot = menuConfig.getItemSlot(key);
+        List<Integer> slots = menuConfig.getItemSlots(key);
         int customModelData = menuConfig.getItemCustomModelData(key);
         boolean glow = !disabled && menuConfig.getItemGlow(key);
 
@@ -133,6 +114,10 @@ public class MainMenuGUI implements GUI {
                 .name(name)
                 .lore(resolvedLore);
 
+        if (material == Material.PLAYER_HEAD) {
+            builder.skull(player.getName());
+        }
+
         if (customModelData > 0) {
             builder.modelData(customModelData);
         }
@@ -140,7 +125,11 @@ public class MainMenuGUI implements GUI {
             builder.glow();
         }
 
-        inventory.setItem(slot, builder.build());
+        ItemStack item = builder.build();
+        for (int slot : slots) {
+            inventory.setItem(slot, item);
+            slotMap.put(slot, key);
+        }
     }
 
     // ── Items that require conditional logic ─────────────────────
@@ -157,7 +146,7 @@ public class MainMenuGUI implements GUI {
         if (totalUnpaid > 0 && configMat.equals("GREEN_CONCRETE")) {
             // Switch to RED_CONCRETE when taxes are due (only if using default material)
             Material material = Material.RED_CONCRETE;
-            int slot = menuConfig.getItemSlot("tax_management");
+            List<Integer> slots = menuConfig.getItemSlots("tax_management");
             int customModelData = menuConfig.getItemCustomModelData("tax_management");
             boolean glow = menuConfig.getItemGlow("tax_management");
 
@@ -168,9 +157,15 @@ public class MainMenuGUI implements GUI {
             }
 
             ItemBuilder builder = new ItemBuilder(material).name(name).lore(resolvedLore);
-            if (customModelData > 0) builder.modelData(customModelData);
-            if (glow) builder.glow();
-            inventory.setItem(slot, builder.build());
+            if (customModelData > 0)
+                builder.modelData(customModelData);
+            if (glow)
+                builder.glow();
+            ItemStack item = builder.build();
+            for (int slot : slots) {
+                inventory.setItem(slot, item);
+                slotMap.put(slot, "tax_management");
+            }
         } else {
             addConfigItem("tax_management", placeholders, false);
         }
@@ -191,25 +186,6 @@ public class MainMenuGUI implements GUI {
         addConfigItem("achievements", placeholders, disabled);
     }
 
-    private void addPlayerInfo(Map<String, String> placeholders) {
-        int slot = menuConfig.getPlayerInfoSlot();
-        String name = replacePlaceholders(menuConfig.getPlayerInfoName(), placeholders);
-        List<String> resolvedLore = new ArrayList<>();
-        for (String line : menuConfig.getPlayerInfoLore()) {
-            resolvedLore.add(replacePlaceholders(line, placeholders));
-        }
-
-        ItemBuilder builder = new ItemBuilder(menuConfig.getPlayerInfoMaterial())
-                .name(name)
-                .lore(resolvedLore);
-
-        // Apply skull if material is PLAYER_HEAD
-        if (menuConfig.getPlayerInfoMaterial() == Material.PLAYER_HEAD) {
-            builder.skull(player.getName());
-        }
-
-        inventory.setItem(slot, builder.build());
-    }
 
     // ── Placeholder resolution ───────────────────────────────────
 
@@ -255,7 +231,8 @@ public class MainMenuGUI implements GUI {
         double totalIncomeGenerated = 0.0;
         double totalTaxPaid = 0.0;
         for (com.aithor.apartmentcore.model.Apartment a : plugin.getApartmentManager().getApartments().values()) {
-            if (!player.getUniqueId().equals(a.owner)) continue;
+            if (!player.getUniqueId().equals(a.owner))
+                continue;
             var st = plugin.getApartmentManager().getStats(a.id);
             if (st != null) {
                 totalIncomeGenerated += st.totalIncomeGenerated;
@@ -292,7 +269,8 @@ public class MainMenuGUI implements GUI {
             com.aithor.apartmentcore.research.PlayerResearchData data = rm.getPlayerData(player.getUniqueId());
             int totalCompleted = 0;
             int totalMax = 0;
-            for (com.aithor.apartmentcore.research.ResearchType type : com.aithor.apartmentcore.research.ResearchType.values()) {
+            for (com.aithor.apartmentcore.research.ResearchType type : com.aithor.apartmentcore.research.ResearchType
+                    .values()) {
                 totalCompleted += data.getCompletedTier(type);
                 totalMax += type.getMaxTier();
             }
@@ -335,6 +313,9 @@ public class MainMenuGUI implements GUI {
 
         // Player info
         map.put("{player_name}", player.getName());
+        map.put("%player%", player.getName());
+        map.put("%player_name%", player.getName());
+        map.put("{player}", player.getName());
         map.put("{plugin_version}", plugin.getDescription().getVersion());
         map.put("{economy_name}", plugin.getEconomy().getName());
         map.put("{player_balance}", plugin.getConfigManager().formatMoney(plugin.getEconomy().getBalance(player)));
@@ -343,10 +324,19 @@ public class MainMenuGUI implements GUI {
     }
 
     private String replacePlaceholders(String text, Map<String, String> placeholders) {
-        if (text == null) return "";
+        if (text == null)
+            return "";
+
+        // Internal placeholders
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             text = text.replace(entry.getKey(), entry.getValue());
         }
+
+        // PlaceholderAPI support
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            text = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
+        }
+
         return text;
     }
 
@@ -357,64 +347,88 @@ public class MainMenuGUI implements GUI {
         event.setCancelled(true);
         int slot = event.getSlot();
 
+        String actionKey = slotMap.get(slot);
+        if (actionKey == null)
+            return;
+
         GUIUtils.playSound(player, GUIUtils.CLICK_SOUND);
 
-        if (slot == menuConfig.getItemSlot("my_apartments")) {
-            plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openMyApartments(player));
-            return;
-        }
-
-        if (slot == menuConfig.getItemSlot("browse_buy")) {
-            plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openApartmentBrowser(player));
-            return;
-        }
-
-        if (slot == menuConfig.getItemSlot("tax_management")) {
-            plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openTaxManagement(player));
-            return;
-        }
-
-        if (slot == menuConfig.getItemSlot("auction_house")) {
-            if (plugin.getAuctionManager() != null && plugin.getConfigManager().isAuctionEnabled()) {
-                plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openAuctionHouse(player));
-            } else {
-                GUIUtils.sendMessage(player, "&cAuction system is disabled!");
-                GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
-            }
-            return;
-        }
-
-        if (slot == menuConfig.getItemSlot("research")) {
-            if (plugin.getResearchManager() != null && plugin.getResearchManager().isEnabled()) {
-                plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openResearch(player));
-            } else {
-                GUIUtils.sendMessage(player, "&cResearch system is disabled!");
-                GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
-            }
-            return;
-        }
-
-        if (slot == menuConfig.getItemSlot("statistics")) {
-            plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openStatistics(player));
-            return;
-        }
-
-        if (slot == menuConfig.getItemSlot("achievements")) {
-            if (plugin.getAchievementManager() != null && plugin.getAchievementManager().isEnabled()) {
-                plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openAchievements(player));
-            } else {
-                GUIUtils.sendMessage(player, "&cAchievement system is disabled!");
-                GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
-            }
-            return;
-        }
-
-        if (slot == menuConfig.getItemSlot("help_info")) {
-            plugin.getServer().getScheduler().runTask(plugin, () -> {
-                HelpInfoGUI helpInfoGUI = new HelpInfoGUI(player, plugin, guiManager);
-                guiManager.openGUI(player, helpInfoGUI);
-            });
-            return;
+        switch (actionKey) {
+            case "my_apartments":
+                plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openMyApartments(player));
+                break;
+            case "browse_buy":
+                plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openApartmentBrowser(player));
+                break;
+            case "tax_management":
+                plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openTaxManagement(player));
+                break;
+            case "auction_house":
+                if (plugin.getAuctionManager() != null && plugin.getConfigManager().isAuctionEnabled()) {
+                    plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openAuctionHouse(player));
+                } else {
+                    GUIUtils.sendMessage(player, "&cAuction system is disabled!");
+                    GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+                }
+                break;
+            case "research":
+                if (plugin.getResearchManager() != null && plugin.getResearchManager().isEnabled()) {
+                    plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openResearch(player));
+                } else {
+                    GUIUtils.sendMessage(player, "&cResearch system is disabled!");
+                    GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+                }
+                break;
+            case "statistics":
+                plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openStatistics(player));
+                break;
+            case "achievements":
+                if (plugin.getAchievementManager() != null && plugin.getAchievementManager().isEnabled()) {
+                    plugin.getServer().getScheduler().runTask(plugin, () -> guiManager.openAchievements(player));
+                } else {
+                    GUIUtils.sendMessage(player, "&cAchievement system is disabled!");
+                    GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+                }
+                break;
+            case "help_info":
+                plugin.getServer().getScheduler().runTask(plugin, () -> {
+                    HelpInfoGUI helpInfoGUI = new HelpInfoGUI(player, plugin, guiManager);
+                    guiManager.openGUI(player, helpInfoGUI);
+                });
+                break;
+            default:
+                List<String> commands = menuConfig.getItemCommands(actionKey);
+                if (!commands.isEmpty()) {
+                    Map<String, String> placeholders = buildPlaceholders();
+                    for (String cmd : commands) {
+                        String parsedCmd = replacePlaceholders(cmd, placeholders);
+                        plugin.getServer().getScheduler().runTask(plugin, () -> {
+                            if (parsedCmd.startsWith("[console] ")) {
+                                String consoleCmd = parsedCmd.substring(10);
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), consoleCmd);
+                            } else if (parsedCmd.startsWith("[player] ")) {
+                                String playerCmd = parsedCmd.substring(9);
+                                player.performCommand(playerCmd);
+                            } else if (parsedCmd.startsWith("[op] ")) {
+                                String opCmd = parsedCmd.substring(5);
+                                boolean wasOp = player.isOp();
+                                try {
+                                    if (!wasOp) player.setOp(true);
+                                    player.performCommand(opCmd);
+                                } finally {
+                                    if (!wasOp) player.setOp(false);
+                                }
+                            } else if (parsedCmd.startsWith("[close]")) {
+                                player.closeInventory();
+                            } else if (parsedCmd.startsWith("[message] ")) {
+                                GUIUtils.sendMessage(player, parsedCmd.substring(10));
+                            } else {
+                                player.performCommand(parsedCmd); // default as player
+                            }
+                        });
+                    }
+                }
+                break;
         }
     }
 

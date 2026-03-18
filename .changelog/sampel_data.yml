@@ -1,0 +1,662 @@
+last-minecraft-day: 1773200131402
+last-rent-claim-time: 1773152082862
+last-income-generation-time: 1773200106403
+apartments:
+  GrandeurManor:
+    region: grandeur_manor
+    world: shmar_city
+    price: 187200.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773189900454
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: GrandeurManor
+    welcome-message: ''
+    floor: 18
+    height: 104
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 194.0
+        max: 395.0
+      '2':
+        min: 230.0
+        max: 553.0
+      '3':
+        min: 284.0
+        max: 738.0
+      '4':
+        min: 356.0
+        max: 950.0
+      '5':
+        min: 446.0
+        max: 1189.0
+    teleport-location:
+      world: shmar_city
+      x: -131.64308698189336
+      y: 29.0
+      z: -31.220417127577118
+      yaw: -172.19987
+      pitch: 18.0
+  SereneGarden:
+    region: serene_garden
+    world: shmar_city
+    price: 121600.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773190992033
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: SereneGarden
+    welcome-message: ''
+    floor: 16
+    height: 76
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 156.0
+        max: 310.0
+      '2':
+        min: 188.0
+        max: 434.0
+      '3':
+        min: 236.0
+        max: 582.0
+      '4':
+        min: 300.0
+        max: 754.0
+      '5':
+        min: 380.0
+        max: 950.0
+    teleport-location:
+      world: shmar_city
+      x: -129.645017749031
+      y: 16.0
+      z: 24.495675406474998
+      yaw: 91.49719
+      pitch: 4.350019
+  SkylineResidences:
+    region: skyline_residences
+    world: shmar_city
+    price: 298200.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773193609761
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: SkylineResidences
+    welcome-message: ''
+    floor: 14
+    height: 213
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 283.0
+        max: 637.5
+      '2':
+        min: 311.0
+        max: 892.5
+      '3':
+        min: 353.0
+        max: 1168.5
+      '4':
+        min: 409.0
+        max: 1465.5
+      '5':
+        min: 479.0
+        max: 1783.5
+    teleport-location:
+      world: shmar_city
+      x: 14.913406160286183
+      y: 20.0
+      z: 24.895481270879454
+      yaw: -90.309326
+      pitch: 4.0504465
+  TheSovereignHotel:
+    region: the_sovereign_hotel
+    world: shmar_city
+    price: 182400.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773194019448
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: TheSovereignHotel
+    welcome-message: ''
+    floor: 19
+    height: 96
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 191.0
+        max: 382.5
+      '2':
+        min: 229.0
+        max: 535.5
+      '3':
+        min: 286.0
+        max: 717.0
+      '4':
+        min: 362.0
+        max: 927.0
+      '5':
+        min: 457.0
+        max: 1165.5
+    teleport-location:
+      world: shmar_city
+      x: 108.479805838173
+      y: 18.0
+      z: 49.451811834075905
+      yaw: -178.21289
+      pitch: -0.8995304
+  ZenithPointTower:
+    region: zenith_point_tower
+    world: shmar_city
+    price: 588000.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773157336640
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: Zenith Point Tower
+    welcome-message: ''
+    floor: 35
+    height: 168
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 343.0
+        max: 682.5
+      '2':
+        min: 413.0
+        max: 955.5
+      '3':
+        min: 518.0
+        max: 1281.0
+      '4':
+        min: 658.0
+        max: 1659.0
+      '5':
+        min: 833.0
+        max: 2089.5
+    teleport-location:
+      world: shmar_city
+      x: -23.20436383127851
+      y: 16.0
+      z: 25.184858689450547
+      yaw: 86.70064
+      pitch: -1.0499768
+  LibertyResidence:
+    region: liberty_residence
+    world: shmar_city
+    price: 136000.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773163664250
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: LibertyResidence
+    welcome-message: ''
+    floor: 17
+    height: 80
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 165.0
+        max: 327.5
+      '2':
+        min: 199.0
+        max: 458.5
+      '3':
+        min: 250.0
+        max: 615.0
+      '4':
+        min: 318.0
+        max: 797.0
+      '5':
+        min: 403.0
+        max: 1004.5
+    teleport-location:
+      world: shmar_city
+      x: -48.41442802481122
+      y: 16.0
+      z: -41.207861029495014
+      yaw: -178.94966
+      pitch: 2.7
+  TheHudson:
+    region: the_hudson
+    world: shmar_city
+    price: 91300.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773199783390
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: TheHudson
+    welcome-message: ''
+    floor: 11
+    height: 83
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 138.0
+        max: 290.0
+      '2':
+        min: 160.0
+        max: 406.0
+      '3':
+        min: 193.0
+        max: 538.5
+      '4':
+        min: 237.0
+        max: 687.5
+      '5':
+        min: 292.0
+        max: 853.0
+    teleport-location:
+      world: shmar_city
+      x: -74.75431322789575
+      y: 16.0
+      z: 92.60183675536464
+      yaw: -1.1992514
+      pitch: -5.700024
+  AuroraHeights:
+    region: aurora_heights
+    world: shmar_city
+    price: 115200.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773198220966
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: AuroraHeights
+    welcome-message: ''
+    floor: 16
+    height: 72
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 152.0
+        max: 300.0
+      '2':
+        min: 184.0
+        max: 420.0
+      '3':
+        min: 232.0
+        max: 564.0
+      '4':
+        min: 296.0
+        max: 732.0
+      '5':
+        min: 376.0
+        max: 924.0
+    teleport-location:
+      world: shmar_city
+      x: 179.35511844859494
+      y: 16.0
+      z: 10.44998770100431
+      yaw: -179.25072
+      pitch: 3.8999605
+  TheHorizon:
+    region: the_horizon
+    world: shmar_city
+    price: 163800.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773197306104
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: TheHorizon
+    welcome-message: ''
+    floor: 18
+    height: 91
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 181.0
+        max: 362.5
+      '2':
+        min: 217.0
+        max: 507.5
+      '3':
+        min: 271.0
+        max: 679.5
+      '4':
+        min: 343.0
+        max: 878.5
+      '5':
+        min: 433.0
+        max: 1104.5
+    teleport-location:
+      world: shmar_city
+      x: -341.3062741678565
+      y: 16.0
+      z: -65.92161052868916
+      yaw: 0.75057983
+      pitch: 1.6499783
+  CitylineApartments:
+    region: cityline_apartments
+    world: shmar_city
+    price: 132000.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773198748294
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: CitylineApartments
+    welcome-message: ''
+    floor: 15
+    height: 88
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 163.0
+        max: 332.5
+      '2':
+        min: 193.0
+        max: 465.5
+      '3':
+        min: 238.0
+        max: 621.0
+      '4':
+        min: 298.0
+        max: 799.0
+      '5':
+        min: 373.0
+        max: 999.5
+    teleport-location:
+      world: shmar_city
+      x: 179.83644063667697
+      y: 16.0
+      z: -88.90295894043598
+      yaw: -88.80249
+      pitch: 4.1999817
+  AriaCommunities:
+    region: aria_communities
+    world: shmar_city
+    price: 200000.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773193187936
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: AriaCommunities
+    welcome-message: ''
+    floor: 20
+    height: 100
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 200.0
+        max: 400.0
+      '2':
+        min: 240.0
+        max: 560.0
+      '3':
+        min: 300.0
+        max: 750.0
+      '4':
+        min: 380.0
+        max: 970.0
+      '5':
+        min: 480.0
+        max: 1220.0
+    teleport-location:
+      world: shmar_city
+      x: 2.4108082349583957
+      y: 16.0
+      z: -92.98807360163933
+      yaw: -87.910034
+      pitch: 4.650131
+  SovereignGrove:
+    region: sovereign_grove
+    world: shmar_city
+    price: 65000.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773196937634
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: SovereignGrove
+    welcome-message: ''
+    floor: 10
+    height: 65
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 115.0
+        max: 237.5
+      '2':
+        min: 135.0
+        max: 332.5
+      '3':
+        min: 165.0
+        max: 442.5
+      '4':
+        min: 205.0
+        max: 567.5
+      '5':
+        min: 255.0
+        max: 707.5
+    teleport-location:
+      world: shmar_city
+      x: -301.07497192562266
+      y: 16.0
+      z: 56.808619952348835
+      yaw: 84.45025
+      pitch: 1.5000038
+  GrandPalace:
+    region: grand_palace
+    world: shmar_city
+    price: 87600.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773194812206
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: GrandPalace
+    welcome-message: ''
+    floor: 12
+    height: 73
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 133.0
+        max: 272.5
+      '2':
+        min: 157.0
+        max: 381.5
+      '3':
+        min: 193.0
+        max: 508.5
+      '4':
+        min: 241.0
+        max: 653.5
+      '5':
+        min: 301.0
+        max: 816.5
+    teleport-location:
+      world: shmar_city
+      x: -232.55319602055434
+      y: 16.0
+      z: -12.50579781784387
+      yaw: 2.249878
+      pitch: -1.19999
+  TheMeridian:
+    region: the_meridian
+    world: shmar_city
+    price: 9600.0
+    tax: 0.0
+    tax-days: 0
+    level: 1
+    last-tax-payment: 1773197580088
+    pending-income: 0.0
+    inactive: false
+    penalty: 0.0
+    inactive-since: 0
+    display-name: TheMeridian
+    welcome-message: ''
+    floor: 96
+    height: 1
+    auto-tax-payment: false
+    last-invoice-at: 0
+    tax-invoices: []
+    upgrade-in-progress: false
+    upgrade-complete-at: 0
+    market-listing: false
+    market-price: 0.0
+    market-listed-at: 0
+    custom-incomes:
+      '1':
+        min: 481.0
+        max: 722.5
+      '2':
+        min: 673.0
+        max: 1011.5
+      '3':
+        min: 961.0
+        max: 1444.5
+      '4':
+        min: 1345.0
+        max: 2021.5
+      '5':
+        min: 1825.0
+        max: 2742.5
+    teleport-location:
+      world: shmar_city
+      x: -382.3783602539889
+      y: 16.0
+      z: 25.549847604154586
+      yaw: -90.15015
+      pitch: 1.7999718

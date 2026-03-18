@@ -46,6 +46,10 @@ public class Apartment {
     public String welcomeMessage;
     private long lastTaxCheckDay; // legacy checkpoint
 
+    // New physical properties
+    public int floor;
+    public int height;
+
     // Custom teleport location
     public String teleportWorld;
     public double teleportX, teleportY, teleportZ;
@@ -66,9 +70,17 @@ public class Apartment {
     public double marketPrice; // price set by owner for market sale
     public long marketListedAt; // epoch millis when listed on market
 
+    // Custom incomes that override config.yml (populated on creation)
+    public Map<Integer, Double> customMinIncomes;
+    public Map<Integer, Double> customMaxIncomes;
+
+    // Custom icon for GUI display (material name)
+    public String icon;
+
     public Apartment(String id, String regionName, String worldName, UUID owner, double price,
             double tax, int taxDays, int level, long lastTaxPayment, double pendingIncome,
-            boolean inactive, double penalty, long inactiveSince, String displayName, String welcomeMessage) {
+            boolean inactive, double penalty, long inactiveSince, String displayName, String welcomeMessage,
+            int floor, int height) {
         this.id = id;
         this.regionName = regionName;
         this.worldName = worldName;
@@ -86,6 +98,8 @@ public class Apartment {
         this.welcomeMessage = welcomeMessage != null ? welcomeMessage : "";
         this.lastTaxCheckDay = 0;
         this.hasCustomTeleport = false; // Default to false
+        this.floor = floor;
+        this.height = height;
 
         // New tax system defaults
         this.taxInvoices = new ArrayList<>();
@@ -100,6 +114,12 @@ public class Apartment {
         this.marketListing = false;
         this.marketPrice = 0.0;
         this.marketListedAt = 0L;
+
+        this.customMinIncomes = new HashMap<>();
+        this.customMaxIncomes = new HashMap<>();
+
+        // Custom icon (null means use default)
+        this.icon = null;
     }
 
     /**
@@ -141,13 +161,11 @@ public class Apartment {
      * Get hourly income based on level with shop buffs applied
      */
     public double getHourlyIncome(ConfigManager configManager) {
-        LevelConfig config = configManager.getLevelConfig(level);
-        if (config == null) {
-            return 10; // Default fallback
-        }
+        double minInc = getMinIncome(configManager, level);
+        double maxInc = getMaxIncome(configManager, level);
 
         // Base income calculation
-        double baseIncome = config.minIncome + Math.random() * (config.maxIncome - config.minIncome);
+        double baseIncome = minInc + Math.random() * (maxInc - minInc);
 
         // Apply shop buffs if available
         return applyShopBuffsToIncome(baseIncome, configManager);
@@ -168,13 +186,11 @@ public class Apartment {
      * plugin access)
      */
     public double getHourlyIncomeWithShopBuffs(ConfigManager configManager, ApartmentCore plugin) {
-        LevelConfig config = configManager.getLevelConfig(level);
-        if (config == null) {
-            return 10; // Default fallback
-        }
+        double minInc = getMinIncome(configManager, level);
+        double maxInc = getMaxIncome(configManager, level);
 
         // Base income calculation
-        double baseIncome = config.minIncome + Math.random() * (config.maxIncome - config.minIncome);
+        double baseIncome = minInc + Math.random() * (maxInc - minInc);
 
         // Apply shop buffs
         if (plugin != null && plugin.getShopManager() != null) {
@@ -223,6 +239,22 @@ public class Apartment {
         }
 
         return baseIncome;
+    }
+
+    public double getMinIncome(ConfigManager configManager, int lvl) {
+        if (customMinIncomes != null && customMinIncomes.containsKey(lvl)) {
+            return customMinIncomes.get(lvl);
+        }
+        LevelConfig config = configManager.getLevelConfig(lvl);
+        return config != null ? config.minIncome : 10.0;
+    }
+
+    public double getMaxIncome(ConfigManager configManager, int lvl) {
+        if (customMaxIncomes != null && customMaxIncomes.containsKey(lvl)) {
+            return customMaxIncomes.get(lvl);
+        }
+        LevelConfig config = configManager.getLevelConfig(lvl);
+        return config != null ? config.maxIncome : 20.0;
     }
 
     // =========================

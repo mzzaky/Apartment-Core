@@ -946,8 +946,8 @@ public class ApartmentCommandService {
                 player.sendMessage(ChatColor.YELLOW + "Pending Income: " + ChatColor.WHITE
                         + configManager.formatMoney(apt.pendingIncome));
                 player.sendMessage(ChatColor.YELLOW + "Hourly Income Range: " + ChatColor.WHITE +
-                        configManager.formatMoney(configManager.getLevelConfig(apt.level).minIncome) + " - " +
-                        configManager.formatMoney(configManager.getLevelConfig(apt.level).maxIncome));
+                        configManager.formatMoney(apt.getMinIncome(configManager, apt.level)) + " - " +
+                        configManager.formatMoney(apt.getMaxIncome(configManager, apt.level)));
                 player.sendMessage(ChatColor.YELLOW + "Level: " + ChatColor.WHITE + apt.level + "/5");
 
                 // Income countdown
@@ -1147,7 +1147,9 @@ public class ApartmentCommandService {
             return true;
         }
 
-        if (apt.level >= 5) {
+        int maxLevel = configManager.getLevelConfigs().keySet().stream()
+                .mapToInt(Integer::intValue).max().orElse(5);
+        if (apt.level >= maxLevel) {
             player.sendMessage(ChatColor.RED + "This apartment is already at maximum level!");
             return true;
         }
@@ -1197,8 +1199,6 @@ public class ApartmentCommandService {
 
             // Track max level achievement
             if (plugin.getAchievementManager() != null) {
-                int maxLevel = configManager.getLevelConfigs().keySet().stream()
-                        .mapToInt(Integer::intValue).max().orElse(5);
                 if (apt.level >= maxLevel) {
                     plugin.getAchievementManager().setProgress(player.getUniqueId(),
                             com.aithor.apartmentcore.achievement.AchievementType.MAX_LEVEL_OWNER, 1);
@@ -1207,8 +1207,8 @@ public class ApartmentCommandService {
 
             player.sendMessage(ChatColor.GREEN + "Successfully upgraded " + apt.displayName + " to level " + apt.level);
             player.sendMessage(ChatColor.YELLOW + "New income range: " +
-                    configManager.formatMoney(configManager.getLevelConfig(apt.level).minIncome) + " - " +
-                    configManager.formatMoney(configManager.getLevelConfig(apt.level).maxIncome) + " per hour");
+                    configManager.formatMoney(apt.getMinIncome(configManager, apt.level)) + " - " +
+                    configManager.formatMoney(apt.getMaxIncome(configManager, apt.level)) + " per hour");
 
             try {
                 player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
@@ -1319,7 +1319,7 @@ public class ApartmentCommandService {
 
     public void sendAdminHelp(CommandSender sender) {
         sender.sendMessage(ChatColor.GOLD + "=== Admin Commands ===");
-        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin create <region> <id> <price>" + ChatColor.WHITE
+        sender.sendMessage(ChatColor.YELLOW + "/apartmentcore admin create <region> <id> <price> [floor] [height]" + ChatColor.WHITE
                 + " - Create apartment");
         sender.sendMessage(
                 ChatColor.YELLOW + "/apartmentcore admin remove <id>" + ChatColor.WHITE + " - Remove apartment");
@@ -1345,13 +1345,15 @@ public class ApartmentCommandService {
 
         switch (adminCmd) {
             case "create":
-                if (args.length != 4) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin create <region> <id> <price>");
+                if (args.length < 4 || args.length > 6) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin create <region> <id> <price> [floor] [height]");
                     return true;
                 }
                 try {
+                    int floor = args.length >= 5 ? Integer.parseInt(args[4]) : 1;
+                    int height = args.length == 6 ? Integer.parseInt(args[5]) : 1;
                     return createApartment(sender, args[1], args[2],
-                            Double.parseDouble(args[3]));
+                            Double.parseDouble(args[3]), floor, height);
                 } catch (NumberFormatException e) {
                     sender.sendMessage(ChatColor.RED + "Invalid number format!");
                     return true;
@@ -1365,6 +1367,29 @@ public class ApartmentCommandService {
                 return removeApartment(sender, args[1]);
 
             case "set":
+                if (args.length >= 2 && args[1].equalsIgnoreCase("teleport")) {
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage(ChatColor.RED + "Only players can use this command!");
+                        return true;
+                    }
+                    if (args.length != 3) {
+                        sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin set teleport <apartment_id>");
+                        return true;
+                    }
+                    String factoryId = args[2];
+                    Apartment apt = apartmentManager.getApartment(factoryId);
+                    if (apt == null) {
+                        sender.sendMessage(ChatColor.RED + "Apartment not found!");
+                        return true;
+                    }
+                    Player p = (Player) sender;
+                    apt.setCustomTeleportLocation(p.getLocation());
+                    apartmentManager.saveApartments();
+                    sender.sendMessage(ChatColor.GREEN + "Admin teleport location for " + apt.displayName + " has been updated to your current position.");
+                    plugin.logAdminAction("Admin " + sender.getName() + " set teleport location for " + factoryId);
+                    return true;
+                }
+
                 if (args.length >= 2 && args[1].equalsIgnoreCase("research")) {
                     if (args.length != 5) {
                         sender.sendMessage(ChatColor.RED
@@ -1569,6 +1594,13 @@ public class ApartmentCommandService {
                 plugin.reloadConfig();
                 configManager.loadConfiguration();
                 plugin.getMessageManager().reloadMessages();
+                plugin.getMainMenuConfig().load();
+                
+                // Reload apartment data specifically to pick up changes to apartments.yml
+                plugin.getDataManager().loadDataFile();
+                apartmentManager.getApartments().clear();
+                apartmentManager.loadApartments();
+                
                 boolean nowEnabled = configManager.isAuctionEnabled();
 
                 if (nowEnabled && !wasEnabled) {
@@ -1653,7 +1685,7 @@ public class ApartmentCommandService {
     // ======================
     // Internal admin helpers
     // ======================
-    private boolean createApartment(CommandSender sender, String regionName, String id, double price) {
+    private boolean createApartment(CommandSender sender, String regionName, String id, double price, int floor, int height) {
         if (apartmentManager.getApartment(id) != null) {
             sender.sendMessage(ChatColor.RED + "Apartment with this ID already exists!");
             return true;
@@ -1676,7 +1708,14 @@ public class ApartmentCommandService {
         }
 
         Apartment apt = new Apartment(id, regionName, worldName, null, price, 0.0, 0, 1,
-                System.currentTimeMillis(), 0, false, 0, 0, id, "");
+                System.currentTimeMillis(), 0, false, 0, 0, id, "", floor, height);
+        // Populate default custom incomes from config so admins can edit them in apartments.yml
+        if (configManager != null && configManager.getLevelConfigs() != null) {
+            for (java.util.Map.Entry<Integer, com.aithor.apartmentcore.model.LevelConfig> entry : configManager.getLevelConfigs().entrySet()) {
+                apt.customMinIncomes.put(entry.getKey(), entry.getValue().minIncome);
+                apt.customMaxIncomes.put(entry.getKey(), entry.getValue().maxIncome);
+            }
+        }
         // Set default teleport location to the admin's current position at creation
         // time (if sender is a player)
         if (player != null) {
