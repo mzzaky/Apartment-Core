@@ -7,7 +7,7 @@
 
   <groupId>com.aithor</groupId>
   <artifactId>ApartmentCore</artifactId>
-  <version>1.3.7</version>
+  <version>1.3.8</version>
   <packaging>jar</packaging>
 
   <name>ApartmentCore</name>
@@ -17,7 +17,41 @@
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spigot.version>1.21.4-R0.1-SNAPSHOT</spigot.version>
+    <!-- Default edition: free. Override with -Pedition-pro -->
+    <apartmentcore.edition>FREE</apartmentcore.edition>
+    <apartmentcore.edition.label>Free</apartmentcore.edition.label>
+    <apartmentcore.jar.classifier>Free</apartmentcore.jar.classifier>
   </properties>
+
+  <!-- ============================================================ -->
+  <!-- Maven Profiles: Free (default) and Pro                       -->
+  <!-- Build Free : mvn clean package                               -->
+  <!-- Build Pro  : mvn clean package -Pedition-pro                 -->
+  <!-- ============================================================ -->
+  <profiles>
+    <!-- Free Edition (active by default) -->
+    <profile>
+      <id>edition-free</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <apartmentcore.edition>FREE</apartmentcore.edition>
+        <apartmentcore.edition.label>Free</apartmentcore.edition.label>
+        <apartmentcore.jar.classifier>Free</apartmentcore.jar.classifier>
+      </properties>
+    </profile>
+
+    <!-- Pro Edition -->
+    <profile>
+      <id>edition-pro</id>
+      <properties>
+        <apartmentcore.edition>PRO</apartmentcore.edition>
+        <apartmentcore.edition.label>Pro</apartmentcore.edition.label>
+        <apartmentcore.jar.classifier>Pro</apartmentcore.jar.classifier>
+      </properties>
+    </profile>
+  </profiles>
 
   <repositories>
     <repository>
@@ -83,6 +117,14 @@
   </dependencies>
 
   <build>
+    <!-- Final JAR name: ApartmentCore-{Free|Pro}-1.3.8.jar -->
+    <finalName>ApartmentCore-${apartmentcore.jar.classifier}-${project.version}</finalName>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

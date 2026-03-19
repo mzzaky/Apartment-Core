@@ -1,10 +1,16 @@
 # yaml-language-server: $schema=./schemas/spigot-plugin.json
 name: ApartmentCore
-version: '1.3.7'
+version: '${project.version}'
 main: com.aithor.apartmentcore.ApartmentCore
 api-version: '1.21'
 author: Aithor
 description: Advanced apartment management system with Apartment Shop System - Upgrade your properties with premium amenities and buffs
+
+# Edition flag injected by Maven profiles at build time.
+# FREE = Free edition (default), PRO = Pro edition (license required).
+# Do NOT edit this value manually.
+edition: '${apartmentcore.edition}'
+
 depend: [Vault, WorldGuard]
 softdepend: [PlaceholderAPI]
 
@@ -72,7 +78,7 @@ permissions:
   apartmentcore.guestbook.leave:
     description: Allows leaving a message in an apartment's guestbook
     default: true
-  
+
   apartmentcore.guestbook.read:
     description: Allows reading the guestbook of an owned apartment
     default: true

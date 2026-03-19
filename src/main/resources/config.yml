@@ -1,13 +1,21 @@
 # =================================================================
 # ApartmentCore Configuration File
-# Version: 1.3.3
+# Version: 1.3.8
 # Author: Aithor
 # =================================================================
 
 debug: false
 
 # Plugin configuration version - used for update compatibility
-config-version: 3
+config-version: 4
+
+# -----------------------------------------------------------------
+# License (Pro Edition Only)
+# -----------------------------------------------------------------
+# If you are using ApartmentCore Pro, enter your license key below.
+# Free edition users can ignore this section.
+license:
+  key: ""
 
 
 # -----------------------------------------------------------------
