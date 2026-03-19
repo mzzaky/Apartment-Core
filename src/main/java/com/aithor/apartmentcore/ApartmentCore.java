@@ -1,6 +1,9 @@
 package com.aithor.apartmentcore;
 
 import com.aithor.apartmentcore.command.CommandHandler;
+import com.aithor.apartmentcore.edition.Edition;
+import com.aithor.apartmentcore.edition.EditionManager;
+import com.aithor.apartmentcore.edition.LicenseManager;
 import com.aithor.apartmentcore.gui.GUIManager;
 import com.aithor.apartmentcore.manager.ApartmentManager;
 import com.aithor.apartmentcore.manager.AuctionManager;
@@ -32,6 +35,8 @@ import java.io.File;
 
 public class ApartmentCore extends JavaPlugin {
     private Economy economy;
+    private EditionManager editionManager;
+    private LicenseManager licenseManager;
     private ConfigManager configManager;
     private DataManager dataManager;
     private ApartmentManager apartmentManager;
@@ -59,17 +64,32 @@ public class ApartmentCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Print startup splash banner
-        SplashArt.print(this);
-
         // Ensure default config exists and load configuration
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
         this.configManager.loadConfiguration();
         this.messageManager = new MessageManager(this);
 
-        // Initialize LoggerManager after config is loaded
-        this.loggerManager = new LoggerManager(this, configManager);
+        // ── Edition detection ───────────────────────────────────────────────
+        String editionRaw = getDescription().getMap().containsKey("edition")
+                ? String.valueOf(getDescription().getMap().get("edition"))
+                : "FREE";
+        Edition edition = Edition.fromString(editionRaw);
+        this.editionManager = new EditionManager(this, edition);
+
+        // Print startup splash banner (now edition-aware)
+        SplashArt.print(this);
+
+        // ── License validation (Pro only) ───────────────────────────────────
+        if (edition.isPro()) {
+            this.licenseManager = new LicenseManager(this);
+            this.licenseManager.initialize();
+        }
+
+        // Initialize LoggerManager – only active in Pro edition
+        if (editionManager.isLoggingEnabled()) {
+            this.loggerManager = new LoggerManager(this, configManager);
+        }
 
         if (!setupEconomy()) {
             getLogger().severe("Vault not found or no economy provider! Disabling plugin...");
@@ -110,13 +130,17 @@ public class ApartmentCore extends JavaPlugin {
             debug("GUI system is disabled via config.");
         }
 
-        // Shop system
+        // Shop system (always active; tiers customisable only in Pro)
         this.shopManager = new ApartmentShopManager(this, apartmentManager, economy, configManager, dataManager);
 
-        // Research system
-        this.researchManager = new ResearchManager(this, economy, configManager);
+        // Research system (Pro only)
+        if (editionManager.isResearchEnabled()) {
+            this.researchManager = new ResearchManager(this, economy, configManager);
+        } else {
+            debug("Research system is disabled in Free edition.");
+        }
 
-        // Achievement system
+        // Achievement system (always active; customisation only in Pro)
         this.achievementManager = new AchievementManager(this, economy, configManager);
 
         // Commands
@@ -241,6 +265,14 @@ public class ApartmentCore extends JavaPlugin {
     }
 
     // Accessors for shared state
+    public EditionManager getEditionManager() {
+        return editionManager;
+    }
+
+    public LicenseManager getLicenseManager() {
+        return licenseManager;
+    }
+
     public Economy getEconomy() {
         return economy;
     }

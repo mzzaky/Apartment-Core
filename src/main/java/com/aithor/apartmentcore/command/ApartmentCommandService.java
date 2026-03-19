@@ -1147,10 +1147,17 @@ public class ApartmentCommandService {
             return true;
         }
 
-        int maxLevel = configManager.getLevelConfigs().keySet().stream()
+        int configMaxLevel = configManager.getLevelConfigs().keySet().stream()
                 .mapToInt(Integer::intValue).max().orElse(5);
+        // Edition gate: cap max level (Free = 5)
+        int maxLevel = Math.min(configMaxLevel, plugin.getEditionManager().getMaxLevel());
         if (apt.level >= maxLevel) {
-            player.sendMessage(ChatColor.RED + "This apartment is already at maximum level!");
+            if (plugin.getEditionManager().isFree() && configMaxLevel > maxLevel) {
+                player.sendMessage(ChatColor.RED + "Free edition limit: max level " + maxLevel
+                        + ". Upgrade to ApartmentCore Pro for unlimited levels.");
+            } else {
+                player.sendMessage(ChatColor.RED + "This apartment is already at maximum level!");
+            }
             return true;
         }
 
@@ -1583,6 +1590,10 @@ public class ApartmentCommandService {
                 return true;
 
             case "backup":
+                if (!plugin.getEditionManager().isBackupEnabled()) {
+                    sender.sendMessage(ChatColor.RED + "Backup feature is only available in ApartmentCore Pro.");
+                    return true;
+                }
                 if (args.length < 2) {
                     sender.sendMessage(ChatColor.RED + "Usage: /apartmentcore admin backup <create|list|restore>");
                     return true;
@@ -1688,6 +1699,14 @@ public class ApartmentCommandService {
     private boolean createApartment(CommandSender sender, String regionName, String id, double price, int floor, int height) {
         if (apartmentManager.getApartment(id) != null) {
             sender.sendMessage(ChatColor.RED + "Apartment with this ID already exists!");
+            return true;
+        }
+
+        // Edition gate: check max apartment limit (Free = 20)
+        int maxApartments = plugin.getEditionManager().getMaxApartments();
+        if (apartmentManager.getApartmentCount() >= maxApartments) {
+            sender.sendMessage(ChatColor.RED + "Maximum apartment limit reached ("
+                    + maxApartments + "). Upgrade to ApartmentCore Pro for unlimited apartments.");
             return true;
         }
 

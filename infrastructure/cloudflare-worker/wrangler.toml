@@ -1,0 +1,16 @@
+# =====================================================================
+# ApartmentCore Pro – Cloudflare Worker Configuration
+# =====================================================================
+# Deploy: npx wrangler deploy
+# Dev:    npx wrangler dev
+# =====================================================================
+
+name = "apartmentcore-license"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# Set these via `npx wrangler secret put SUPABASE_URL` etc.
+# Do NOT commit actual values to version control.
+# [vars]
+# SUPABASE_URL = "https://your-project.supabase.co"
+# SUPABASE_SERVICE_KEY = "your-service-role-key"
