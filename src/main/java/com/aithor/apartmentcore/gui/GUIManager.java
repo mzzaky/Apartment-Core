@@ -241,6 +241,10 @@ public class GUIManager implements Listener {
      * @param player The player
      */
     public void openResearch(Player player) {
+        if (!plugin.getEditionManager().isResearchEnabled()) {
+            plugin.getEditionManager().sendProOnlyMessage(player, "Research System");
+            return;
+        }
         ResearchGUI gui = new ResearchGUI(player, plugin, this);
         openGUI(player, gui);
     }

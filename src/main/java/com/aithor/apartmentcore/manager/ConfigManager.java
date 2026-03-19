@@ -435,22 +435,37 @@ public class ConfigManager {
             }
 
             this.shopConfigFile = new File(plugin.getDataFolder(), "shop.yml");
-            if (!this.shopConfigFile.exists()) {
+
+            // Free edition: load from bundled resource only (don't export to disk)
+            boolean isFree = plugin.getEditionManager() != null && plugin.getEditionManager().isFree();
+            if (isFree) {
                 try (InputStream in = plugin.getResource("shop.yml")) {
                     if (in != null) {
-                        Files.copy(in, this.shopConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        plugin.getLogger().info("shop.yml created from default resource.");
+                        this.shopConfig = YamlConfiguration.loadConfiguration(
+                                new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8));
                     } else {
-                        this.shopConfigFile.createNewFile();
-                        plugin.getLogger().warning("shop.yml resource not found in jar! Created empty file.");
+                        this.shopConfig = new YamlConfiguration();
                     }
-                } catch (IOException ioe) {
-                    plugin.getLogger().warning("Failed to create/copy shop.yml: " + ioe.getMessage());
                 }
+                plugin.debug("Shop configuration loaded from bundled resource (Free edition).");
+            } else {
+                // Pro edition: export to disk for editing
+                if (!this.shopConfigFile.exists()) {
+                    try (InputStream in = plugin.getResource("shop.yml")) {
+                        if (in != null) {
+                            Files.copy(in, this.shopConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                            plugin.getLogger().info("shop.yml created from default resource.");
+                        } else {
+                            this.shopConfigFile.createNewFile();
+                            plugin.getLogger().warning("shop.yml resource not found in jar! Created empty file.");
+                        }
+                    } catch (IOException ioe) {
+                        plugin.getLogger().warning("Failed to create/copy shop.yml: " + ioe.getMessage());
+                    }
+                }
+                this.shopConfig = YamlConfiguration.loadConfiguration(this.shopConfigFile);
+                plugin.debug("Shop configuration loaded from " + this.shopConfigFile.getName());
             }
-
-            this.shopConfig = YamlConfiguration.loadConfiguration(this.shopConfigFile);
-            plugin.debug("Shop configuration loaded from " + this.shopConfigFile.getName());
         } catch (Throwable t) {
             plugin.getLogger().warning("Failed to load Shop config: " + t.getMessage());
         }

@@ -155,18 +155,36 @@ public class MainMenuConfig {
      * Creates the default file from the JAR resource if it does not exist.
      */
     public void load() {
-        File guiDir = new File(plugin.getDataFolder(), "custom_gui");
-        if (!guiDir.exists()) {
-            guiDir.mkdirs();
-        }
+        boolean isFree = plugin.getEditionManager() != null && plugin.getEditionManager().isFree();
 
-        this.configFile = new File(guiDir, "main_menu.yml");
-        if (!configFile.exists()) {
-            plugin.saveResource("custom_gui/main_menu.yml", false);
-        }
+        if (isFree) {
+            // Free edition: load from bundled resource, don't export to disk
+            try (java.io.InputStream in = plugin.getResource("custom_gui/main_menu.yml")) {
+                if (in != null) {
+                    this.config = YamlConfiguration.loadConfiguration(
+                            new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8));
+                } else {
+                    this.config = new YamlConfiguration();
+                }
+            } catch (java.io.IOException e) {
+                this.config = new YamlConfiguration();
+            }
+            plugin.debug("Main menu config loaded from bundled resource (Free edition).");
+        } else {
+            // Pro edition: export to disk for full customisation
+            File guiDir = new File(plugin.getDataFolder(), "custom_gui");
+            if (!guiDir.exists()) {
+                guiDir.mkdirs();
+            }
 
-        this.config = YamlConfiguration.loadConfiguration(configFile);
-        plugin.debug("Main menu config loaded from " + configFile.getPath());
+            this.configFile = new File(guiDir, "main_menu.yml");
+            if (!configFile.exists()) {
+                plugin.saveResource("custom_gui/main_menu.yml", false);
+            }
+
+            this.config = YamlConfiguration.loadConfiguration(configFile);
+            plugin.debug("Main menu config loaded from " + configFile.getPath());
+        }
     }
 
     // ── Global properties ─────────────────────────────────────────

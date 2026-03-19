@@ -108,19 +108,33 @@ public class AchievementManager {
             }
 
             this.achievementConfigFile = new File(plugin.getDataFolder(), "achievements.yml");
-            if (!achievementConfigFile.exists()) {
+
+            // Free edition: load from bundled resource only (don't export to disk)
+            boolean isFree = plugin.getEditionManager() != null && plugin.getEditionManager().isFree();
+            if (isFree) {
                 try (InputStream in = plugin.getResource("achievements.yml")) {
                     if (in != null) {
-                        Files.copy(in, achievementConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        plugin.getLogger().info("achievements.yml created from default resource.");
+                        this.achievementConfig = YamlConfiguration.loadConfiguration(
+                                new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8));
                     } else {
-                        achievementConfigFile.createNewFile();
-                        plugin.getLogger().warning("achievements.yml resource not found in jar! Created empty file.");
+                        this.achievementConfig = new YamlConfiguration();
                     }
                 }
+            } else {
+                // Pro edition: export to disk for editing
+                if (!achievementConfigFile.exists()) {
+                    try (InputStream in = plugin.getResource("achievements.yml")) {
+                        if (in != null) {
+                            Files.copy(in, achievementConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                            plugin.getLogger().info("achievements.yml created from default resource.");
+                        } else {
+                            achievementConfigFile.createNewFile();
+                            plugin.getLogger().warning("achievements.yml resource not found in jar! Created empty file.");
+                        }
+                    }
+                }
+                this.achievementConfig = YamlConfiguration.loadConfiguration(achievementConfigFile);
             }
-
-            this.achievementConfig = YamlConfiguration.loadConfiguration(achievementConfigFile);
             this.enabled = achievementConfig.getBoolean("achievements.enabled", true);
 
             // Parse per-achievement config

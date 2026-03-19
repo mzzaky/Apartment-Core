@@ -1,4 +1,48 @@
+Version 1.3.8 – Edition System (Free & Pro)
+
 Added:
+- Introduced dual-edition build system using Maven profiles: Free (default) and Pro.
+  - Build Free: `mvn clean package`
+  - Build Pro: `mvn clean package -Pedition-pro`
+  - Output: `ApartmentCore-Free-1.3.8.jar` / `ApartmentCore-Pro-1.3.8.jar`
+- Added Edition enum, EditionManager, and LicenseManager classes under `com.aithor.apartmentcore.edition` package.
+- Added `edition` field to plugin.yml, injected at build time via Maven resource filtering.
+- Added license validation system for Pro edition using Cloudflare Workers + Supabase (free infrastructure).
+  - Async validation on startup, 7-day offline grace period, SHA-256 hashed local cache.
+- Added Cloudflare Worker license API code (`infrastructure/cloudflare-worker/`).
+- Added Supabase database schema for license management (`infrastructure/supabase/schema.sql`).
+- Added `license.key` configuration field in config.yml for Pro edition.
+- Added Indonesian documentation for edition comparison, license installation, and testing guides (`docs/`).
+
+Free Edition Limits:
+- Maximum 20 apartments can be registered on the server.
+- Maximum apartment level capped at 5.
+- Research system disabled (menu shows "Pro only" message).
+- Shop, achievement, and custom GUI config files not exported to disk (bundled defaults used).
+- Logging and backup features disabled.
+
+Pro Edition Features:
+- Unlimited apartment creation.
+- Unlimited apartment levels (configurable in config.yml).
+- Customizable research system via research.yml.
+- Customizable shop system via shop.yml.
+- Customizable achievement system via achievements.yml.
+- Customizable GUI via custom_gui/main_menu.yml.
+- Full logging features (transaction and admin action logs).
+- Full backup features (auto-backup and manual backup commands).
+
+Changed:
+- Updated splash banner (SplashArt) to display edition info and module availability per edition.
+- Updated plugin version from 1.3.7 to 1.3.8.
+- Updated config-version from 3 to 4.
+- Config files (shop.yml, achievements.yml, custom_gui/main_menu.yml) now load from bundled resources in Free edition instead of being exported to the plugin data folder.
+
+Technical:
+- Maven profiles: `edition-free` (default), `edition-pro`.
+- Maven properties: `apartmentcore.edition`, `apartmentcore.edition.label`, `apartmentcore.jar.classifier`.
+- Resource filtering enabled in pom.xml for plugin.yml variable substitution.
+- EditionManager provides centralized feature gating: getMaxApartments(), getMaxLevel(), isResearchEnabled(), isLoggingEnabled(), isBackupEnabled().
+- LicenseManager validates Pro licenses asynchronously with offline fallback and grace period support.
 - The "Pending Income" capacity in the My Apartments menu now calculates and includes the Vault Expansion stats from the apartment shop.
 - Centralized all shop messages into messages.yml and removed the redundant messages section from shop.yml.
 - Implemented shop message usage in ApartmentShopGUI and ApartmentShopManager to replace hardcoded strings.
