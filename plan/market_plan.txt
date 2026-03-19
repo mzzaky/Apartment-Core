@@ -1,0 +1,38 @@
+Free
+- maximal 15 apartment can be registered
+- maximal apartment level to 3
+- no tier on research features
+- no tier on shop features
+
+Pro
+- unlimited apartment creation
+- unlimited apartment level
+- customable custom gui
+- customable research tier
+- customable shop tier
+- logging features
+- backup features
+- discord role
+- priority support
+
+
+Overview
+Plugin ini akan dipecah menjadi dua edisi yang dikompilasi dari satu codebase yang sama menggunakan Maven profiles:
+
+Free
+JAR output	ApartmentCore-Free-x.x.x.jar	
+Distribusi	SpigotMC / Modrinth (gratis)	
+Lisensi	Tidak diperlukan
+
+Pro
+ApartmentCore-Pro-x.x.x.jar
+Pasman / BuiltByBit (berbayar)
+Lisensi key
+(menggunakan Infrastruktur Gratis:
+1. Database: Menggunakan Supabase.
+2. API/Backend: Menggunakan Cloudflare Workers (Gratis hingga 100rb request/hari).)
+
+Keduanya dikompilasi dari satu source tree yang sama. Fitur Pro dikontrol oleh flag edition di 
+[plugin.yml](file:///c:/Users/mohza/IdeaProjects/Apartment-Core-Plugin/src/main/resources/plugin.yml) 
+dan class LicenseManager yang aktif saat startup. Tidak ada dua repo terpisah yang perlu dikelola.
+

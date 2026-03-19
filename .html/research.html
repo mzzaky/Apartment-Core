@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research System - ApartmentCore Wiki</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #111316;
+            color: #e4e6ea;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            display: none;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 0;
+            position: relative;
+        }
+
+        .page-header h1 {
+            color: #ffffff;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: #ffd966;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(255, 217, 102, 0.3);
+            position: relative;
+        }
+
+        .page-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: #ffd966;
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(255, 217, 102, 0.5);
+        }
+
+        .page-header p {
+            color: #9ca3af;
+            font-size: 1.2rem;
+            margin-top: 30px;
+        }
+
+        .breadcrumb {
+            max-width: 1400px;
+            margin: 0 auto 40px;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .breadcrumb a {
+            color: #ffd966;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: #f4d03f;
+            text-shadow: 0 0 10px rgba(255, 217, 102, 0.5);
+        }
+
+        .breadcrumb span {
+            color: #6b7280;
+        }
+
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .side-nav {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35), 0 0 50px rgba(255, 217, 102, 0.05);
+        }
+
+        .nav-title {
+            color: #ffd966;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-list li {
+            margin-bottom: 8px;
+        }
+
+        .nav-list a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #e4e6ea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-list a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 217, 102, 0.1);
+            transition: left 0.5s;
+        }
+
+        .nav-list a:hover::before {
+            left: 100%;
+        }
+
+        .nav-list a:hover {
+            background: rgba(255, 217, 102, 0.1);
+            color: #ffd966;
+            transform: translateX(4px);
+            box-shadow: 0 4px 15px rgba(255, 217, 102, 0.2);
+        }
+
+        .nav-list a.active {
+            background: rgba(255, 217, 102, 0.1);
+            color: #ffd966;
+            border-left: 3px solid #ffd966;
+            box-shadow: 0 4px 15px rgba(255, 217, 102, 0.2);
+        }
+
+        .nav-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ffd966;
+            opacity: 0.6;
+            box-shadow: 0 0 8px rgba(255, 217, 102, 0.4);
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 80px rgba(255, 217, 102, 0.05);
+        }
+
+        .content-section {
+            padding: 32px;
+            border-bottom: 1px solid rgba(255, 217, 102, 0.05);
+            scroll-margin-top: 20px;
+            position: relative;
+        }
+
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: transparent;
+        }
+
+        .content-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-title h2 {
+            color: #ffd966;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: transparent;
+            color: #ffd966;
+            border: 1px solid rgba(255, 217, 102, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 217, 102, 0.1);
+        }
+
+        h3 {
+            color: #ffd966;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 28px;
+            margin-bottom: 16px;
+            text-shadow: 0 0 15px rgba(255, 217, 102, 0.2);
+        }
+
+        p {
+            color: #d1d5db;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        ul,
+        ol {
+            color: #d1d5db;
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        li strong {
+            color: #ffd966;
+            font-weight: 600;
+        }
+
+        pre {
+            background: #1E1E1E;
+            border: 1px solid #3c3c3c;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            color: #9CDCFE;
+            text-shadow: none;
+        }
+
+        p code,
+        li code {
+            background: #333;
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: #CE9178;
+            font-weight: 500;
+            border: 1px solid #444;
+            box-shadow: none;
+        }
+
+        .code-keyword {
+            color: #fdffcc;
+        }
+
+        .code-string {
+            color: #7e8df2;
+        }
+
+        .code-boolean {
+            color: #07f757;
+        }
+
+        .code-comment {
+            color: #6A9955;
+        }
+
+        .code-value {
+            color: #00ff0dd4;
+        }
+
+        .code-colon {
+            color: #D4D4D4;
+        }
+
+        .info-box {
+            background: rgba(255, 217, 102, 0.1);
+            border: 2px solid rgba(255, 217, 102, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 24px 0;
+            box-shadow: 0 8px 25px rgba(255, 217, 102, 0.1);
+        }
+
+        .info-box-title {
+            color: #ffd966;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 0 0 10px rgba(255, 217, 102, 0.3);
+        }
+
+        .info-box-content {
+            color: #e4e6ea;
+            line-height: 1.7;
+        }
+
+        .warning-box {
+            background: transparent;
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 24px 0;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.1);
+        }
+
+        .warning-box-title {
+            color: #ef4444;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+        }
+
+        .feature-box {
+            background: transparent;
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 24px 0;
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.1);
+        }
+
+        .feature-box-title {
+            color: #22c55e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+        }
+
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .research-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 217, 102, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .research-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            transition: left 0.6s;
+        }
+
+        .research-card:hover::before {
+            left: 100%;
+        }
+
+        .research-card:hover {
+            background: rgba(255, 217, 102, 0.05);
+            border-color: rgba(255, 217, 102, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 217, 102, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .research-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .research-card h4 {
+            color: #ffd966;
+            margin: 0 0 12px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 217, 102, 0.2);
+        }
+
+        .research-effect {
+            color: #22c55e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .research-details {
+            color: #9ca3af;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .research-stats {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .research-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .research-stat-label {
+            color: #9ca3af;
+        }
+
+        .research-stat-value {
+            color: #e4e6ea;
+            font-weight: 500;
+        }
+
+        .tier-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .tier-table th {
+            background: rgba(255, 217, 102, 0.1);
+            color: #ffd966;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid rgba(255, 217, 102, 0.2);
+        }
+
+        .tier-table td {
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d1d5db;
+        }
+
+        .tier-table tr:hover td {
+            background: rgba(255, 217, 102, 0.05);
+        }
+
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tier-i {
+            background: #4b5563;
+            color: #fff;
+        }
+
+        .tier-ii {
+            background: #78716c;
+            color: #fff;
+        }
+
+        .tier-iii {
+            background: #a16207;
+            color: #fff;
+        }
+
+        .tier-iv {
+            background: #0ea5e9;
+            color: #fff;
+        }
+
+        .tier-v {
+            background: #ffd966;
+            color: #111;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(255, 217, 102, 0.1) 0%, rgba(244, 208, 63, 0.05) 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .highlight-box h3 {
+            margin-top: 0;
+            color: #ffd966;
+        }
+
+        .formula-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            border-left: 4px solid #ffd966;
+        }
+
+        .formula-box code {
+            color: #22c55e;
+            font-size: 1rem;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 24px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 24px;
+            background: rgba(255, 217, 102, 0.1);
+            border: 1px solid rgba(255, 217, 102, 0.2);
+            border-radius: 12px;
+            min-width: 120px;
+        }
+
+        .flow-step-number {
+            width: 28px;
+            height: 28px;
+            background: #ffd966;
+            color: #111;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .flow-step-text {
+            color: #e4e6ea;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .flow-arrow {
+            color: #ffd966;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .content-container {
+                grid-template-columns: 1fr;
+            }
+
+            .side-nav {
+                position: static;
+            }
+
+            .research-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-diagram {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-header">
+        <h1>Research System</h1>
+        <p>Unlock permanent buffs for all your apartments through scientific research</p>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="#">Wiki Home</a>
+        <span>›</span>
+        <a href="#">Features</a>
+        <span>›</span>
+        <span>Research System</span>
+    </div>
+
+    <div class="content-container">
+        <nav class="side-nav">
+            <div class="nav-title">Contents</div>
+            <ul class="nav-list">
+                <li><a href="#overview" class="active"><span class="nav-dot"></span>Overview</a></li>
+                <li><a href="#research-types"><span class="nav-dot"></span>Research Types</a></li>
+                <li><a href="#tiers-progression"><span class="nav-dot"></span>Tiers & Progression</a></li>
+                <li><a href="#rules-mechanics"><span class="nav-dot"></span>Rules & Mechanics</a></li>
+                <li><a href="#cost-duration"><span class="nav-dot"></span>Cost & Duration</a></li>
+                <li><a href="#configuration"><span class="nav-dot"></span>Configuration</a></li>
+                <li><a href="#gui-interface"><span class="nav-dot"></span>GUI Interface</a></li>
+                <li><a href="#implementation"><span class="nav-dot"></span>Implementation</a></li>
+                <li><a href="#achievements"><span class="nav-dot"></span>Achievements</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <section id="overview" class="content-section">
+                <div class="section-title">
+                    <h2>Overview</h2>
+                    <span class="section-badge">Core Feature</span>
+                </div>
+
+                <p>The Research System is a progression feature that allows players to conduct scientific research and
+                    unlock permanent buffs that apply to all their apartments. These buffs can significantly enhance
+                    income generation, reduce costs, and provide other strategic advantages.</p>
+
+                <div class="feature-box">
+                    <div class="feature-box-title">✓ Key Features</div>
+                    <ul>
+                        <li><strong>6 Unique Research Types</strong> - Each provides different strategic benefits</li>
+                        <li><strong>5 Tiers Per Research</strong> - Progress from Tier I to Tier V for maximum bonuses
+                        </li>
+                        <li><strong>Permanent Buffs</strong> - Research completed once, benefits last forever</li>
+                        <li><strong>Visual Progress Tracking</strong> - GUI shows all research progress at a glance</li>
+                        <li><strong>Achievement Integration</strong> - Earn achievements for completing research
+                            milestones</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Information</div>
+                    <div class="info-box-content">
+                        The research system is fully integrated with other apartment features including income
+                        generation, tax calculations, auction house, and apartment ownership limits. All buffs are
+                        automatically applied whenever relevant calculations are performed.
+                    </div>
+                </div>
+            </section>
+
+            <section id="research-types" class="content-section">
+                <div class="section-title">
+                    <h2>Research Types</h2>
+                    <span class="section-badge">Feature</span>
+                </div>
+
+                <p>There are 6 distinct research types available in the Research Center. Each research provides unique
+                    benefits that can dramatically improve your apartment management efficiency.</p>
+
+                <div class="research-grid">
+                    <div class="research-card">
+                        <span class="research-icon">⏱️</span>
+                        <h4>Revenue Acceleration</h4>
+                        <div class="research-effect">-5% Income Interval per Tier</div>
+                        <div class="research-details">
+                            Reduces the time interval between income generations by 5% per tier. At maximum tier, income
+                            arrives 25% faster.
+                        </div>
+                        <div class="research-stats">
+                            <div class="research-stat">
+                                <span class="research-stat-label">Max Bonus</span>
+                                <span class="research-stat-value">-25% interval</span>
+                            </div>
+                            <div class="research-stat">
+                                <span class="research-stat-label">Material</span>
+                                <span class="research-stat-value">CLOCK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="research-card">
+                        <span class="research-icon">💰</span>
+                        <h4>Capital Growth Strategy</h4>
+                        <div class="research-effect">+5% Income Amount per Tier</div>
+                        <div class="research-details">
+                            Increases the amount of income generated from apartments by 5% per tier. At maximum tier,
+                            earn 25% more per income cycle.
+                        </div>
+                        <div class="research-stats">
+                            <div class="research-stat">
+                                <span class="research-stat-label">Max Bonus</span>
+                                <span class="research-stat-value">+25% income</span>
+                            </div>
+                            <div class="research-stat">
+                                <span class="research-stat-label">Material</span>
+                                <span class="research-stat-value">GOLD_BLOCK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="research-card">
+                        <span class="research-icon">💎</span>
+                        <h4>Tax Efficiency Strategy</h4>
+                        <div class="research-effect">-5% Tax Amount per Tier</div>
+                        <div class="research-details">
+                            Reduces the final tax amount owed by 5% per tier. At maximum tier, pay 25% less in taxes.
+                        </div>
+                        <div class="research-stats">
+                            <div class="research-stat">
+                                <span class="research-stat-label">Max Bonus</span>
+                                <span class="research-stat-value">-25% tax</span>
+                            </div>
+                            <div class="research-stat">
+                                <span class="research-stat-label">Material</span>
+                                <span class="research-stat-value">EMERALD_BLOCK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="research-card">
+                        <span class="research-icon">🗝️</span>
+                        <h4>Expansion Plan</h4>
+                        <div class="research-effect">+1 Apartment Slot per Tier</div>
+                        <div class="research-details">
+                            Increases the maximum number of apartments a player can own by 1 per tier. At maximum tier,
+                            own 5 additional apartments.
+                        </div>
+                        <div class="research-stats">
+                            <div class="research-stat">
+                                <span class="research-stat-label">Max Bonus</span>
+                                <span class="research-stat-value">+5 slots</span>
+                            </div>
+                            <div class="research-stat">
+                                <span class="research-stat-label">Material</span>
+                                <span class="research-stat-value">BEACON</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="research-card">
+                        <span class="research-icon">📦</span>
+                        <h4>Vault Expansion</h4>
+                        <div class="research-effect">+5% Income Capacity per Tier</div>
+                        <div class="research-details">
+                            Increases the maximum income capacity (vault limit) by 5% per tier. At maximum tier, store
+                            25% more income.
+                        </div>
+                        <div class="research-stats">
+                            <div class="research-stat">
+                                <span class="research-stat-label">Max Bonus</span>
+                                <span class="research-stat-value">+25% capacity</span>
+                            </div>
+                            <div class="research-stat">
+                                <span class="research-stat-label">Material</span>
+                                <span class="research-stat-value">CHEST</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="research-card">
+                        <span class="research-icon">🏛️</span>
+                        <h4>Auction Efficiency</h4>
+                        <div class="research-effect">-5% Fee & -1% Commission per Tier</div>
+                        <div class="research-details">
+                            Reduces auction listing fees by 5% and commission rates by 1% per tier. At maximum tier,
+                            save 25% on fees and 5% on commissions.
+                        </div>
+                        <div class="research-stats">
+                            <div class="research-stat">
+                                <span class="research-stat-label">Max Fee Reduction</span>
+                                <span class="research-stat-value">-25%</span>
+                            </div>
+                            <div class="research-stat">
+                                <span class="research-stat-label">Max Commission</span>
+                                <span class="research-stat-value">-5%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tiers-progression" class="content-section">
+                <div class="section-title">
+                    <h2>Tiers & Progression</h2>
+                    <span class="section-badge">Mechanic</span>
+                </div>
+
+                <p>Each research type has 5 tiers (I, II, III, IV, V). Players must complete each tier before moving to
+                    the next. The buffs stack additively - having Tier III means you get 3x the base effect.</p>
+
+                <h3>Tier Visual Representation</h3>
+                <p>In the Research GUI, tiers are displayed using visual indicators:</p>
+                <ul>
+                    <li><code style="color: #22c55e;">█</code> <strong>(Green)</strong> - Completed tier</li>
+                    <li><code style="color: #eab308;">▒</code> <strong>(Yellow)</strong> - Currently researching</li>
+                    <li><code style="color: #4b5563;">░</code> <strong>(Dark Gray)</strong> - Not yet started</li>
+                </ul>
+
+                <h3>Tier Progression Example - Revenue Acceleration</h3>
+                <table class="tier-table">
+                    <thead>
+                        <tr>
+                            <th>Tier</th>
+                            <th>Income Interval Reduction</th>
+                            <th>Cost</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="tier-badge tier-i">I</span></td>
+                            <td>-5%</td>
+                            <td>50,000</td>
+                            <td>1 hour</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tier-badge tier-ii">II</span></td>
+                            <td>-10%</td>
+                            <td>150,000</td>
+                            <td>2.5 hours</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tier-badge tier-iii">III</span></td>
+                            <td>-15%</td>
+                            <td>450,000</td>
+                            <td>6.25 hours</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tier-badge tier-iv">IV</span></td>
+                            <td>-20%</td>
+                            <td>1,350,000</td>
+                            <td>15.6 hours</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tier-badge tier-v">V</span></td>
+                            <td>-25%</td>
+                            <td>4,050,000</td>
+                            <td>39 hours</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    <h3>Total Investment for Full Research</h3>
+                    <p>To complete all 5 tiers of a single research, players must invest approximately
+                        <strong>6,050,000</strong> in costs and approximately <strong>64 hours</strong> of research
+                        time.</p>
+                </div>
+            </section>
+
+            <section id="rules-mechanics" class="content-section">
+                <div class="section-title">
+                    <h2>Rules & Mechanics</h2>
+                    <span class="section-badge">Guide</span>
+                </div>
+
+                <h3>Basic Rules</h3>
+                <ul>
+                    <li><strong>One Active Research</strong> - Players can only have one research running at a time</li>
+                    <li><strong>Upfront Payment</strong> - Research costs are deducted immediately when starting</li>
+                    <li><strong>No Cancellation</strong> - Once started, research cannot be cancelled (no refunds)</li>
+                    <li><strong>Permanent Benefits</strong> - Completed research buffs never expire</li>
+                    <li><strong>Independent Research</strong> - Each research type can be upgraded independently</li>
+                    <li><strong>Stackable Buffs</strong> - All research buffs stack additively</li>
+                </ul>
+
+                <h3>Research Process Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <span class="flow-step-number">1</span>
+                        <span class="flow-step-text">Select Research</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <span class="flow-step-number">2</span>
+                        <span class="flow-step-text">Validate Rules</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <span class="flow-step-number">3</span>
+                        <span class="flow-step-text">Deduct Cost</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <span class="flow-step-number">4</span>
+                        <span class="flow-step-text">Start Timer</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <span class="flow-step-number">5</span>
+                        <span class="flow-step-text">Complete</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <span class="flow-step-number">6</span>
+                        <span class="flow-step-text">Buff Active</span>
+                    </div>
+                </div>
+
+                <h3>Validation Checks</h3>
+                <p>Before starting a research, the system performs these validation checks:</p>
+                <ol>
+                    <li><strong>System Enabled</strong> - Research system must be enabled in configuration</li>
+                    <li><strong>No Active Research</strong> - Player must not have another research in progress</li>
+                    <li><strong>Not Max Tier</strong> - The selected research must not already be at maximum tier</li>
+                    <li><strong>Sufficient Funds</strong> - Player must have enough money to pay for the research</li>
+                </ol>
+
+                <div class="warning-box">
+                    <div class="warning-box-title">⚠ Important Notes</div>
+                    <ul>
+                        <li>Research continues even when the player is offline</li>
+                        <li>Data is saved persistently - research progress is not lost on server restart</li>
+                        <li>Buffs are applied automatically in all relevant calculations</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="cost-duration" class="content-section">
+                <div class="section-title">
+                    <h2>Cost & Duration</h2>
+                    <span class="section-badge">Formula</span>
+                </div>
+
+                <p>Research costs and durations scale exponentially with each tier. This ensures that higher tiers
+                    require significantly more investment but provide proportionally greater benefits.</p>
+
+                <h3>Cost Formula</h3>
+                <div class="formula-box">
+                    <code>Cost = Base Cost × (Multiplier)^(Tier - 1)</code>
+                </div>
+
+                <h3>Duration Formula</h3>
+                <div class="formula-box">
+                    <code>Duration = Base Duration × (Multiplier)^(Tier - 1)</code>
+                </div>
+
+                <h3>Default Values by Research Type</h3>
+                <table class="tier-table">
+                    <thead>
+                        <tr>
+                            <th>Research Type</th>
+                            <th>Base Cost</th>
+                            <th>Cost Multiplier</th>
+                            <th>Base Duration</th>
+                            <th>Duration Multiplier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Revenue Acceleration</td>
+                            <td>50,000</td>
+                            <td>3.0x</td>
+                            <td>3,600 sec (1 hr)</td>
+                            <td>2.5x</td>
+                        </tr>
+                        <tr>
+                            <td>Capital Growth</td>
+                            <td>75,000</td>
+                            <td>3.0x</td>
+                            <td>5,400 sec (1.5 hr)</td>
+                            <td>2.5x</td>
+                        </tr>
+                        <tr>
+                            <td>Tax Efficiency</td>
+                            <td>100,000</td>
+                            <td>3.5x</td>
+                            <td>7,200 sec (2 hr)</td>
+                            <td>2.5x</td>
+                        </tr>
+                        <tr>
+                            <td>Expansion Plan</td>
+                            <td>150,000</td>
+                            <td>4.0x</td>
+                            <td>10,800 sec (3 hr)</td>
+                            <td>3.0x</td>
+                        </tr>
+                        <tr>
+                            <td>Auction Efficiency</td>
+                            <td>80,000</td>
+                            <td>3.0x</td>
+                            <td>5,400 sec (1.5 hr)</td>
+                            <td>2.5x</td>
+                        </tr>
+                        <tr>
+                            <td>Vault Expansion</td>
+                            <td>250,000</td>
+                            <td>4.5x</td>
+                            <td>21,600 sec (6 hr)</td>
+                            <td>3.5x</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Example Calculation - Vault Expansion</h3>
+                <p>For Tier III Vault Expansion (Base: 250,000, Multiplier: 4.5):</p>
+                <ul>
+                    <li><strong>Cost:</strong> 250,000 × 4.5^(3-1) = 250,000 × 20.25 = <strong>5,062,500</strong></li>
+                    <li><strong>Duration:</strong> 21,600 × 3.5^(3-1) = 21,600 × 12.25 = <strong>264,600 seconds (~73.5
+                            hours)</strong></li>
+                </ul>
+            </section>
+
+            <section id="configuration" class="content-section">
+                <div class="section-title">
+                    <h2>Configuration</h2>
+                    <span class="section-badge">Setup</span>
+                </div>
+
+                <p>The research system is configured through the <code>research.yml</code> file. This file controls all
+                    aspects of research costs, durations, effects, and GUI settings.</p>
+
+                <h3>Configuration File Location</h3>
+                <p><code>plugins/ApartmentCore/research.yml</code></p>
+
+                <h3>Main Configuration Options</h3>
+                <pre><code><span class="code-keyword">research</span>:
+  <span class="code-keyword">enabled</span>: <span class="code-boolean">true</span>  <span class="code-comment"># Enable/disable research system</span>
+  <span class="code-keyword">max-concurrent</span>: <span class="code-value">1</span>  <span class="code-comment"># Max researches per player (future use)</span></code></pre>
+
+                <h3>Per-Research Configuration</h3>
+                <pre><code><span class="code-keyword">researches</span>:
+  <span class="code-keyword">revenue_acceleration</span>:
+    <span class="code-keyword">display-name</span>: <span class="code-string">"Revenue Acceleration"</span>
+    <span class="code-keyword">description</span>: <span class="code-string">"Reduces income generation interval by 5% per tier"</span>
+    <span class="code-keyword">icon</span>: <span class="code-string">"CLOCK"</span>
+    <span class="code-keyword">effect-per-tier</span>: <span class="code-value">5.0</span>
+    <span class="code-keyword">cost-base</span>: <span class="code-value">50000</span>
+    <span class="code-keyword">cost-multiplier</span>: <span class="code-value">3.0</span>
+    <span class="code-keyword">duration-base</span>: <span class="code-value">3600</span>
+    <span class="code-keyword">duration-multiplier</span>: <span class="code-value">2.5</span></code></pre>
+
+                <h3>Auction Efficiency (Special Case)</h3>
+                <p>Auction Efficiency has two separate effect values - one for fee reduction and one for commission
+                    reduction:</p>
+                <pre><code><span class="code-keyword">auction_efficiency</span>:
+    <span class="code-keyword">effect-per-tier-fee</span>: <span class="code-value">5.0</span>    <span class="code-comment"># Fee reduction %</span>
+    <span class="code-keyword">effect-per-tier-commission</span>: <span class="code-value">1.0</span>  <span class="code-comment"># Commission reduction %</span></code></pre>
+
+                <h3>GUI Configuration</h3>
+                <pre><code><span class="code-keyword">gui</span>:
+  <span class="code-keyword">title</span>: <span class="code-string">"&8Research Center"</span>
+  <span class="code-keyword">size</span>: <span class="code-value">54</span>
+  <span class="code-keyword">border-material</span>: <span class="code-string">"PURPLE_STAINED_GLASS_PANE"</span></code></pre>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Configuration Reload</div>
+                    <div class="info-box-content">
+                        The research configuration can be reloaded using the <code>/apartment reload</code> command or
+                        by restarting the server. Changes to the configuration file will take effect after a reload.
+                    </div>
+                </div>
+            </section>
+
+            <section id="gui-interface" class="content-section">
+                <div class="section-title">
+                    <h2>GUI Interface</h2>
+                    <span class="section-badge">Interface</span>
+                </div>
+
+                <p>The Research Center GUI provides an intuitive interface for managing all research activities. Players
+                    can view their progress, start new research, and monitor active research all from one screen.</p>
+
+                <h3>GUI Layout (54 slots)</h3>
+                <ul>
+                    <li><strong>Slot 4</strong> - Info display (Enchanting Table) showing overall progress and active
+                        buffs</li>
+                    <li><strong>Slots 10, 12, 14, 16, 21, 23</strong> - Research type items</li>
+                    <li><strong>Slot 31</strong> - Active Research display (shows progress bar and time remaining)</li>
+                    <li><strong>Slot 49</strong> - Back button to return to main menu</li>
+                    <li><strong>Border Slots</strong> - Purple stained glass pane decoration</li>
+                </ul>
+
+                <h3>Research Item Display</h3>
+                <p>Each research item in the GUI displays:</p>
+                <ul>
+                    <li><strong>Name</strong> - Research type name with tier indicator</li>
+                    <li><strong>Description</strong> - What the research does</li>
+                    <li><strong>Tier Progress Bar</strong> - Visual representation of completed tiers</li>
+                    <li><strong>Current Buff</strong> - Active benefit from completed tiers</li>
+                    <li><strong>Next Tier Info</strong> - Cost, duration, and buff for next tier</li>
+                    <li><strong>Status</strong> - Available, researching, maxed, or insufficient funds</li>
+                </ul>
+
+                <h3>Material Progression</h3>
+                <p>The item material changes based on completed tier:</p>
+                <table class="tier-table">
+                    <thead>
+                        <tr>
+                            <th>Tier</th>
+                            <th>Material</th>
+                            <th>Visual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>None</td>
+                            <td>Base material</td>
+                            <td>Default icon</td>
+                        </tr>
+                        <tr>
+                            <td>I</td>
+                            <td>IRON_BLOCK</td>
+                            <td>Gray metallic</td>
+                        </tr>
+                        <tr>
+                            <td>II</td>
+                            <td>GOLD_BLOCK</td>
+                            <td>Yellow metallic</td>
+                        </tr>
+                        <tr>
+                            <td>III</td>
+                            <td>EMERALD_BLOCK</td>
+                            <td>Green metallic</td>
+                        </tr>
+                        <tr>
+                            <td>IV</td>
+                            <td>DIAMOND_BLOCK</td>
+                            <td>Cyan metallic</td>
+                        </tr>
+                        <tr>
+                            <td>V</td>
+                            <td>NETHERITE_BLOCK</td>
+                            <td>Dark purple metallic</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Active Research Display</h3>
+                <p>When a research is in progress, slot 31 shows:</p>
+                <ul>
+                    <li><strong>Research Name</strong> - Type and tier being researched</li>
+                    <li><strong>Progress Bar</strong> - Visual percentage complete</li>
+                    <li><strong>Time Remaining</strong> - Countdown to completion</li>
+                    <li><strong>Total Duration</strong> - Full time for this research</li>
+                </ul>
+            </section>
+
+            <section id="implementation" class="content-section">
+                <div class="section-title">
+                    <h2>Implementation</h2>
+                    <span class="section-badge">Technical</span>
+                </div>
+
+                <p>The research system is implemented using several Java classes that work together to provide a
+                    seamless experience.</p>
+
+                <h3>Core Classes</h3>
+                <ul>
+                    <li><strong>ResearchType.java</strong> - Enum defining all research types with their properties</li>
+                    <li><strong>PlayerResearchData.java</strong> - Data class storing player research progress</li>
+                    <li><strong>ResearchManager.java</strong> - Main manager class handling all research logic</li>
+                    <li><strong>ResearchGUI.java</strong> - GUI implementation for the research interface</li>
+                </ul>
+
+                <h3>Key Methods in ResearchManager</h3>
+                <pre><code><span class="code-comment">// Start a new research</span>
+<span class="code-keyword">public</span> StartResult <span class="code-value">startResearch</span>(Player player, ResearchType type)
+
+<span class="code-comment">// Get cost for a specific tier</span>
+<span class="code-keyword">public</span> <span class="code-value">double</span> <span class="code-value">getResearchCost</span>(ResearchType type, <span class="code-value">int</span> tier)
+
+<span class="code-comment">// Get duration in seconds</span>
+<span class="code-keyword">public</span> <span class="code-value">long</span> <span class="code-value">getResearchDurationSeconds</span>(ResearchType type, <span class="code-value">int</span> tier)
+
+<span class="code-comment">// Buff getters</span>
+<span class="code-keyword">public</span> <span class="code-value">double</span> <span class="code-value">getIncomeIntervalReduction</span>(UUID playerId)
+<span class="code-keyword">public</span> <span class="code-value">double</span> <span class="code-value">getIncomeAmountBonus</span>(UUID playerId)
+<span class="code-keyword">public</span> <span class="code-value">double</span> <span class="code-value">getTaxReduction</span>(UUID playerId)
+<span class="code-keyword">public</span> <span class="code-value">int</span> <span class="code-value">getExtraOwnershipSlots</span>(UUID playerId)
+<span class="code-keyword">public</span> <span class="code-value">double</span> <span class="code-value">getAuctionFeeReduction</span>(UUID playerId)</code></pre>
+
+                <h3>Data Persistence</h3>
+                <p>Player research data is stored in:</p>
+                <p><code>plugins/ApartmentCore/data/research_data.yml</code></p>
+
+                <p>Data structure:</p>
+                <pre><code><span class="code-keyword">players</span>:
+  <span class="code-value"><UUID></span>:
+    <span class="code-keyword">completed</span>:
+      <span class="code-keyword">revenue_acceleration</span>: <span class="code-value">3</span>
+      <span class="code-keyword">capital_growth</span>: <span class="code-value">2</span>
+      <span class="code-keyword">tax_efficiency</span>: <span class="code-value">0</span>
+      <span class="code-keyword">expansion_plan</span>: <span class="code-value">1</span>
+      <span class="code-keyword">capacity_expansion</span>: <span class="code-value">0</span>
+      <span class="code-keyword">auction_efficiency</span>: <span class="code-value">4</span>
+    <span class="code-keyword">active</span>:
+      <span class="code-keyword">type</span>: <span class="code-string">"tax_efficiency"</span>
+      <span class="code-keyword">tier</span>: <span class="code-value">1</span>
+      <span class="code-keyword">start-time</span>: <span class="code-value">1234567890000</span>
+      <span class="code-keyword">duration</span>: <span class="code-value">3600000</span></code></pre>
+
+                <h3>Tick Processing</h3>
+                <p>The research system uses a Bukkit scheduled task that runs every 20 ticks (1 second) to check for
+                    completed researches:</p>
+                <pre><code><span class="code-comment">// Runs every 1 second</span>
+<span class="code-value">tickTask</span> = plugin.getServer().getScheduler()
+    .runTaskTimer(plugin, <span class="code-keyword">new</span> Runnable() {
+        <span class="code-keyword">public void</span> <span class="code-value">run</span>() {
+            <span class="code-comment">// Check each player's active research</span>
+            <span class="code-keyword">for</span> (PlayerResearchData data : playerData.values()) {
+                <span class="code-keyword">if</span> (data.isResearchComplete()) {
+                    completeResearch(playerId, data);
+                }
+            }
+        }
+    }, <span class="code-value">20L</span>, <span class="code-value">20L</span>);</code></pre>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Offline Progress</div>
+                    <div class="info-box-content">
+                        Since the tick task runs server-side, research continues to progress even when the player is
+                        offline. When they next log in, any completed researches will already be applied.
+                    </div>
+                </div>
+            </section>
+
+            <section id="achievements" class="content-section">
+                <div class="section-title">
+                    <h2>Achievements</h2>
+                    <span class="section-badge">Integration</span>
+                </div>
+
+                <p>The Research System integrates with the Achievement system to reward players for their research
+                    progress.</p>
+
+                <h3>Research Master Achievement</h3>
+                <p>Players can earn the <strong>RESEARCH_MASTER</strong> achievement by completing research at maximum
+                    tier. The achievement tracks how many researches have reached Tier V.</p>
+
+                <table class="tier-table">
+                    <thead>
+                        <tr>
+                            <th>Achievement</th>
+                            <th>Requirement</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Research Novice</td>
+                            <td>1 max-tier research</td>
+                            <td>Complete any research at Tier V</td>
+                        </tr>
+                        <tr>
+                            <td>Research Apprentice</td>
+                            <td>2 max-tier researches</td>
+                            <td>Complete 2 researches at Tier V</td>
+                        </tr>
+                        <tr>
+                            <td>Research Expert</td>
+                            <td>3 max-tier researches</td>
+                            <td>Complete 3 researches at Tier V</td>
+                        </tr>
+                        <tr>
+                            <td>Research Master</td>
+                            <td>4 max-tier researches</td>
+                            <td>Complete 4 researches at Tier V</td>
+                        </tr>
+                        <tr>
+                            <td>Research Legend</td>
+                            <td>5 max-tier researches</td>
+                            <td>Complete 5 researches at Tier V</td>
+                        </tr>
+                        <tr>
+                            <td>Research Grandmaster</td>
+                            <td>6 max-tier researches</td>
+                            <td>Complete all researches at Tier V</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="feature-box">
+                    <div class="feature-box-title">✓ Achievement Integration</div>
+                    <div class="info-box-content">
+                        When a research completes, the system automatically checks if any research has reached maximum
+                        tier and updates the player's achievement progress accordingly. No additional action is required
+                        from the player.
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

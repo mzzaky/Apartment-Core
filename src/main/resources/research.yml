@@ -81,9 +81,3 @@ researches:
     cost-multiplier: 4.5
     duration-base: 21600
     duration-multiplier: 3.5
-
-# GUI Configuration
-gui:
-  title: "&8Research Center"
-  size: 54
-  border-material: "PURPLE_STAINED_GLASS_PANE"

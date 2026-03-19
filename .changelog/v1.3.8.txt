@@ -1,2 +1,9 @@
 Added:
 - The "Pending Income" capacity in the My Apartments menu now calculates and includes the Vault Expansion stats from the apartment shop.
+- Centralized all shop messages into messages.yml and removed the redundant messages section from shop.yml.
+- Implemented shop message usage in ApartmentShopGUI and ApartmentShopManager to replace hardcoded strings.
+- Standardized placeholder format to {placeholder} across shop-related messages.
+- Cleaned up shop.yml by removing unused gui, performance, debug, and compatibility sections.
+- Removed unused config_version from shop.yml.
+- Removed unused gui block from research.yml.
+- Cleaned up shop.yml by removing unused shop system settings (enabled, allow_custom_costs, and refund_percentage).

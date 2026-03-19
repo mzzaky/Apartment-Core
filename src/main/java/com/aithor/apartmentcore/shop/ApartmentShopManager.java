@@ -97,8 +97,13 @@ public class ApartmentShopManager {
             // Save shop data
             saveShopData();
 
-            return new PurchaseResult(true, "Successfully purchased " + item.getDisplayName() +
-                    " tier " + data.getTier(item) + " for " + configManager.formatMoney(cost));
+            String successMsg = plugin.getMessageManager().getMessage("shop.purchase_success")
+                    .replace("{item_name}", item.getDisplayName())
+                    .replace("{tier}", String.valueOf(data.getTier(item)))
+                    .replace("{cost}", configManager.formatMoney(cost))
+                    .replace(plugin.getMessageManager().getMessageConfig().getString("messages.prefix", ""), ""); // Remove prefix for PurchaseResult message
+
+            return new PurchaseResult(true, successMsg.trim());
         } else {
             // Refund on failure
             economy.depositPlayer(player, cost);
@@ -122,8 +127,8 @@ public class ApartmentShopManager {
                 // Notify if online
                 if (offlinePlayer.isOnline()) {
                     offlinePlayer.getPlayer().sendMessage(plugin.getMessageManager().getMessage("shop.refund")
-                            .replace("%amount%", configManager.formatMoney(refund))
-                            .replace("%apartment%", apartmentId));
+                            .replace("{amount}", configManager.formatMoney(refund))
+                            .replace("{apartment}", apartmentId));
                 }
 
                 plugin.logTransaction("Shop refund of " + configManager.formatMoney(refund) +

@@ -100,6 +100,15 @@ shop:
   refund: "{prefix}&a💰 You received {amount} refund from shop purchases for apartment {apartment}."
   shop_disabled: "{prefix}&c❌ The shop system is currently disabled!"
   no_apartments: "{prefix}&c❌ You need to own at least one apartment to access the shop!"
+  
+  # GUI messages
+  tier_info: "&7Tier {tier}/{max_tier}"
+  current_buff: "&e⭐ Current: {buff_description}"
+  next_buff: "&a⭐ Next: {buff_description}"
+  max_tier_reached: "&a🌟 MAX TIER REACHED!"
+  click_to_upgrade: "&a▶ Click to upgrade for {cost}!"
+  cannot_afford: "&c❌ Cannot afford upgrade!"
+  already_max: "&7Already at maximum tier"
 
 # Research System Messages
 research:

@@ -156,10 +156,13 @@ public class ApartmentShopGUI implements GUI {
 
         // Current status
         if (currentTier == 0) {
-            lore.add("&c❌ Not Purchased");
+            lore.add(ChatColor.RED + "❌ Not Purchased");
         } else {
-            lore.add("&a✅ Current Tier: &f" + currentTier + "&7/&f" + item.getMaxTier());
-            lore.add("&e⭐ Current Buff: &f" + item.getBuffDescription(currentTier));
+            lore.add(plugin.getMessageManager().getMessage("shop.tier_info")
+                    .replace("{tier}", String.valueOf(currentTier))
+                    .replace("{max_tier}", String.valueOf(item.getMaxTier())));
+            lore.add(plugin.getMessageManager().getMessage("shop.current_buff")
+                    .replace("{buff_description}", item.getBuffDescription(currentTier)));
         }
 
         lore.add("");
@@ -167,22 +170,25 @@ public class ApartmentShopGUI implements GUI {
         // Upgrade info
         if (canUpgrade) {
             int nextTier = currentTier + 1;
-            lore.add("&6🔧 Next Upgrade (Tier " + nextTier + "):");
-            lore.add("&e⭐ New Buff: &f" + item.getBuffDescription(nextTier));
-            lore.add("&e💰 Cost: &f" + plugin.getConfigManager().formatMoney(upgradeCost));
+            lore.add(ChatColor.GOLD + "🔧 Next Upgrade (Tier " + nextTier + "):");
+            lore.add(plugin.getMessageManager().getMessage("shop.next_buff")
+                    .replace("{buff_description}", item.getBuffDescription(nextTier)));
+            lore.add(ChatColor.YELLOW + "💰 Cost: " + ChatColor.WHITE + plugin.getConfigManager().formatMoney(upgradeCost));
             lore.add("");
 
             if (canAfford) {
-                lore.add("&a▶ Click to upgrade!");
+                lore.add(plugin.getMessageManager().getMessage("shop.click_to_upgrade")
+                        .replace("{cost}", plugin.getConfigManager().formatMoney(upgradeCost)));
             } else {
-                lore.add("&c❌ Insufficient funds!");
-                lore.add("&7Need: &c"
+                lore.add(plugin.getMessageManager().getMessage("shop.cannot_afford")
+                        .replace("{cost}", plugin.getConfigManager().formatMoney(upgradeCost)));
+                lore.add(ChatColor.GRAY + "Need: " + ChatColor.RED
                         + plugin.getConfigManager().formatMoney(upgradeCost - plugin.getEconomy().getBalance(player))
-                        + " &7more");
+                        + " " + ChatColor.GRAY + "more");
             }
         } else {
-            lore.add("&a🌟 MAX TIER REACHED!");
-            lore.add("&7This item cannot be upgraded further.");
+            lore.add(plugin.getMessageManager().getMessage("shop.max_tier_reached"));
+            lore.add(plugin.getMessageManager().getMessage("shop.already_max"));
         }
 
         // Determine material and effects
