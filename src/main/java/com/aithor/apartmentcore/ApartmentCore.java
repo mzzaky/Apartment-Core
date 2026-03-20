@@ -64,18 +64,18 @@ public class ApartmentCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // ── Edition detection ───────────────────────────────────────────────
+        // Must be done BEFORE loadConfiguration() so edition-gated config loading
+        // (e.g. shop.yml) correctly skips disk export in Free edition.
+        String editionRaw = readEditionFromResource();
+        Edition edition = Edition.fromString(editionRaw);
+        this.editionManager = new EditionManager(this, edition);
+
         // Ensure default config exists and load configuration
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
         this.configManager.loadConfiguration();
         this.messageManager = new MessageManager(this);
-
-        // ── Edition detection ───────────────────────────────────────────────
-        String editionRaw = getDescription().getMap().containsKey("edition")
-                ? String.valueOf(getDescription().getMap().get("edition"))
-                : "FREE";
-        Edition edition = Edition.fromString(editionRaw);
-        this.editionManager = new EditionManager(this, edition);
 
         // Print startup splash banner (now edition-aware)
         SplashArt.print(this);
@@ -133,12 +133,8 @@ public class ApartmentCore extends JavaPlugin {
         // Shop system (always active; tiers customisable only in Pro)
         this.shopManager = new ApartmentShopManager(this, apartmentManager, economy, configManager, dataManager);
 
-        // Research system (Pro only)
-        if (editionManager.isResearchEnabled()) {
-            this.researchManager = new ResearchManager(this, economy, configManager);
-        } else {
-            debug("Research system is disabled in Free edition.");
-        }
+        // Research system (always active; customisation only in Pro)
+        this.researchManager = new ResearchManager(this, economy, configManager);
 
         // Achievement system (always active; customisation only in Pro)
         this.achievementManager = new AchievementManager(this, economy, configManager);
@@ -347,6 +343,22 @@ public class ApartmentCore extends JavaPlugin {
 
     public ResearchManager getResearchManager() {
         return researchManager;
+    }
+
+    /**
+     * Reads the 'edition' field directly from plugin.yml as a resource.
+     * This is more robust than getDescription().getMap() which is not always available.
+     *
+     * @return The edition string, or "FREE" if not found or on error.
+     */
+    private String readEditionFromResource() {
+        try (java.io.InputStream is = getResource("plugin.yml");
+             java.io.InputStreamReader isr = new java.io.InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8)) {
+            org.bukkit.configuration.file.YamlConfiguration tempConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(isr);
+            return tempConfig.getString("edition", "FREE");
+        } catch (Throwable t) {
+            return "FREE";
+        }
     }
 
     public AchievementManager getAchievementManager() {

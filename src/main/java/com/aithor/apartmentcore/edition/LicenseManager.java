@@ -30,7 +30,7 @@ public class LicenseManager {
      * The remote validation endpoint (Cloudflare Worker).
      * Replace this URL with your own deployed worker.
      */
-    private static final String VALIDATE_URL = "https://apartmentcore-license.your-worker.workers.dev/api/validate";
+    private static final String VALIDATE_URL = "https://apartmentcore-license.apartmentcore-license.workers.dev/api/validate";
 
     /**
      * How many days the plugin may run with a cached (offline) validation

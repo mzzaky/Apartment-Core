@@ -6,117 +6,27 @@
 
 debug: false
 
-# Plugin configuration version - used for update compatibility
 config-version: 4
 
-# -----------------------------------------------------------------
-# License (Pro Edition Only)
-# -----------------------------------------------------------------
-# If you are using ApartmentCore Pro, enter your license key below.
-# Free edition users can ignore this section.
-license:
-  key: ""
+placeholderapi:
+  enabled: true   # Enable PlaceholderAPI integration
 
-
-# -----------------------------------------------------------------
-# Economy
-# -----------------------------------------------------------------
 economy:
   currency-symbol: "$"   # Currency symbol displayed in messages and GUIs
   sell-percentage: 70    # Percentage of original price returned when selling apartment (0-100)
 
-# -----------------------------------------------------------------
-# Settings
-# -----------------------------------------------------------------
-settings:
-  max-apartments-per-player: 5   # Maximum apartments a single player can own (0 = no limit)
-  income-generation-interval: 24000   # How often apartments generate income (in ticks; 20 ticks = 1 second)
-  inactive-grace-period: 3            # Days before apartment becomes inactive after non-payment
-  tax-generation-interval: 24000      # How often tax is collected (in ticks; 20 ticks = 1 second)
-
-# -----------------------------------------------------------------
-# Features
-# -----------------------------------------------------------------
-features:
-  income-generation: true   # Enable apartment income generation system
-  tax-system: true          # Enable tax collection system
-  teleportation: true       # Enable teleportation to apartments
-
-# -----------------------------------------------------------------
-# Apartment Levels
-# -----------------------------------------------------------------
-apartment-levels:
-  level-1:
-    min-income: 10
-    max-income: 100
-    upgrade-cost: 0
-    upgrade-duration: 0         # Duration to upgrade FROM this level (in ticks; 20 ticks = 1 second). 0 = instant.
-    income-capacity: 10000   # Maximum pending income that can accumulate (Level 1 = 10,000)
-    tax-percentage: 2.5      # Tax percentage applied to apartment price
-  level-2:
-    min-income: 100
-    max-income: 200
-    upgrade-cost: 1000
-    upgrade-duration: 1728000      # 1 day to upgrade from level 1 → 2
-    income-capacity: 20000   # Maximum pending income that can accumulate (Level 2 = 20,000)
-    tax-percentage: 5.0      # Tax percentage applied to apartment price
-  level-3:
-    min-income: 200
-    max-income: 300
-    upgrade-cost: 2000
-    upgrade-duration: 3456000      # 2 day to upgrade from level 2 → 3
-    income-capacity: 30000   # Maximum pending income that can accumulate (Level 3 = 30,000)
-    tax-percentage: 7.5      # Tax percentage applied to apartment price
-  level-4:
-    min-income: 300
-    max-income: 400
-    upgrade-cost: 3000
-    upgrade-duration: 5184000      # 3 day to upgrade from level 3 → 4
-    income-capacity: 40000   # Maximum pending income that can accumulate (Level 4 = 40,000)
-    tax-percentage: 10.0     # Tax percentage applied to apartment price
-  level-5:
-    min-income: 400
-    max-income: 500
-    upgrade-cost: 5000
-    upgrade-duration: 8640000         # 3 day to upgrade from level 3 → 4
-    income-capacity: 50000   # Maximum pending income that can accumulate (Level 5 = 50,000)
-    tax-percentage: 12.5     # Tax percentage applied to apartment price
-
-
-# YOU CAN INCREASE APARTMENT MAX LEVEL BY USING THE SAME FORMAT LIKE THIS
-#  level-6:
-#    min-income: 1000
-#    max-income: 1500
-#    upgrade-cost: 5000
-#    upgrade-duration: 8640000
-#    income-capacity: 50000
-#    tax-percentage: 12.5    
-
-
-# -----------------------------------------------------------------
-# GUI
-# -----------------------------------------------------------------
 gui:
   enabled: true
   refresh-interval: 5    # How often GUI content refreshes automatically (in seconds)
   sounds: true           # Enable sound effects when interacting with GUIs
 
-# -----------------------------------------------------------------
-# Performance
-# -----------------------------------------------------------------
 performance:
   use-async: true   # Use asynchronous tasks for heavy operations
 
-# -----------------------------------------------------------------
-# Security
-# -----------------------------------------------------------------
 security:
   command-cooldown: 1000        # Minimum time between command executions (in milliseconds)
   confirmation-timeout: 30      # Seconds before a pending confirmation expires
 
-# -----------------------------------------------------------------
-# WorldGuard
-# -----------------------------------------------------------------
 worldguard:
   auto-add-owner: true      # Automatically add apartment owner to WorldGuard region
   auto-remove-owner: true   # Automatically remove previous owner when apartment is sold
@@ -125,9 +35,12 @@ worldguard:
     - "build: deny"
     - "pvp: deny"
 
-# -----------------------------------------------------------------
-# Auction
-# -----------------------------------------------------------------
+settings:
+  max-apartments-per-player: 5   # Maximum apartments a single player can own (0 = no limit)
+  income-generation-interval: 24000   # How often apartments generate income (in ticks; 20 ticks = 1 second)
+  inactive-grace-period: 3            # Days before apartment becomes inactive after non-payment
+  tax-generation-interval: 24000      # How often tax is collected (in ticks; 20 ticks = 1 second)
+
 auction:
   enabled: true
   min-starting-bid: 1000
@@ -142,28 +55,28 @@ auction:
   extend-threshold-minutes: 5
   extend-time-minutes: 10
 
-# -----------------------------------------------------------------
-# Guestbook
-# -----------------------------------------------------------------
 guestbook:
   max-messages: 50          # Maximum messages allowed per apartment guestbook
   max-message-length: 100   # Maximum character length per guestbook message
   leave-cooldown: 60        # Cooldown period between guestbook messages (in seconds)
 
-# -----------------------------------------------------------------
-# Auto-Save & Backup
-# -----------------------------------------------------------------
 auto-save:
   enabled: true          # Enable automatic saving of plugin data
   interval-minutes: 10   # Interval between automatic saves (in minutes)
+
+# -----------------------------------------------------------------
+# THIS FEATURES EXCLUSIVE FOR PRO EDITION ONLY
+# -----------------------------------------------------------------
+# If you are using ApartmentCore Pro, enter your license key below.
+# Free edition users can ignore this section.
+
+license:
+  key: ""
 
 backup:
   enabled: true    # Enable automatic backup creation
   max-backups: 10  # Maximum number of backup files to keep
 
-# -----------------------------------------------------------------
-# Logging
-# -----------------------------------------------------------------
 logging:
   log-transactions: true
   log-admin-actions: true
@@ -172,9 +85,6 @@ logging:
   keep-old-logs: true
   max-old-logs: 10   # Maximum number of old log files to retain
 
-
 # -----------------------------------------------------------------
-# PlaceholderAPI
+# (IGNORE THIS IF YOU USING FREE EDITION)
 # -----------------------------------------------------------------
-placeholderapi:
-  enabled: true   # Enable PlaceholderAPI integration

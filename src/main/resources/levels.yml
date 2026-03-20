@@ -1,0 +1,49 @@
+# -----------------------------------------------------------------
+# Apartment Levels [FREE: Max Level 5 | PRO: Unlimited Levels]
+# -----------------------------------------------------------------
+apartment-levels:
+  level-1:
+    min-income: 10
+    max-income: 100
+    upgrade-cost: 0
+    upgrade-duration: 0         # Duration to upgrade FROM this level (in ticks; 20 ticks = 1 second). 0 = instant.
+    income-capacity: 10000   # Maximum pending income that can accumulate (Level 1 = 10,000)
+    tax-percentage: 2.5      # Tax percentage applied to apartment price
+  level-2:
+    min-income: 100
+    max-income: 200
+    upgrade-cost: 1000
+    upgrade-duration: 1728000      # 1 day to upgrade from level 1 → 2
+    income-capacity: 20000   # Maximum pending income that can accumulate (Level 2 = 20,000)
+    tax-percentage: 5.0      # Tax percentage applied to apartment price
+  level-3:
+    min-income: 200
+    max-income: 300
+    upgrade-cost: 2000
+    upgrade-duration: 3456000      # 2 day to upgrade from level 2 → 3
+    income-capacity: 30000   # Maximum pending income that can accumulate (Level 3 = 30,000)
+    tax-percentage: 7.5      # Tax percentage applied to apartment price
+  level-4:
+    min-income: 300
+    max-income: 400
+    upgrade-cost: 3000
+    upgrade-duration: 5184000      # 3 day to upgrade from level 3 → 4
+    income-capacity: 40000   # Maximum pending income that can accumulate (Level 4 = 40,000)
+    tax-percentage: 10.0     # Tax percentage applied to apartment price
+  level-5:
+    min-income: 400
+    max-income: 500
+    upgrade-cost: 5000
+    upgrade-duration: 8640000         # 3 day to upgrade from level 3 → 4
+    income-capacity: 50000   # Maximum pending income that can accumulate (Level 5 = 50,000)
+    tax-percentage: 12.5     # Tax percentage applied to apartment price
+
+
+# [PRO EDITION ONLY] YOU CAN INCREASE APARTMENT MAX LEVEL BY USING THE SAME FORMAT LIKE THIS
+#  level-6:
+#    min-income: 1000
+#    max-income: 1500
+#    upgrade-cost: 5000
+#    upgrade-duration: 8640000
+#    income-capacity: 50000
+#    tax-percentage: 12.5    

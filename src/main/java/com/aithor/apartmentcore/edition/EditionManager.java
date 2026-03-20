@@ -19,35 +19,12 @@ public class EditionManager {
     private final ApartmentCore plugin;
     private final Edition edition;
 
-    public EditionManager(ApartmentCore plugin) {
-        this.plugin = plugin;
-        String raw = plugin.getDescription().getVersion(); // not used for edition
-        // Read the edition flag that Maven resource-filtering wrote into plugin.yml
-        String editionStr = plugin.getConfig().getString("edition",
-                plugin.getDescription().getDescription() != null ? "FREE" : "FREE");
-        // Actually read from plugin.yml description metadata embedded via filtering
-        this.edition = Edition.fromString(
-                plugin.getServer().getPluginManager().getPlugin(plugin.getName()) != null
-                        ? readEditionFromPluginYml()
-                        : "FREE");
-    }
-
     /**
      * Construct with an explicit edition (used after plugin.yml is parsed).
      */
     public EditionManager(ApartmentCore plugin, Edition edition) {
         this.plugin = plugin;
         this.edition = edition;
-    }
-
-    private String readEditionFromPluginYml() {
-        // plugin.yml has "edition: FREE" or "edition: PRO" injected by Maven filtering
-        try {
-            Object val = plugin.getDescription().getMap().get("edition");
-            return val != null ? val.toString() : "FREE";
-        } catch (Throwable t) {
-            return "FREE";
-        }
     }
 
     // ── Getters ─────────────────────────────────────────────────────────────
@@ -86,9 +63,9 @@ public class EditionManager {
     }
 
     /**
-     * Whether the research system is available.
+     * Whether the research system configuration is editable (research.yml).
      */
-    public boolean isResearchEnabled() {
+    public boolean isResearchCustomisable() {
         return isPro();
     }
 

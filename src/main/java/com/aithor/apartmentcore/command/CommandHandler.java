@@ -79,6 +79,21 @@ public class CommandHandler implements TabCompleter {
         if (args.length == 0) {
             sender.sendMessage(plugin.getMessageManager().getMessage("general.version_header").replace("%version%",
                     plugin.getDescription().getVersion()));
+            
+            // Add Edition and License Status in English
+            String editionStr = plugin.getEditionManager().getEdition().name();
+            sender.sendMessage(ChatColor.GOLD + "Edition: " + ChatColor.WHITE + editionStr);
+            
+            String licenseStatus = "N/A";
+            if (plugin.getEditionManager().isPro()) {
+                if (plugin.getLicenseManager() != null) {
+                    licenseStatus = plugin.getLicenseManager().getStatus().name();
+                } else {
+                    licenseStatus = "ERROR";
+                }
+            }
+            sender.sendMessage(ChatColor.GOLD + "License Status: " + ChatColor.WHITE + licenseStatus);
+
             sender.sendMessage(plugin.getMessageManager().getMessage("general.about_author"));
             sender.sendMessage(plugin.getMessageManager().getMessage("general.about_help_hint"));
             return true;
@@ -89,7 +104,21 @@ public class CommandHandler implements TabCompleter {
         switch (subCommand) {
             case "version":
                 String ver = plugin.getDescription().getVersion();
-                sender.sendMessage(ChatColor.GREEN + "ApartmentCore " + ver);
+                sender.sendMessage(ChatColor.GREEN + "ApartmentCore " + ChatColor.WHITE + "v" + ver);
+                
+                // Add Edition and License Status in English
+                String edition = plugin.getEditionManager().getEdition().name();
+                sender.sendMessage(ChatColor.YELLOW + "Edition: " + ChatColor.WHITE + edition);
+                
+                String status = "N/A";
+                if (plugin.getEditionManager().isPro()) {
+                    if (plugin.getLicenseManager() != null) {
+                        status = plugin.getLicenseManager().getStatus().name();
+                    } else {
+                        status = "ERROR";
+                    }
+                }
+                sender.sendMessage(ChatColor.YELLOW + "License Status: " + ChatColor.WHITE + status);
                 return true;
 
             case "info":

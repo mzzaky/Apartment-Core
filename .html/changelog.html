@@ -682,7 +682,7 @@
         <h1>Changelog</h1>
         <p>Track all updates, improvements, and bug fixes for ApartmentCore</p>
         <div class="current-version">
-            <span>Latest Version: v1.3.7</span>
+            <span>Latest Version: v1.3.8</span>
         </div>
     </div>
 
@@ -696,7 +696,8 @@
         <nav class="side-nav">
             <div class="nav-title">Version History</div>
             <ul class="nav-list">
-                <li><a href="#v1-3-7" class="active">v1.3.7 <span class="version-badge">Feature Update</span></a></li>
+                <li><a href="#v1-3-8" class="active">v1.3.8 <span class="version-badge">Edition System</span></a></li>
+                <li><a href="#v1-3-7">v1.3.7 <span class="version-badge">Feature Update</span></a></li>
                 <li><a href="#v1-3-6">v1.3.6 <span class="version-badge">Feature Update</span></a></li>
                 <li><a href="#v1-3-5">v1.3.5 <span class="version-badge">Feature Update</span></a></li>
                 <li><a href="#v1-3-4">v1.3.4 <span class="version-badge">Massive Update</span></a></li>
@@ -717,8 +718,175 @@
         </nav>
 
         <main class="main-content">
-            <!-- Version 1.3.7 (Latest - Open by default) -->
-            <section class="version-section" id="v1-3-7">
+            <!-- Version 1.3.8 (Latest - Open by default) -->
+            <section class="version-section" id="v1-3-8">
+                <div class="version-header" onclick="toggleVersion('v1-3-8')">
+                    <div class="version-header-left">
+                        <div class="version-title">
+                            <h2>Version 1.3.8</h2>
+                            <span class="version-type update">Edition System</span>
+                        </div>
+                        <div class="release-date">March 20, 2026</div>
+                    </div>
+                    <div class="version-toggle">
+                        <span class="version-toggle-icon">▼</span>
+                        <span class="version-toggle-text">Minimize</span>
+                    </div>
+                </div>
+
+                <div class="version-content">
+                    <div class="overview-box">
+                        <div class="overview-title">Release Overview</div>
+                        <div class="overview-grid">
+                            <div class="overview-stat">
+                                <div class="stat-label">Changes</div>
+                                <div class="stat-value">30+</div>
+                            </div>
+                            <div class="overview-stat">
+                                <div class="stat-label">New Feature</div>
+                                <div class="stat-value">Edition System (Free & Pro)</div>
+                            </div>
+                            <div class="overview-stat">
+                                <div class="stat-label">Type</div>
+                                <div class="stat-value">Massive Update</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="change-category">
+                        <div class="category-header added">
+                            <div class="category-icon added">+</div>
+                            <div class="category-title">Features & Improvements</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item">Added license and plugin edition information on
+                                <code>/ac version</code>.</li>
+                            <li class="change-item">Added license status and edition check report on
+                                <code>/ac admin reload</code> (English).</li>
+                            <li class="change-item">Introduced dual-edition build system using Maven profiles:
+                                <strong>Free</strong> (default) and <strong>Pro</strong>.</li>
+                            <li class="change-item">Added license validation system for Pro edition using Cloudflare
+                                Workers + Supabase infrastructure.</li>
+                            <li class="change-item">Async validation on startup, 7-day offline grace period, and SHA-256
+                                hashed local cache for Pro edition.</li>
+                            <li class="change-item">Added Cloudflare Worker API code
+                                (<code>infrastructure/cloudflare-worker/</code>) and Supabase database schema for
+                                license management.</li>
+                            <li class="change-item">Added <code>license.key</code> configuration field in
+                                <code>config.yml</code> for Pro edition.</li>
+                            <li class="change-item">Centralized all shop messages into <code>messages.yml</code> and
+                                removed the redundant messages section from <code>shop.yml</code>.</li>
+                            <li class="change-item">Implemented shop message usage in <code>ApartmentShopGUI</code> and
+                                <code>ApartmentShopManager</code> to replace hardcoded strings.</li>
+                            <li class="change-item">Standardized placeholder format to <code>{placeholder}</code> across
+                                all shop-related messages.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Edition System -->
+                    <div class="change-category">
+                        <div class="category-header enhanced">
+                            <div class="category-icon enhanced">⌘</div>
+                            <div class="category-title">Edition System Comparison</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item"><strong>Free Edition Limits:</strong>
+                                <ul>
+                                    <li class="sub-item">Maximum 20 apartments can be registered on the server.</li>
+                                    <li class="sub-item">Maximum apartment level capped at 5.</li>
+                                    <li class="sub-item">Research system available with hardcoded values (cost,
+                                        duration, effects).</li>
+                                    <li class="sub-item">Configuration files (Research, Shop, Achievements, GUI) are not
+                                        exported to disk.</li>
+                                    <li class="sub-item">Logging and backup features are disabled.</li>
+                                </ul>
+                            </li>
+                            <li class="change-item"><strong>Pro Edition Features:</strong>
+                                <ul>
+                                    <li class="sub-item">Unlimited apartment creation and levels.</li>
+                                    <li class="sub-item">Fully customizable Research, Shop, Achievement, and GUI systems
+                                        via YAML files.</li>
+                                    <li class="sub-item">Full logging features (transaction and admin action logs).</li>
+                                    <li class="sub-item">Full backup features (auto-backup and manual backup commands).
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Changed -->
+                    <div class="change-category">
+                        <div class="category-header improved">
+                            <div class="category-icon improved">↑</div>
+                            <div class="category-title">Changes</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item">Updated splash banner (SplashArt) to display edition info and module
+                                availability.</li>
+                            <li class="change-item">Updated plugin version to <code>1.3.8</code> and config-version to
+                                <code>4</code>.</li>
+                            <li class="change-item">Moved apartment levels configuration from <code>config.yml</code> to
+                                a new dedicated <code>levels.yml</code> file.</li>
+                            <li class="change-item">Core features (Income Generation, Tax System, Teleportation) are now
+                                always enabled and non-toggleable. Corresponding configuration toggles have been removed
+                                from <code>config.yml</code>.</li>
+                            <li class="change-item">Updated research system to be visible and functional in Free
+                                edition, although configuration remains restricted to Pro.</li>
+                            <li class="change-item">Refined <code>config.yml</code> and adjusted it to the latest
+                                updates.</li>
+                            <li class="change-item">Cleaned up <code>shop.yml</code> by removing unused sections:
+                                <code>gui</code>, <code>performance</code>, <code>debug</code>,
+                                <code>compatibility</code>, and <code>config_version</code>.</li>
+                            <li class="change-item">Removed unused shop system settings from <code>shop.yml</code>:
+                                <code>enabled</code>, <code>allow_custom_costs</code>, and
+                                <code>refund_percentage</code>.</li>
+                            <li class="change-item">Removed unused <code>gui</code> block from
+                                <code>research.yml</code>.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Technical & Fixes -->
+                    <div class="change-category">
+                        <div class="category-header fixed">
+                            <div class="category-icon fixed">⚙</div>
+                            <div class="category-title">Technical & Fixes</div>
+                        </div>
+                        <ul class="change-list">
+                            <li class="change-item">Introduced Maven profiles: <code>edition-free</code> (default) and
+                                <code>edition-pro</code>.</li>
+                            <li class="change-item">New Maven properties for build automation:
+                                <code>apartmentcore.edition</code>, <code>apartmentcore.edition.label</code>, and
+                                <code>apartmentcore.jar.classifier</code>.</li>
+                            <li class="change-item">Build commands:
+                                <ul>
+                                    <li class="sub-item">Free: <code>mvn clean package</code> (Outputs:
+                                        <code>ApartmentCore-Free-1.3.8.jar</code>)</li>
+                                    <li class="sub-item">Pro: <code>mvn clean package -Pedition-pro</code> (Outputs:
+                                        <code>ApartmentCore-Pro-1.3.8.jar</code>)</li>
+                                </ul>
+                            </li>
+                            <li class="change-item">Added <code>Edition</code> enum, <code>EditionManager</code>, and
+                                <code>LicenseManager</code> classes under <code>com.aithor.apartmentcore.edition</code>.
+                            </li>
+                            <li class="change-item">Enabled Maven resource filtering for <code>plugin.yml</code>
+                                variable substitution (e.g., <code>edition</code> field).</li>
+                            <li class="change-item"><code>EditionManager</code> provides centralized gating for:
+                                <code>getMaxApartments()</code>, <code>getMaxLevel()</code>,
+                                <code>isResearchCustomisable()</code>, <code>isLoggingEnabled()</code>, and
+                                <code>isBackupEnabled()</code>.</li>
+                            <li class="change-item">The "Pending Income" capacity in menus now includes Vault Expansion
+                                stats from the shop.</li>
+                            <li class="change-item"><strong>Fixed:</strong> <code>shop.yml</code> was created as empty
+                                (0 bytes) in Free edition because <code>EditionManager</code> was initialized after
+                                <code>ConfigManager.loadConfiguration()</code>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Version 1.3.7 -->
+            <section class="version-section collapsed" id="v1-3-7">
                 <div class="version-header" onclick="toggleVersion('v1-3-7')">
                     <div class="version-header-left">
                         <div class="version-title">
@@ -771,7 +939,8 @@
                                 apartment.</li>
                             <li class="change-item">Admin reload command (<code>/apartmentcore admin reload</code>) now
                                 automatically reloads and applies edited custom income configurations directly from
-                                <code>apartments.yml</code> into memory.</li>
+                                <code>apartments.yml</code> into memory.
+                            </li>
                             <li class="change-item">Added new <code>floor</code> and <code>height</code> properties to
                                 Apartment data model.</li>
                             <li class="change-item">Updated <code>/apartmentcore admin create</code> command to
@@ -780,7 +949,8 @@
                                 House GUIs to display <code>floor</code> and <code>height</code> properties.</li>
                             <li class="change-item">Added
                                 <code>/apartmentcore admin set teleport &lt;apartment_id&gt;</code> command to change
-                                the teleport coordinates of an apartment.</li>
+                                the teleport coordinates of an apartment.
+                            </li>
                             <li class="change-item">Fixed an issue where the <code>%player%</code> placeholder was not
                                 readable in console commands within custom GUI menus.</li>
                             <li class="change-item">Added comprehensive support for placeholders in custom GUI commands,

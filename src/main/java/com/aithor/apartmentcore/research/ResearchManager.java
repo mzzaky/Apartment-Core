@@ -72,6 +72,21 @@ public class ResearchManager {
 
     private void loadResearchConfig() {
         try {
+            if (!plugin.getEditionManager().isResearchCustomisable()) {
+                this.enabled = true;
+                for (ResearchType type : ResearchType.values()) {
+                    costBase.put(type, 50000.0);
+                    costMultiplier.put(type, 3.0);
+                    durationBase.put(type, 3600L);
+                    durationMultiplier.put(type, 2.5);
+                    effectPerTier.put(type, type == ResearchType.EXPANSION_PLAN ? 1.0 : 5.0);
+                    effectPerTierFee.put(type, 5.0);
+                    effectPerTierCommission.put(type, 1.0);
+                }
+                plugin.debug("Research configuration hardcoded for Free edition.");
+                return;
+            }
+
             if (!plugin.getDataFolder().exists()) {
                 plugin.getDataFolder().mkdirs();
             }

@@ -79,10 +79,6 @@ public class ConfigManager {
     private boolean wgCheckFlags;
     private java.util.List<String> wgRequiredFlags;
 
-    // Feature toggles
-    private boolean featureIncomeGeneration;
-    private boolean featureTaxSystem;
-    private boolean featureTeleportation;
 
     // Income & Tax settings
     private int taxGenerationInterval;
@@ -99,6 +95,7 @@ public class ConfigManager {
      * Load configuration values from config.yml
      */
     public void loadConfiguration() {
+        loadLevelsConfig();
         FileConfiguration config = plugin.getConfig();
         plugin.saveDefaultConfig(); // Ensure new values are added
         plugin.reloadConfig(); // Reload to get them
@@ -129,7 +126,7 @@ public class ConfigManager {
 
         // Load level configurations
         levelConfigs.clear();
-        ConfigurationSection levelsSection = config.getConfigurationSection("apartment-levels");
+        ConfigurationSection levelsSection = getLevelsConfig().getConfigurationSection("apartment-levels");
         if (levelsSection != null) {
             for (String key : levelsSection.getKeys(false)) {
                 int level = Integer.parseInt(key.replace("level-", ""));
@@ -174,10 +171,6 @@ public class ConfigManager {
         wgCheckFlags = config.getBoolean("worldguard.check-flags", false);
         wgRequiredFlags = config.getStringList("worldguard.required-flags");
 
-        // Load Feature toggles
-        featureIncomeGeneration = config.getBoolean("features.income-generation", true);
-        featureTaxSystem = config.getBoolean("features.tax-system", true);
-        featureTeleportation = config.getBoolean("features.teleportation", true);
 
         // Load income & tax settings
         taxGenerationInterval = config.getInt("settings.tax-generation-interval", 24000);
@@ -394,17 +387,17 @@ public class ConfigManager {
         return wgRequiredFlags;
     }
 
-    // Feature getters
+    // Feature getters (Always active)
     public boolean isFeatureIncomeGeneration() {
-        return featureIncomeGeneration;
+        return true;
     }
 
     public boolean isFeatureTaxSystem() {
-        return featureTaxSystem;
+        return true;
     }
 
     public boolean isFeatureTeleportation() {
-        return featureTeleportation;
+        return true;
     }
 
     // Income & Tax getters
@@ -420,6 +413,10 @@ public class ConfigManager {
     // External Shop configuration file (shop.yml)
     private File shopConfigFile;
     private FileConfiguration shopConfig;
+
+    // External Levels configuration file (levels.yml)
+    private File levelsConfigFile;
+    private FileConfiguration levelsConfig;
 
     /**
      * Load or reload the external Shop configuration file (shop.yml).
@@ -443,11 +440,12 @@ public class ConfigManager {
                     if (in != null) {
                         this.shopConfig = YamlConfiguration.loadConfiguration(
                                 new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8));
+                        plugin.debug("Shop configuration loaded from bundled resource (Free edition).");
                     } else {
                         this.shopConfig = new YamlConfiguration();
+                        plugin.debug("Shop resource not found in JAR; using hardcoded defaults (Free edition).");
                     }
                 }
-                plugin.debug("Shop configuration loaded from bundled resource (Free edition).");
             } else {
                 // Pro edition: export to disk for editing
                 if (!this.shopConfigFile.exists()) {
@@ -486,6 +484,56 @@ public class ConfigManager {
      */
     public File getShopConfigFile() {
         return this.shopConfigFile;
+    }
+
+    /**
+     * Load or reload the external Levels configuration file (levels.yml).
+     */
+    public void loadLevelsConfig() {
+        try {
+            if (!plugin.getDataFolder().exists()) {
+                if (!plugin.getDataFolder().mkdirs()) {
+                    plugin.getLogger().warning("Could not create plugin data folder to store levels.yml");
+                }
+            }
+
+            this.levelsConfigFile = new File(plugin.getDataFolder(), "levels.yml");
+
+            if (!this.levelsConfigFile.exists()) {
+                try (InputStream in = plugin.getResource("levels.yml")) {
+                    if (in != null) {
+                        Files.copy(in, this.levelsConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        plugin.getLogger().info("levels.yml created from default resource.");
+                    } else {
+                        this.levelsConfigFile.createNewFile();
+                        plugin.getLogger().warning("levels.yml resource not found in jar! Created empty file.");
+                    }
+                } catch (IOException ioe) {
+                    plugin.getLogger().warning("Failed to create/copy levels.yml: " + ioe.getMessage());
+                }
+            }
+            this.levelsConfig = YamlConfiguration.loadConfiguration(this.levelsConfigFile);
+            plugin.debug("Levels configuration loaded from " + this.levelsConfigFile.getName());
+        } catch (Throwable t) {
+            plugin.getLogger().warning("Failed to load Levels config: " + t.getMessage());
+        }
+    }
+
+    /**
+     * Get the raw Levels FileConfiguration. Loads it lazily if needed.
+     */
+    public FileConfiguration getLevelsConfig() {
+        if (this.levelsConfig == null) {
+            loadLevelsConfig();
+        }
+        return this.levelsConfig;
+    }
+
+    /**
+     * Get the levels.yml File instance.
+     */
+    public File getLevelsConfigFile() {
+        return this.levelsConfigFile;
     }
 
 }

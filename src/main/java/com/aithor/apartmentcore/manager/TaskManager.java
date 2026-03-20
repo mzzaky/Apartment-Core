@@ -44,10 +44,6 @@ public class TaskManager {
      * - income.generation-interval
      */
     private void startIncomeTask() {
-        if (!configManager.isFeatureIncomeGeneration()) {
-            plugin.debug("Income generation disabled via features.income-generation");
-            return;
-        }
         BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -95,9 +91,6 @@ public class TaskManager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!configManager.isFeatureTaxSystem()) {
-                    return; // tax system disabled
-                }
 
                 long now = System.currentTimeMillis();
 

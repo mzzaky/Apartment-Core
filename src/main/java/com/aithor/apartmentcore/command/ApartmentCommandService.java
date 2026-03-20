@@ -6,6 +6,7 @@ import com.aithor.apartmentcore.manager.AuctionManager;
 import com.aithor.apartmentcore.manager.ConfigManager;
 import com.aithor.apartmentcore.manager.DataManager;
 import com.aithor.apartmentcore.manager.MessageManager;
+import com.aithor.apartmentcore.edition.LicenseManager;
 import com.aithor.apartmentcore.model.Apartment;
 import com.aithor.apartmentcore.model.ApartmentAuction;
 import com.aithor.apartmentcore.model.ApartmentRating;
@@ -1620,7 +1621,39 @@ public class ApartmentCommandService {
                     plugin.shutdownAuctionSystem();
                 }
 
-                sender.sendMessage(plugin.getMessageManager().getMessage("general.reloaded"));
+                // Custom reload message in English (Edition & License check)
+                String version = plugin.getDescription().getVersion();
+                String edition = plugin.getEditionManager().getEdition().name();
+                String licenseStatus = "N/A";
+                String licenseDetail = "Free Edition (No activation required)";
+                
+                if (plugin.getEditionManager().isPro()) {
+                    LicenseManager lm = plugin.getLicenseManager();
+                    if (lm != null) {
+                        licenseStatus = lm.getStatus().name();
+                        licenseDetail = lm.getStatusMessage();
+                    } else {
+                        licenseStatus = "ERROR";
+                        licenseDetail = "Manual activation check failed - manager missing.";
+                    }
+                }
+
+                sender.sendMessage(ChatColor.GOLD + "=== [ApartmentCore] System Reloaded ===");
+                sender.sendMessage(ChatColor.YELLOW + "Version: " + ChatColor.WHITE + version);
+                sender.sendMessage(ChatColor.YELLOW + "Edition: " + ChatColor.WHITE + edition);
+                sender.sendMessage(ChatColor.YELLOW + "License Status: " + ChatColor.WHITE + licenseStatus);
+                sender.sendMessage(ChatColor.YELLOW + "License Detail: " + ChatColor.WHITE + licenseDetail);
+                sender.sendMessage(ChatColor.GOLD + "======================================");
+
+                // If sender is a player, ensure logs still go to console
+                if (!(sender instanceof org.bukkit.command.ConsoleCommandSender)) {
+                    plugin.getLogger().info("=== ApartmentCore Reloaded by " + sender.getName() + " ===");
+                    plugin.getLogger().info("Version: " + version);
+                    plugin.getLogger().info("Edition: " + edition);
+                    plugin.getLogger().info("License: " + licenseStatus + " | " + licenseDetail);
+                    plugin.getLogger().info("======================================");
+                }
+
                 return true;
             }
 

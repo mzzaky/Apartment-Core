@@ -174,7 +174,7 @@ mvn clean package -Pedition-pro
 ---
 
 ## Testing Infrastruktur Lisensi
-
+IJRqJpDmHgVq7NS0
 ### Setup Supabase
 1. Buat project baru di [supabase.com](https://supabase.com)
 2. Buka **SQL Editor**

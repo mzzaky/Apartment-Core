@@ -602,10 +602,6 @@ public class ApartmentManager {
             return false;
         }
 
-        if (!isAdmin && !configManager.isFeatureTeleportation()) {
-            player.sendMessage(ChatColor.RED + "Teleportation is disabled.");
-            return false;
-        }
 
         if (!isAdmin && (apt.owner == null || !apt.owner.equals(player.getUniqueId()))) {
             player.sendMessage(ChatColor.RED + "You don't own this apartment!");

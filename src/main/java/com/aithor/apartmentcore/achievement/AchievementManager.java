@@ -116,8 +116,10 @@ public class AchievementManager {
                     if (in != null) {
                         this.achievementConfig = YamlConfiguration.loadConfiguration(
                                 new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8));
+                        plugin.debug("Achievement configuration loaded from bundled resource (Free edition).");
                     } else {
                         this.achievementConfig = new YamlConfiguration();
+                        plugin.debug("Achievements resource not found in JAR; using hardcoded defaults (Free edition).");
                     }
                 }
             } else {

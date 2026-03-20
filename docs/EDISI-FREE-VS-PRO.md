@@ -11,7 +11,7 @@ ApartmentCore tersedia dalam dua edisi yang dikompilasi dari **satu codebase yan
 | **Lisensi** | Tidak diperlukan | License key diperlukan |
 | **Maksimal Apartment** | 20 apartment | Unlimited |
 | **Maksimal Level** | Level 5 | Unlimited (sesuai config) |
-| **Research System** | Tidak tersedia | Tersedia & bisa dikustomisasi |
+| **Research System** | Tersedia (nilai hardcode, tidak bisa diedit) | Tersedia & bisa dikustomisasi via `research.yml` |
 | **Shop System** | Bawaan (tidak bisa diedit) | Bisa dikustomisasi via `shop.yml` |
 | **Achievement System** | Bawaan (tidak bisa diedit) | Bisa dikustomisasi via `achievements.yml` |
 | **Custom GUI** | Bawaan (tidak bisa diedit) | Bisa dikustomisasi via `custom_gui/main_menu.yml` |
@@ -27,7 +27,7 @@ ApartmentCore tersedia dalam dua edisi yang dikompilasi dari **satu codebase yan
 ### Batasan
 - **Maksimal 20 apartment** dapat didaftarkan di server
 - **Maksimal level apartment: 5** — upgrade di atas level 5 tidak tersedia
-- **Research system** tidak aktif — menu research di GUI akan menampilkan pesan "Pro only"
+- **Research system** tetap aktif, namun menggunakan **nilai hardcode** (cost, duration, dan effect tidak bisa diubah) — file `research.yml` **tidak** di-generate ke folder plugin
 - **File konfigurasi** (`shop.yml`, `achievements.yml`, `custom_gui/main_menu.yml`) **tidak** di-generate ke folder plugin — konfigurasi bawaan dari JAR yang digunakan
 - **Logging dan backup** fitur dinonaktifkan
 
@@ -37,6 +37,7 @@ ApartmentCore tersedia dalam dua edisi yang dikompilasi dari **satu codebase yan
 - Auction house
 - Shop system (dengan konfigurasi bawaan)
 - Achievement system (dengan konfigurasi bawaan)
+- Research system (dengan konfigurasi bawaan/hardcode)
 - GUI lengkap
 - PlaceholderAPI support
 - Guestbook system
@@ -48,7 +49,7 @@ ApartmentCore tersedia dalam dua edisi yang dikompilasi dari **satu codebase yan
 ### Keunggulan
 - **Unlimited apartment** — tidak ada batasan jumlah apartment
 - **Unlimited level** — tambahkan level sebanyak yang diinginkan di `config.yml`
-- **Research system** aktif dan bisa dikustomisasi melalui `research.yml`
+- **Research system** aktif dan bisa dikustomisasi melalui `research.yml` — cost, duration, dan effect tiap research dapat disesuaikan
 - **Shop system** bisa dikustomisasi melalui `shop.yml`
 - **Achievement system** bisa dikustomisasi melalui `achievements.yml`
 - **Custom GUI** bisa dikustomisasi melalui `custom_gui/main_menu.yml`
@@ -92,14 +93,18 @@ ApartmentCore.java (onEnable)
 ├── Inisialisasi EditionManager
 ├── [Pro] Inisialisasi LicenseManager → validasi ke Cloudflare Worker
 ├── [Pro] Inisialisasi LoggerManager
-├── [Pro] Inisialisasi ResearchManager
+├── Inisialisasi ResearchManager (Free: hardcode, Pro: baca research.yml)
 └── Semua fitur lain: cek EditionManager sebelum aksi
 
 EditionManager.java
-├── getMaxApartments()    → Free: 20, Pro: unlimited
-├── getMaxLevel()         → Free: 5, Pro: unlimited
-├── isResearchEnabled()   → Free: false, Pro: true
-├── isLoggingEnabled()    → Free: false, Pro: true
-├── isBackupEnabled()     → Free: false, Pro: true
-└── sendProOnlyMessage()  → Pesan ke player
+├── getMaxApartments()        → Free: 20, Pro: unlimited
+├── getMaxLevel()             → Free: 5, Pro: unlimited
+├── isResearchCustomisable()  → Free: false, Pro: true
+├── isLoggingEnabled()        → Free: false, Pro: true
+├── isBackupEnabled()         → Free: false, Pro: true
+└── sendProOnlyMessage()      → Pesan ke player
+
+ResearchManager.java (loadResearchConfig)
+├── [Free] Hardcode semua nilai (cost-base, duration, effect) → tidak baca/buat research.yml
+└── [Pro]  Baca/buat research.yml dari data folder seperti biasa
 ```

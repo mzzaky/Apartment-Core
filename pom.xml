@@ -40,6 +40,20 @@
         <apartmentcore.edition.label>Free</apartmentcore.edition.label>
         <apartmentcore.jar.classifier>Free</apartmentcore.jar.classifier>
       </properties>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+            <excludes>
+              <exclude>shop.yml</exclude>
+              <exclude>achievements.yml</exclude>
+              <exclude>research.yml</exclude>
+              <exclude>custom_gui/main_menu.yml</exclude>
+            </excludes>
+          </resource>
+        </resources>
+      </build>
     </profile>
 
     <!-- Pro Edition -->
@@ -50,6 +64,14 @@
         <apartmentcore.edition.label>Pro</apartmentcore.edition.label>
         <apartmentcore.jar.classifier>Pro</apartmentcore.jar.classifier>
       </properties>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
+      </build>
     </profile>
   </profiles>
 
@@ -119,12 +141,6 @@
   <build>
     <!-- Final JAR name: ApartmentCore-{Free|Pro}-1.3.8.jar -->
     <finalName>ApartmentCore-${apartmentcore.jar.classifier}-${project.version}</finalName>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
