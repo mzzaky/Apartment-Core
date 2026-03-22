@@ -1,6 +1,6 @@
-last-minecraft-day: 1773200131402
-last-rent-claim-time: 1773152082862
-last-income-generation-time: 1773200106403
+last-minecraft-day: 1774160131402
+last-rent-claim-time: 1774155925361
+last-income-generation-time: 1774160106403
 apartments:
   GrandeurManor:
     region: grandeur_manor
@@ -11,6 +11,7 @@ apartments:
     level: 1
     last-tax-payment: 1773189900454
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -58,6 +59,7 @@ apartments:
     level: 1
     last-tax-payment: 1773190992033
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -105,6 +107,7 @@ apartments:
     level: 1
     last-tax-payment: 1773193609761
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -152,6 +155,7 @@ apartments:
     level: 1
     last-tax-payment: 1773194019448
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -196,9 +200,10 @@ apartments:
     price: 588000.0
     tax: 0.0
     tax-days: 0
-    level: 1
-    last-tax-payment: 1773157336640
+    level: 2
+    last-tax-payment: 1773627425029
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -230,13 +235,6 @@ apartments:
       '5':
         min: 833.0
         max: 2089.5
-    teleport-location:
-      world: shmar_city
-      x: -23.20436383127851
-      y: 16.0
-      z: 25.184858689450547
-      yaw: 86.70064
-      pitch: -1.0499768
   LibertyResidence:
     region: liberty_residence
     world: shmar_city
@@ -246,6 +244,7 @@ apartments:
     level: 1
     last-tax-payment: 1773163664250
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -293,6 +292,7 @@ apartments:
     level: 1
     last-tax-payment: 1773199783390
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -337,9 +337,10 @@ apartments:
     price: 115200.0
     tax: 0.0
     tax-days: 0
-    level: 1
-    last-tax-payment: 1773198220966
+    level: 2
+    last-tax-payment: 1773627308620
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -371,13 +372,6 @@ apartments:
       '5':
         min: 376.0
         max: 924.0
-    teleport-location:
-      world: shmar_city
-      x: 179.35511844859494
-      y: 16.0
-      z: 10.44998770100431
-      yaw: -179.25072
-      pitch: 3.8999605
   TheHorizon:
     region: the_horizon
     world: shmar_city
@@ -387,6 +381,7 @@ apartments:
     level: 1
     last-tax-payment: 1773197306104
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -434,6 +429,7 @@ apartments:
     level: 1
     last-tax-payment: 1773198748294
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -478,9 +474,10 @@ apartments:
     price: 200000.0
     tax: 0.0
     tax-days: 0
-    level: 1
-    last-tax-payment: 1773193187936
+    level: 2
+    last-tax-payment: 1773825046047
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -512,32 +509,2457 @@ apartments:
       '5':
         min: 480.0
         max: 1220.0
-    teleport-location:
-      world: shmar_city
-      x: 2.4108082349583957
-      y: 16.0
-      z: -92.98807360163933
-      yaw: -87.910034
-      pitch: 4.650131
   SovereignGrove:
     region: sovereign_grove
     world: shmar_city
+    owner: 41ff6849-eb26-40dd-ad1b-c78377fc6867
     price: 65000.0
     tax: 0.0
     tax-days: 0
-    level: 1
-    last-tax-payment: 1773196937634
-    pending-income: 0.0
+    level: 2
+    last-tax-payment: 1774160708445
+    pending-income: 940.6563387261065
+    last-generated-income: 170.82990805786488
     inactive: false
     penalty: 0.0
     inactive-since: 0
-    display-name: SovereignGrove
+    display-name: GreatKontol
     welcome-message: ''
     floor: 10
     height: 65
-    auto-tax-payment: false
-    last-invoice-at: 0
-    tax-invoices: []
+    auto-tax-payment: true
+    last-invoice-at: 1774160702802
+    tax-invoices:
+    - dueAt: 1773841502802
+      notifDay5Sent: false
+      createdAt: 1773837902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773837927311
+      notifNewSent: true
+      id: 1b538006-3eec-4264-ba21-1d1987a9a14f
+      notifDay3Sent: false
+    - dueAt: 1773842702802
+      notifDay5Sent: false
+      createdAt: 1773839102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773839127311
+      notifNewSent: true
+      id: 3303611f-14e7-493a-b10c-6035c53befeb
+      notifDay3Sent: false
+    - dueAt: 1773843902802
+      notifDay5Sent: false
+      createdAt: 1773840302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773840327311
+      notifNewSent: true
+      id: a0c6d8ce-5a9c-4775-a0da-b90af618307c
+      notifDay3Sent: false
+    - dueAt: 1773845102802
+      notifDay5Sent: false
+      createdAt: 1773841502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773841527311
+      notifNewSent: true
+      id: c305a270-3ac7-4eaa-a291-83e7692d5729
+      notifDay3Sent: false
+    - dueAt: 1773846302802
+      notifDay5Sent: false
+      createdAt: 1773842702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773842727311
+      notifNewSent: true
+      id: bbbc0e2c-4f1c-428e-b2e4-115d8c2d7653
+      notifDay3Sent: false
+    - dueAt: 1773847502802
+      notifDay5Sent: false
+      createdAt: 1773843902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773843927311
+      notifNewSent: true
+      id: 104579af-2e9a-43f7-992e-a818aac4e87b
+      notifDay3Sent: false
+    - dueAt: 1773848702802
+      notifDay5Sent: false
+      createdAt: 1773845102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773845127311
+      notifNewSent: true
+      id: 0f223647-fc36-432a-b18b-4f32d9559331
+      notifDay3Sent: false
+    - dueAt: 1773849902802
+      notifDay5Sent: false
+      createdAt: 1773846302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773846327311
+      notifNewSent: true
+      id: 319d41a3-1a7b-481c-915a-6613a8856c12
+      notifDay3Sent: false
+    - dueAt: 1773851102802
+      notifDay5Sent: false
+      createdAt: 1773847502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773847527311
+      notifNewSent: true
+      id: ee785ee1-ba39-44cd-ba21-08afa93f38a3
+      notifDay3Sent: false
+    - dueAt: 1773852302802
+      notifDay5Sent: false
+      createdAt: 1773848702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773848727311
+      notifNewSent: true
+      id: 7f588d05-7877-4cda-a88a-ca5ae2c4e320
+      notifDay3Sent: false
+    - dueAt: 1773853502802
+      notifDay5Sent: false
+      createdAt: 1773849902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773849927311
+      notifNewSent: true
+      id: 988d1d8a-068f-486a-8613-868787e5611c
+      notifDay3Sent: false
+    - dueAt: 1773854702802
+      notifDay5Sent: false
+      createdAt: 1773851102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773851127311
+      notifNewSent: true
+      id: dd072061-b62a-47ef-9eba-28b4a7ca3a07
+      notifDay3Sent: false
+    - dueAt: 1773855902802
+      notifDay5Sent: false
+      createdAt: 1773852302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773852327311
+      notifNewSent: true
+      id: 4f89d7d5-ecf0-48ac-baa5-621e83416713
+      notifDay3Sent: false
+    - dueAt: 1773857102802
+      notifDay5Sent: false
+      createdAt: 1773853502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773853527311
+      notifNewSent: true
+      id: 83c136ff-a489-48fd-9943-c0c43878e3b2
+      notifDay3Sent: false
+    - dueAt: 1773858302802
+      notifDay5Sent: false
+      createdAt: 1773854702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773854727311
+      notifNewSent: true
+      id: 1ba146be-c409-4d9b-8af1-53eb8c0565bf
+      notifDay3Sent: false
+    - dueAt: 1773859502802
+      notifDay5Sent: false
+      createdAt: 1773855902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773855927311
+      notifNewSent: true
+      id: 84a00542-f512-42dc-b125-92910df154d5
+      notifDay3Sent: false
+    - dueAt: 1773860702802
+      notifDay5Sent: false
+      createdAt: 1773857102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773857127311
+      notifNewSent: true
+      id: 2ee4c069-9e01-4adc-ade7-66f0f44ff255
+      notifDay3Sent: false
+    - dueAt: 1773861902802
+      notifDay5Sent: false
+      createdAt: 1773858302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773858327311
+      notifNewSent: true
+      id: 571c8086-2226-4fec-be1e-a7347f3fc18c
+      notifDay3Sent: false
+    - dueAt: 1773863102802
+      notifDay5Sent: false
+      createdAt: 1773859502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773859527311
+      notifNewSent: true
+      id: 252cc568-6c76-414d-9207-992ef3983890
+      notifDay3Sent: false
+    - dueAt: 1773864302802
+      notifDay5Sent: false
+      createdAt: 1773860702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773860727311
+      notifNewSent: true
+      id: 8874d801-1c03-4d73-b69f-8416dce57d55
+      notifDay3Sent: false
+    - dueAt: 1773865502802
+      notifDay5Sent: false
+      createdAt: 1773861902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773861927311
+      notifNewSent: true
+      id: 9c2a24aa-42fa-4c9e-9cb0-08a64f2a18c1
+      notifDay3Sent: false
+    - dueAt: 1773866702802
+      notifDay5Sent: false
+      createdAt: 1773863102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773863127311
+      notifNewSent: true
+      id: a9a438ab-94d6-450a-b69b-e7553604399b
+      notifDay3Sent: false
+    - dueAt: 1773867902802
+      notifDay5Sent: false
+      createdAt: 1773864302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773864327311
+      notifNewSent: true
+      id: 2fb31776-8b22-441c-af0e-9a296a86d82e
+      notifDay3Sent: false
+    - dueAt: 1773869102802
+      notifDay5Sent: false
+      createdAt: 1773865502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773865527311
+      notifNewSent: true
+      id: c6d38d88-463b-4b87-a61f-3211fbb5dbdc
+      notifDay3Sent: false
+    - dueAt: 1773870302802
+      notifDay5Sent: false
+      createdAt: 1773866702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773866727311
+      notifNewSent: true
+      id: 6cdef40a-d53d-48f0-bfce-67ad6c08a40c
+      notifDay3Sent: false
+    - dueAt: 1773871502802
+      notifDay5Sent: false
+      createdAt: 1773867902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773867927311
+      notifNewSent: true
+      id: 0d169e51-a5a0-46c1-96b3-19caccb8de3f
+      notifDay3Sent: false
+    - dueAt: 1773872702802
+      notifDay5Sent: false
+      createdAt: 1773869102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773869127311
+      notifNewSent: true
+      id: f056f0c7-6b78-47ad-a837-8b5953edfff1
+      notifDay3Sent: false
+    - dueAt: 1773873902802
+      notifDay5Sent: false
+      createdAt: 1773870302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773870327311
+      notifNewSent: true
+      id: 3f627275-f8ba-47fd-9eb8-c8d6eea87a30
+      notifDay3Sent: false
+    - dueAt: 1773875102802
+      notifDay5Sent: false
+      createdAt: 1773871502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773871527311
+      notifNewSent: true
+      id: 92425111-029a-45ea-8166-00b0b421dd08
+      notifDay3Sent: false
+    - dueAt: 1773876302802
+      notifDay5Sent: false
+      createdAt: 1773872702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773872727311
+      notifNewSent: true
+      id: 24d8af61-ca5a-4dcc-ac82-bcb443c55e64
+      notifDay3Sent: false
+    - dueAt: 1773877502802
+      notifDay5Sent: false
+      createdAt: 1773873902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773873927311
+      notifNewSent: true
+      id: 7e375539-a04c-441e-accb-0b8e552d2ee3
+      notifDay3Sent: false
+    - dueAt: 1773878702802
+      notifDay5Sent: false
+      createdAt: 1773875102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773875127311
+      notifNewSent: true
+      id: c0b94350-c292-4e9c-9a48-7ac1c03c8732
+      notifDay3Sent: false
+    - dueAt: 1773879902802
+      notifDay5Sent: false
+      createdAt: 1773876302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773876327311
+      notifNewSent: true
+      id: 611fb94b-7df1-46f7-8f24-f6952f3b1a28
+      notifDay3Sent: false
+    - dueAt: 1773881102802
+      notifDay5Sent: false
+      createdAt: 1773877502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773877527311
+      notifNewSent: true
+      id: c9d348ed-1c47-44e5-8c31-37dc5a2b232f
+      notifDay3Sent: false
+    - dueAt: 1773882302802
+      notifDay5Sent: false
+      createdAt: 1773878702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773878727311
+      notifNewSent: true
+      id: 04c14899-7cb4-4326-bb83-f9a5700b90de
+      notifDay3Sent: false
+    - dueAt: 1773883502802
+      notifDay5Sent: false
+      createdAt: 1773879902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773879927311
+      notifNewSent: true
+      id: 39f64fb8-4279-4974-b5e1-7036d72807d3
+      notifDay3Sent: false
+    - dueAt: 1773884702802
+      notifDay5Sent: false
+      createdAt: 1773881102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773881127311
+      notifNewSent: true
+      id: b08b5108-1f2b-4b14-8532-3decd46b8b65
+      notifDay3Sent: false
+    - dueAt: 1773885902802
+      notifDay5Sent: false
+      createdAt: 1773882302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773882327311
+      notifNewSent: true
+      id: cb1404d7-593e-466c-b262-be9a1886a2fb
+      notifDay3Sent: false
+    - dueAt: 1773887102802
+      notifDay5Sent: false
+      createdAt: 1773883502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773883527311
+      notifNewSent: true
+      id: 33c55954-0172-4f0b-8501-b2bf3364a6d0
+      notifDay3Sent: false
+    - dueAt: 1773888302802
+      notifDay5Sent: false
+      createdAt: 1773884702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773884727311
+      notifNewSent: true
+      id: 1446c505-539c-449c-a7fc-a7d6cbe01b45
+      notifDay3Sent: false
+    - dueAt: 1773889502802
+      notifDay5Sent: false
+      createdAt: 1773885902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773885927311
+      notifNewSent: true
+      id: f3e9435c-1239-46dd-aeb8-db912f27cba9
+      notifDay3Sent: false
+    - dueAt: 1773890702802
+      notifDay5Sent: false
+      createdAt: 1773887102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773887127311
+      notifNewSent: true
+      id: b3830eb9-e402-40e2-895e-9000c039b3c0
+      notifDay3Sent: false
+    - dueAt: 1773891902802
+      notifDay5Sent: false
+      createdAt: 1773888302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773888327311
+      notifNewSent: true
+      id: 08950325-7aa6-4a51-9d32-7ba394c74163
+      notifDay3Sent: false
+    - dueAt: 1773893102802
+      notifDay5Sent: false
+      createdAt: 1773889502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773889527311
+      notifNewSent: true
+      id: eb5764d8-8171-433c-b6af-a693f09456e7
+      notifDay3Sent: false
+    - dueAt: 1773894302802
+      notifDay5Sent: false
+      createdAt: 1773890702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773890727311
+      notifNewSent: true
+      id: c865b072-2c16-4cb9-83ae-9733d074c42e
+      notifDay3Sent: false
+    - dueAt: 1773895502802
+      notifDay5Sent: false
+      createdAt: 1773891902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773891927311
+      notifNewSent: true
+      id: 04d9b9d8-101f-4aa4-884c-420c099e0e69
+      notifDay3Sent: false
+    - dueAt: 1773896702802
+      notifDay5Sent: false
+      createdAt: 1773893102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773893127311
+      notifNewSent: true
+      id: 5bc1d004-2769-4f8e-9c01-0ba8e6cc660e
+      notifDay3Sent: false
+    - dueAt: 1773897902802
+      notifDay5Sent: false
+      createdAt: 1773894302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773894327311
+      notifNewSent: true
+      id: 565a1013-6217-4445-9acd-eb833c51dddf
+      notifDay3Sent: false
+    - dueAt: 1773899102802
+      notifDay5Sent: false
+      createdAt: 1773895502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773895527311
+      notifNewSent: true
+      id: 0e47f545-cf5a-4ad5-aadc-f003caeab9e8
+      notifDay3Sent: false
+    - dueAt: 1773900302802
+      notifDay5Sent: false
+      createdAt: 1773896702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773896727311
+      notifNewSent: true
+      id: 32baed0a-c166-4f3b-93e2-6d2f0f195526
+      notifDay3Sent: false
+    - dueAt: 1773901502802
+      notifDay5Sent: false
+      createdAt: 1773897902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773897927311
+      notifNewSent: true
+      id: 38eb8191-8455-474a-bf02-1754f0a95ab5
+      notifDay3Sent: false
+    - dueAt: 1773902702802
+      notifDay5Sent: false
+      createdAt: 1773899102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773899127311
+      notifNewSent: true
+      id: cc566f15-54c4-4fc5-8053-0fb8d953b845
+      notifDay3Sent: false
+    - dueAt: 1773903902802
+      notifDay5Sent: false
+      createdAt: 1773900302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773900327311
+      notifNewSent: true
+      id: 77e7b2f7-b7c6-4b49-a285-99a2c0149253
+      notifDay3Sent: false
+    - dueAt: 1773905102802
+      notifDay5Sent: false
+      createdAt: 1773901502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773901527311
+      notifNewSent: true
+      id: 22f5622a-8a9f-43a6-b948-440dd262128f
+      notifDay3Sent: false
+    - dueAt: 1773906302802
+      notifDay5Sent: false
+      createdAt: 1773902702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773902727311
+      notifNewSent: true
+      id: 2e34a576-c07e-48f6-a2bb-60c9add4f5fa
+      notifDay3Sent: false
+    - dueAt: 1773907502802
+      notifDay5Sent: false
+      createdAt: 1773903902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773903927311
+      notifNewSent: true
+      id: cc419546-da36-472b-aea9-deb91e29be0d
+      notifDay3Sent: false
+    - dueAt: 1773908702802
+      notifDay5Sent: false
+      createdAt: 1773905102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773905127311
+      notifNewSent: true
+      id: a34280db-ecdd-4d21-bee5-97c3a42c1b0f
+      notifDay3Sent: false
+    - dueAt: 1773909902802
+      notifDay5Sent: false
+      createdAt: 1773906302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773906327311
+      notifNewSent: true
+      id: 724a5c50-2077-4a37-bf3a-d954a28d5dec
+      notifDay3Sent: false
+    - dueAt: 1773911102802
+      notifDay5Sent: false
+      createdAt: 1773907502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773907527311
+      notifNewSent: true
+      id: 70363261-176c-4d7d-80fc-9f3305a1cb61
+      notifDay3Sent: false
+    - dueAt: 1773912302802
+      notifDay5Sent: false
+      createdAt: 1773908702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773908727311
+      notifNewSent: true
+      id: 4d45998e-9c51-4a55-9e19-0fe1d4f874a9
+      notifDay3Sent: false
+    - dueAt: 1773913502802
+      notifDay5Sent: false
+      createdAt: 1773909902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773909927311
+      notifNewSent: true
+      id: 1670d269-2e33-492d-b66d-3f6767f8bfcb
+      notifDay3Sent: false
+    - dueAt: 1773914702802
+      notifDay5Sent: false
+      createdAt: 1773911102802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773911127311
+      notifNewSent: true
+      id: d22e7cbf-c96c-4035-9582-a97b988bf060
+      notifDay3Sent: false
+    - dueAt: 1773915902802
+      notifDay5Sent: false
+      createdAt: 1773912302802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773912327311
+      notifNewSent: true
+      id: 115d7d29-22c6-4728-9ec5-8ec9e107c212
+      notifDay3Sent: false
+    - dueAt: 1773917102802
+      notifDay5Sent: false
+      createdAt: 1773913502802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773913527311
+      notifNewSent: true
+      id: dec4ffa1-9449-488e-9474-bcc1bbe2fda9
+      notifDay3Sent: false
+    - dueAt: 1773918302802
+      notifDay5Sent: false
+      createdAt: 1773914702802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773914727311
+      notifNewSent: true
+      id: ed929a6c-530c-40f0-a6a0-f6ddad6d38ad
+      notifDay3Sent: false
+    - dueAt: 1773919502802
+      notifDay5Sent: false
+      createdAt: 1773915902802
+      amount: 3250.0
+      notifDay2Sent: false
+      paidAt: 1773915927311
+      notifNewSent: true
+      id: a056c00a-e852-4444-8687-05cb6ea913fe
+      notifDay3Sent: false
+    - dueAt: 1773920702802
+      notifDay5Sent: false
+      createdAt: 1773917102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: e4d12234-a189-47c4-b8d9-4cdcf9c31c0b
+      notifDay3Sent: false
+    - dueAt: 1773921902802
+      notifDay5Sent: false
+      createdAt: 1773918302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 312415be-2b64-4d8d-92ff-1c66d9ab567d
+      notifDay3Sent: false
+    - dueAt: 1773923102802
+      notifDay5Sent: false
+      createdAt: 1773919502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: f4ebfbff-84df-4f1e-890c-a5d1f4d31aa9
+      notifDay3Sent: false
+    - dueAt: 1773924302802
+      notifDay5Sent: false
+      createdAt: 1773920702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: a9f62011-5cfd-4332-9b4d-f9640192071f
+      notifDay3Sent: false
+    - dueAt: 1773925502802
+      notifDay5Sent: false
+      createdAt: 1773921902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 547a9df0-1499-46e7-919d-ec8e605998af
+      notifDay3Sent: false
+    - dueAt: 1773926702802
+      notifDay5Sent: false
+      createdAt: 1773923102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: fba26e9a-9edf-4b71-916b-30773572e69a
+      notifDay3Sent: false
+    - dueAt: 1773927902802
+      notifDay5Sent: false
+      createdAt: 1773924302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: b94eef19-1c32-46b2-adbf-f434a84146ba
+      notifDay3Sent: false
+    - dueAt: 1773929102802
+      notifDay5Sent: false
+      createdAt: 1773925502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: adfbf192-e905-4f8e-b92f-8a9d08228802
+      notifDay3Sent: false
+    - dueAt: 1773930302802
+      notifDay5Sent: false
+      createdAt: 1773926702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 5392641b-b087-4403-ad79-576c152b137b
+      notifDay3Sent: false
+    - dueAt: 1773931502802
+      notifDay5Sent: false
+      createdAt: 1773927902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: d79d8361-bbd3-4b5a-9b55-db61badc9b09
+      notifDay3Sent: false
+    - dueAt: 1773932702802
+      notifDay5Sent: false
+      createdAt: 1773929102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 0493d59a-11e4-40f0-a05a-e0e46e9b23e0
+      notifDay3Sent: false
+    - dueAt: 1773933902802
+      notifDay5Sent: false
+      createdAt: 1773930302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 681457ab-e8aa-45fb-9849-15a8e1147b62
+      notifDay3Sent: false
+    - dueAt: 1773935102802
+      notifDay5Sent: false
+      createdAt: 1773931502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: ca2455a6-4225-48cd-b109-25c9c423d824
+      notifDay3Sent: false
+    - dueAt: 1773936302802
+      notifDay5Sent: false
+      createdAt: 1773932702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 27774b1a-58e4-4884-8906-3219026100e3
+      notifDay3Sent: false
+    - dueAt: 1773937502802
+      notifDay5Sent: false
+      createdAt: 1773933902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 673d85c3-0987-41eb-b98b-6416a6352e20
+      notifDay3Sent: false
+    - dueAt: 1773938702802
+      notifDay5Sent: false
+      createdAt: 1773935102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 817ea34c-5dba-40b7-86e9-52e9da1bd0e3
+      notifDay3Sent: false
+    - dueAt: 1773939902802
+      notifDay5Sent: false
+      createdAt: 1773936302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 80e62e6a-31f6-4767-a4eb-d6c2c0b0e72d
+      notifDay3Sent: false
+    - dueAt: 1773941102802
+      notifDay5Sent: false
+      createdAt: 1773937502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 3b1b4f92-1b40-40ef-a75d-8b4fe667783f
+      notifDay3Sent: false
+    - dueAt: 1773942302802
+      notifDay5Sent: false
+      createdAt: 1773938702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 3a331cc4-8480-4bcd-a195-eb91c48f6ffd
+      notifDay3Sent: false
+    - dueAt: 1773943502802
+      notifDay5Sent: false
+      createdAt: 1773939902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: 96d3fd09-772f-4e4a-861f-6e82b4df132d
+      notifDay3Sent: false
+    - dueAt: 1773944702802
+      notifDay5Sent: false
+      createdAt: 1773941102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: da7411b6-d37d-4b9e-8eb3-ce9888c47b4d
+      notifDay3Sent: false
+    - dueAt: 1773945902802
+      notifDay5Sent: false
+      createdAt: 1773942302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628447
+      notifNewSent: true
+      id: a4db0478-2c9a-46a0-a2be-f7932c7d4ae2
+      notifDay3Sent: false
+    - dueAt: 1773947102802
+      notifDay5Sent: false
+      createdAt: 1773943502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 8ca19ffc-2558-49bc-a3bc-f8cedd69ce3e
+      notifDay3Sent: false
+    - dueAt: 1773948302802
+      notifDay5Sent: false
+      createdAt: 1773944702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 0be881d4-e9ff-43db-bcd4-3873edbc398f
+      notifDay3Sent: false
+    - dueAt: 1773949502802
+      notifDay5Sent: false
+      createdAt: 1773945902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: a0856d5b-e138-4c56-93ab-068c219d7a88
+      notifDay3Sent: false
+    - dueAt: 1773950702802
+      notifDay5Sent: false
+      createdAt: 1773947102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: f159b422-2831-4372-8386-56644e2d9a2a
+      notifDay3Sent: false
+    - dueAt: 1773951902802
+      notifDay5Sent: false
+      createdAt: 1773948302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 02a27040-d243-4bf4-8130-d868734860d6
+      notifDay3Sent: false
+    - dueAt: 1773953102802
+      notifDay5Sent: false
+      createdAt: 1773949502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 8fd74af3-5a1a-4bb0-9aad-70c534919187
+      notifDay3Sent: false
+    - dueAt: 1773954302802
+      notifDay5Sent: false
+      createdAt: 1773950702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 5729e201-d8ef-45c1-a554-db787a357682
+      notifDay3Sent: false
+    - dueAt: 1773955502802
+      notifDay5Sent: false
+      createdAt: 1773951902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: a3074af8-9e6e-40cd-b373-e8e5b8097491
+      notifDay3Sent: false
+    - dueAt: 1773956702802
+      notifDay5Sent: false
+      createdAt: 1773953102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: b1395574-5984-4716-8762-160fa3e2e509
+      notifDay3Sent: false
+    - dueAt: 1773957902802
+      notifDay5Sent: false
+      createdAt: 1773954302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 150da791-c72b-4b98-9ac5-f2c4cdceba04
+      notifDay3Sent: false
+    - dueAt: 1773959102802
+      notifDay5Sent: false
+      createdAt: 1773955502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: b54e8f42-7009-47ff-8a89-6bbd8cf5b534
+      notifDay3Sent: false
+    - dueAt: 1773960302802
+      notifDay5Sent: false
+      createdAt: 1773956702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 049488d3-eaae-4ed2-b660-3d6b8298dbfd
+      notifDay3Sent: false
+    - dueAt: 1773961502802
+      notifDay5Sent: false
+      createdAt: 1773957902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: d34fc7d3-baa0-4624-8cfb-6f97d4cbb298
+      notifDay3Sent: false
+    - dueAt: 1773962702802
+      notifDay5Sent: false
+      createdAt: 1773959102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: fe282ce5-0afe-4a77-9f12-bd1c615300ae
+      notifDay3Sent: false
+    - dueAt: 1773963902802
+      notifDay5Sent: false
+      createdAt: 1773960302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 2d44467b-e6a8-4ca4-8da6-7620c5fa2624
+      notifDay3Sent: false
+    - dueAt: 1773965102802
+      notifDay5Sent: false
+      createdAt: 1773961502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 7a022018-5f55-4218-9b56-8ac4ffee6faf
+      notifDay3Sent: false
+    - dueAt: 1773966302802
+      notifDay5Sent: false
+      createdAt: 1773962702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: eaf47a93-f161-412c-aeff-e110b4d1cc02
+      notifDay3Sent: false
+    - dueAt: 1773967502802
+      notifDay5Sent: false
+      createdAt: 1773963902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: c9caf3b3-9ad6-4f57-8df3-08290c4246c1
+      notifDay3Sent: false
+    - dueAt: 1773968702802
+      notifDay5Sent: false
+      createdAt: 1773965102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: e724e9d9-3d19-4422-8a46-71cb72ced374
+      notifDay3Sent: false
+    - dueAt: 1773969902802
+      notifDay5Sent: false
+      createdAt: 1773966302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: ba6d2cc6-4998-4831-8536-286cab542055
+      notifDay3Sent: false
+    - dueAt: 1773971102802
+      notifDay5Sent: false
+      createdAt: 1773967502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 0f950804-c8e8-4e22-8c2f-6178962f7e4c
+      notifDay3Sent: false
+    - dueAt: 1773972302802
+      notifDay5Sent: false
+      createdAt: 1773968702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 37c088fd-2a1f-4754-a639-ed30e2004797
+      notifDay3Sent: false
+    - dueAt: 1773973502802
+      notifDay5Sent: false
+      createdAt: 1773969902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 5d9c217f-b462-48f8-bd8f-df5ed4ffdefd
+      notifDay3Sent: false
+    - dueAt: 1773974702802
+      notifDay5Sent: false
+      createdAt: 1773971102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 6d34b8d6-2e90-4b9e-a9dd-da64b7ccf7a7
+      notifDay3Sent: false
+    - dueAt: 1773975902802
+      notifDay5Sent: false
+      createdAt: 1773972302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: cf8a297b-bc4d-4214-9278-3dae396cb60d
+      notifDay3Sent: false
+    - dueAt: 1773977102802
+      notifDay5Sent: false
+      createdAt: 1773973502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 5fd6f0b7-6abc-4b5d-9dd9-296af7a05a38
+      notifDay3Sent: false
+    - dueAt: 1773978302802
+      notifDay5Sent: false
+      createdAt: 1773974702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: ca31dee1-2679-4475-800a-5e28aa217482
+      notifDay3Sent: false
+    - dueAt: 1773979502802
+      notifDay5Sent: false
+      createdAt: 1773975902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 18a0278f-168f-4f7a-ab46-812d7f791e90
+      notifDay3Sent: false
+    - dueAt: 1773980702802
+      notifDay5Sent: false
+      createdAt: 1773977102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: fe97cfec-6ebf-43e8-8b89-6e25e4ea271b
+      notifDay3Sent: false
+    - dueAt: 1773981902802
+      notifDay5Sent: false
+      createdAt: 1773978302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: d988e00c-601d-483c-a61e-74e71ea08282
+      notifDay3Sent: false
+    - dueAt: 1773983102802
+      notifDay5Sent: false
+      createdAt: 1773979502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: c1012cfe-2a37-4fa0-82c1-f5923e9370fa
+      notifDay3Sent: false
+    - dueAt: 1773984302802
+      notifDay5Sent: false
+      createdAt: 1773980702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: bdb9c9c4-9463-4cdc-8646-4702016d9beb
+      notifDay3Sent: false
+    - dueAt: 1773985502802
+      notifDay5Sent: false
+      createdAt: 1773981902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: ba46f00f-a743-4b37-a821-0d93cb45d72b
+      notifDay3Sent: false
+    - dueAt: 1773986702802
+      notifDay5Sent: false
+      createdAt: 1773983102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 6f1b3051-7b27-4223-aa9e-28dd4720bf05
+      notifDay3Sent: false
+    - dueAt: 1773987902802
+      notifDay5Sent: false
+      createdAt: 1773984302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: b0377322-6940-4213-a215-ccd1d5cfe37e
+      notifDay3Sent: false
+    - dueAt: 1773989102802
+      notifDay5Sent: false
+      createdAt: 1773985502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 08305478-8cf6-4124-864b-acd511db0f05
+      notifDay3Sent: false
+    - dueAt: 1773990302802
+      notifDay5Sent: false
+      createdAt: 1773986702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 249db064-37a2-4336-a456-7de8e2bdbe7d
+      notifDay3Sent: false
+    - dueAt: 1773991502802
+      notifDay5Sent: false
+      createdAt: 1773987902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: b9ba8e68-30a5-412a-b10b-9685de5c0302
+      notifDay3Sent: false
+    - dueAt: 1773992702802
+      notifDay5Sent: false
+      createdAt: 1773989102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 48da3dde-729d-4e94-be89-0dcd446b16d2
+      notifDay3Sent: false
+    - dueAt: 1773993902802
+      notifDay5Sent: false
+      createdAt: 1773990302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: cdd83f5a-2f61-45a3-bc20-ecb1984548b2
+      notifDay3Sent: false
+    - dueAt: 1773995102802
+      notifDay5Sent: false
+      createdAt: 1773991502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 42e57bc7-dd04-4fb7-9bb0-9d2b9e161b2d
+      notifDay3Sent: false
+    - dueAt: 1773996302802
+      notifDay5Sent: false
+      createdAt: 1773992702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 925e2034-aee6-4efa-8211-e115e80c8351
+      notifDay3Sent: false
+    - dueAt: 1773997502802
+      notifDay5Sent: false
+      createdAt: 1773993902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 0908520e-c945-4bca-85ab-811eb8b7e51b
+      notifDay3Sent: false
+    - dueAt: 1773998702802
+      notifDay5Sent: false
+      createdAt: 1773995102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: aea5861b-60e6-4a88-845e-1c9e89539359
+      notifDay3Sent: false
+    - dueAt: 1773999902802
+      notifDay5Sent: false
+      createdAt: 1773996302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 1a6b7124-4ead-45de-940d-770300718df4
+      notifDay3Sent: false
+    - dueAt: 1774001102802
+      notifDay5Sent: false
+      createdAt: 1773997502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: a37068d9-3f7d-4df9-98d6-87e79f044935
+      notifDay3Sent: false
+    - dueAt: 1774002302802
+      notifDay5Sent: false
+      createdAt: 1773998702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: d6c2c504-704d-4c9f-9977-aac4fdd10f2c
+      notifDay3Sent: false
+    - dueAt: 1774003502802
+      notifDay5Sent: false
+      createdAt: 1773999902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 171df17f-056b-49f3-90be-8ca05915bb12
+      notifDay3Sent: false
+    - dueAt: 1774004702802
+      notifDay5Sent: false
+      createdAt: 1774001102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 6f3570bc-cbba-4f08-8e70-684d1c4a5a6b
+      notifDay3Sent: false
+    - dueAt: 1774005902802
+      notifDay5Sent: false
+      createdAt: 1774002302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 05c831f8-2a58-4e25-900c-4ed7667f27a4
+      notifDay3Sent: false
+    - dueAt: 1774007102802
+      notifDay5Sent: false
+      createdAt: 1774003502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 0529a775-d788-491e-986e-06db4dbfba2a
+      notifDay3Sent: false
+    - dueAt: 1774008302802
+      notifDay5Sent: false
+      createdAt: 1774004702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 610bffb5-f334-47c0-97fb-66e22b1a3a2f
+      notifDay3Sent: false
+    - dueAt: 1774009502802
+      notifDay5Sent: false
+      createdAt: 1774005902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 9a8f8f54-ff4c-4bcf-9343-a68b35128608
+      notifDay3Sent: false
+    - dueAt: 1774010702802
+      notifDay5Sent: false
+      createdAt: 1774007102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: a87285c2-bbb5-43c9-9098-c9f1ee1ecc42
+      notifDay3Sent: false
+    - dueAt: 1774011902802
+      notifDay5Sent: false
+      createdAt: 1774008302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 4dd39626-48f0-4550-84dd-a2d2feba2d48
+      notifDay3Sent: false
+    - dueAt: 1774013102802
+      notifDay5Sent: false
+      createdAt: 1774009502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 2bdd65f9-beff-47be-a8d2-b08957a31ce1
+      notifDay3Sent: false
+    - dueAt: 1774014302802
+      notifDay5Sent: false
+      createdAt: 1774010702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628448
+      notifNewSent: true
+      id: 49972812-08fe-4a2e-a5b5-7e532d43c110
+      notifDay3Sent: false
+    - dueAt: 1774015502802
+      notifDay5Sent: false
+      createdAt: 1774011902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 1b4ac498-0699-42b4-af9a-23754e7a2c4b
+      notifDay3Sent: false
+    - dueAt: 1774016702802
+      notifDay5Sent: false
+      createdAt: 1774013102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 4c7cf504-b105-47f9-a2c1-95efa6ee7169
+      notifDay3Sent: false
+    - dueAt: 1774017902802
+      notifDay5Sent: false
+      createdAt: 1774014302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 671c08c2-f077-4ead-9e1f-a8baf0af4b1c
+      notifDay3Sent: false
+    - dueAt: 1774019102802
+      notifDay5Sent: false
+      createdAt: 1774015502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 164e10d7-638c-416d-919d-586714623177
+      notifDay3Sent: false
+    - dueAt: 1774020302802
+      notifDay5Sent: false
+      createdAt: 1774016702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: c115264d-a7ae-4563-aa19-9dea9fc65b16
+      notifDay3Sent: false
+    - dueAt: 1774021502802
+      notifDay5Sent: false
+      createdAt: 1774017902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 9140a25f-2919-4257-a095-dd23bf876cf7
+      notifDay3Sent: false
+    - dueAt: 1774022702802
+      notifDay5Sent: false
+      createdAt: 1774019102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 9687be1c-bd47-4a6a-b167-4c0da5c561f9
+      notifDay3Sent: false
+    - dueAt: 1774023902802
+      notifDay5Sent: false
+      createdAt: 1774020302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: aa6ed006-568d-4b27-8df3-7a77d357821e
+      notifDay3Sent: false
+    - dueAt: 1774025102802
+      notifDay5Sent: false
+      createdAt: 1774021502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: f014a7c0-b87f-418d-b229-87ee43c3a21e
+      notifDay3Sent: false
+    - dueAt: 1774026302802
+      notifDay5Sent: false
+      createdAt: 1774022702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 9b03014d-2875-4eb6-b36c-50977c21178a
+      notifDay3Sent: false
+    - dueAt: 1774027502802
+      notifDay5Sent: false
+      createdAt: 1774023902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: f1c7f7e9-b5e0-4daf-bdaa-9f7e929a2c61
+      notifDay3Sent: false
+    - dueAt: 1774028702802
+      notifDay5Sent: false
+      createdAt: 1774025102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: f0850eec-c8f6-4bd7-af74-657781f088bd
+      notifDay3Sent: false
+    - dueAt: 1774029902802
+      notifDay5Sent: false
+      createdAt: 1774026302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: c2c0e4ee-f06c-498c-8484-51733017ea9b
+      notifDay3Sent: false
+    - dueAt: 1774031102802
+      notifDay5Sent: false
+      createdAt: 1774027502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 2e247fd5-521f-4b02-b9d4-c852cf05be3f
+      notifDay3Sent: false
+    - dueAt: 1774032302802
+      notifDay5Sent: false
+      createdAt: 1774028702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 0c139c13-6b64-4cb4-90f4-325f0c2d7b6c
+      notifDay3Sent: false
+    - dueAt: 1774033502802
+      notifDay5Sent: false
+      createdAt: 1774029902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: e7256531-c291-4f4f-b74a-0840a4bb1767
+      notifDay3Sent: false
+    - dueAt: 1774034702802
+      notifDay5Sent: false
+      createdAt: 1774031102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: be9e0b25-4378-40cb-bb6b-67d50e053ff9
+      notifDay3Sent: false
+    - dueAt: 1774035902802
+      notifDay5Sent: false
+      createdAt: 1774032302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: c8ec59fb-f201-4bb5-96ea-7722be954a18
+      notifDay3Sent: false
+    - dueAt: 1774037102802
+      notifDay5Sent: false
+      createdAt: 1774033502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 20be8327-05aa-4041-9653-3d36c709fab3
+      notifDay3Sent: false
+    - dueAt: 1774038302802
+      notifDay5Sent: false
+      createdAt: 1774034702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: ecca3547-c444-40dc-b23d-29e6643d3b61
+      notifDay3Sent: false
+    - dueAt: 1774039502802
+      notifDay5Sent: false
+      createdAt: 1774035902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: ee9b495e-a3a5-460a-a937-a79c81452c3d
+      notifDay3Sent: false
+    - dueAt: 1774040702802
+      notifDay5Sent: false
+      createdAt: 1774037102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: fa7a84ba-3fcc-4d2c-89b0-4d425ce05133
+      notifDay3Sent: false
+    - dueAt: 1774041902802
+      notifDay5Sent: false
+      createdAt: 1774038302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 8ddd61d8-7ac3-4f5a-8a8c-8eec97d62058
+      notifDay3Sent: false
+    - dueAt: 1774043102802
+      notifDay5Sent: false
+      createdAt: 1774039502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: d5e2857e-deee-49dd-b1eb-cc4680e81168
+      notifDay3Sent: false
+    - dueAt: 1774044302802
+      notifDay5Sent: false
+      createdAt: 1774040702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 878988c8-9c75-4ea7-a84e-7459bbcf43c2
+      notifDay3Sent: false
+    - dueAt: 1774045502802
+      notifDay5Sent: false
+      createdAt: 1774041902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: b7047acc-7304-4ff2-9b7b-579018f5bbcf
+      notifDay3Sent: false
+    - dueAt: 1774046702802
+      notifDay5Sent: false
+      createdAt: 1774043102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: d43241b6-a53b-4702-8c2c-7ffb21855b3f
+      notifDay3Sent: false
+    - dueAt: 1774047902802
+      notifDay5Sent: false
+      createdAt: 1774044302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: f9bb378c-e127-4cc4-9199-956cd0753066
+      notifDay3Sent: false
+    - dueAt: 1774049102802
+      notifDay5Sent: false
+      createdAt: 1774045502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 1382dc39-e47c-447c-909e-075ffd423d59
+      notifDay3Sent: false
+    - dueAt: 1774050302802
+      notifDay5Sent: false
+      createdAt: 1774046702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 7f2f5d78-59c7-4f87-b1ad-033a2b1f8249
+      notifDay3Sent: false
+    - dueAt: 1774051502802
+      notifDay5Sent: false
+      createdAt: 1774047902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 9786957d-143f-4f12-aacb-8f104bb26aa0
+      notifDay3Sent: false
+    - dueAt: 1774052702802
+      notifDay5Sent: false
+      createdAt: 1774049102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 3562a0ea-8e47-4409-89c0-ed7a931b3aea
+      notifDay3Sent: false
+    - dueAt: 1774053902802
+      notifDay5Sent: false
+      createdAt: 1774050302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: fa0b9b54-a946-44eb-9690-73e248848d6b
+      notifDay3Sent: false
+    - dueAt: 1774055102802
+      notifDay5Sent: false
+      createdAt: 1774051502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: ec7ea85c-777f-46b3-aa43-6c7433f53937
+      notifDay3Sent: false
+    - dueAt: 1774056302802
+      notifDay5Sent: false
+      createdAt: 1774052702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: e5bd6c4a-f3d6-4853-95a6-a37dfbd7f63f
+      notifDay3Sent: false
+    - dueAt: 1774057502802
+      notifDay5Sent: false
+      createdAt: 1774053902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: e624aaf3-de7a-47d7-abf9-ff0eb263c310
+      notifDay3Sent: false
+    - dueAt: 1774058702802
+      notifDay5Sent: false
+      createdAt: 1774055102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 378e5c09-de41-44ac-95b6-fc31592e7b1b
+      notifDay3Sent: false
+    - dueAt: 1774059902802
+      notifDay5Sent: false
+      createdAt: 1774056302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: f466edc1-45c4-47dc-8ad3-9c592540ba6d
+      notifDay3Sent: false
+    - dueAt: 1774061102802
+      notifDay5Sent: false
+      createdAt: 1774057502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: bbb4fb78-311d-416f-981a-02531890381a
+      notifDay3Sent: false
+    - dueAt: 1774062302802
+      notifDay5Sent: false
+      createdAt: 1774058702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 68b45b79-498d-41a5-b9b0-d49ee944c8d5
+      notifDay3Sent: false
+    - dueAt: 1774063502802
+      notifDay5Sent: false
+      createdAt: 1774059902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: cfe91160-2cbe-4573-8aae-ad179c78c341
+      notifDay3Sent: false
+    - dueAt: 1774064702802
+      notifDay5Sent: false
+      createdAt: 1774061102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 3173ddbf-1057-4bf8-ab57-488c18562334
+      notifDay3Sent: false
+    - dueAt: 1774065902802
+      notifDay5Sent: false
+      createdAt: 1774062302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: c0d1e611-998f-4520-8747-5bf595c69264
+      notifDay3Sent: false
+    - dueAt: 1774067102802
+      notifDay5Sent: false
+      createdAt: 1774063502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 039af5de-f13b-4231-85fe-5a4f686cbd2d
+      notifDay3Sent: false
+    - dueAt: 1774068302802
+      notifDay5Sent: false
+      createdAt: 1774064702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 803bdef6-3424-496c-86eb-5c89a9351478
+      notifDay3Sent: false
+    - dueAt: 1774069502802
+      notifDay5Sent: false
+      createdAt: 1774065902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: cfbd2007-faa7-45fd-8334-c6ee71c4c0e3
+      notifDay3Sent: false
+    - dueAt: 1774070702802
+      notifDay5Sent: false
+      createdAt: 1774067102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 8fc808e7-4b8d-4cd7-a445-f8593be0bd71
+      notifDay3Sent: false
+    - dueAt: 1774071902802
+      notifDay5Sent: false
+      createdAt: 1774068302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 39e93be6-482c-4973-b371-39a1c5124f18
+      notifDay3Sent: false
+    - dueAt: 1774073102802
+      notifDay5Sent: false
+      createdAt: 1774069502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: d1c2d249-5c6a-4aaa-b08b-bc9fabfeef3e
+      notifDay3Sent: false
+    - dueAt: 1774074302802
+      notifDay5Sent: false
+      createdAt: 1774070702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 0c9a9e63-5256-4d7b-9a7b-4b96213fb376
+      notifDay3Sent: false
+    - dueAt: 1774075502802
+      notifDay5Sent: false
+      createdAt: 1774071902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 66eb8363-0240-47e5-ba17-79135b2e95b3
+      notifDay3Sent: false
+    - dueAt: 1774076702802
+      notifDay5Sent: false
+      createdAt: 1774073102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: aca010f9-a4cd-4bcb-834b-831fff41ed1b
+      notifDay3Sent: false
+    - dueAt: 1774077902802
+      notifDay5Sent: false
+      createdAt: 1774074302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628449
+      notifNewSent: true
+      id: 934e52e4-29e3-4c93-8f15-a0ab2dabd120
+      notifDay3Sent: false
+    - dueAt: 1774079102802
+      notifDay5Sent: false
+      createdAt: 1774075502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 721a1952-cc59-451e-a2b5-bf9abdfd9d7c
+      notifDay3Sent: false
+    - dueAt: 1774080302802
+      notifDay5Sent: false
+      createdAt: 1774076702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 8b27ad27-1c67-452e-bf89-06d12682ffa2
+      notifDay3Sent: false
+    - dueAt: 1774081502802
+      notifDay5Sent: false
+      createdAt: 1774077902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: e18b1386-70be-4857-ace0-4095689b8018
+      notifDay3Sent: false
+    - dueAt: 1774082702802
+      notifDay5Sent: false
+      createdAt: 1774079102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: a3483a8b-acd9-4631-beca-2912e1037689
+      notifDay3Sent: false
+    - dueAt: 1774083902802
+      notifDay5Sent: false
+      createdAt: 1774080302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 854b63fd-44e9-465c-858e-edbaf94acb35
+      notifDay3Sent: false
+    - dueAt: 1774085102802
+      notifDay5Sent: false
+      createdAt: 1774081502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 1b020d10-30ab-4b56-9fc7-b6deef4d2136
+      notifDay3Sent: false
+    - dueAt: 1774086302802
+      notifDay5Sent: false
+      createdAt: 1774082702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 8519c4fa-914f-4ce5-9dbc-10868286f6f8
+      notifDay3Sent: false
+    - dueAt: 1774087502802
+      notifDay5Sent: false
+      createdAt: 1774083902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: c4ddf610-b742-4476-98ab-16043e2bf3a6
+      notifDay3Sent: false
+    - dueAt: 1774088702802
+      notifDay5Sent: false
+      createdAt: 1774085102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: a4e652c7-4a94-441e-8e39-0e56c0202b46
+      notifDay3Sent: false
+    - dueAt: 1774089902802
+      notifDay5Sent: false
+      createdAt: 1774086302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 1c7b5b9d-12d3-446b-8c89-9421d9146607
+      notifDay3Sent: false
+    - dueAt: 1774091102802
+      notifDay5Sent: false
+      createdAt: 1774087502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 19689f9b-5291-451b-b037-98064f6aae50
+      notifDay3Sent: false
+    - dueAt: 1774092302802
+      notifDay5Sent: false
+      createdAt: 1774088702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: ded0b5a3-b321-49d3-aeaf-abff7e8d0b87
+      notifDay3Sent: false
+    - dueAt: 1774093502802
+      notifDay5Sent: false
+      createdAt: 1774089902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 3046310f-f549-4a0c-bcbb-359d2f04be88
+      notifDay3Sent: false
+    - dueAt: 1774094702802
+      notifDay5Sent: false
+      createdAt: 1774091102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 0d791e5f-f9dc-4ca5-acd3-a279580fbb73
+      notifDay3Sent: false
+    - dueAt: 1774095902802
+      notifDay5Sent: false
+      createdAt: 1774092302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 0425a8b9-0a0f-43f9-b5f4-f1351d483e50
+      notifDay3Sent: false
+    - dueAt: 1774097102802
+      notifDay5Sent: false
+      createdAt: 1774093502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 6fcfea9d-cffc-4754-87c6-4d2c4ba5884d
+      notifDay3Sent: false
+    - dueAt: 1774098302802
+      notifDay5Sent: false
+      createdAt: 1774094702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 7d1aebbb-f263-4c1d-959e-35ce5187e25c
+      notifDay3Sent: false
+    - dueAt: 1774099502802
+      notifDay5Sent: false
+      createdAt: 1774095902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774096628450
+      notifNewSent: true
+      id: 3d0a6e18-faa7-460b-ace1-9d01369afd61
+      notifDay3Sent: false
+    - dueAt: 1774100702802
+      notifDay5Sent: false
+      createdAt: 1774097102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774097108442
+      notifNewSent: true
+      id: f5023cb2-599d-4bfc-91c8-7b6fcea67499
+      notifDay3Sent: false
+    - dueAt: 1774101902802
+      notifDay5Sent: false
+      createdAt: 1774098302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774098308442
+      notifNewSent: true
+      id: 66867382-922c-4d16-b6a4-ba1dfdf81024
+      notifDay3Sent: false
+    - dueAt: 1774103102802
+      notifDay5Sent: false
+      createdAt: 1774099502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774099508442
+      notifNewSent: true
+      id: c1f4056d-4973-447a-bc6f-4564431fbfc4
+      notifDay3Sent: false
+    - dueAt: 1774104302802
+      notifDay5Sent: false
+      createdAt: 1774100702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774100708442
+      notifNewSent: true
+      id: 312d520b-b6c1-460e-a938-cf40100a95c2
+      notifDay3Sent: false
+    - dueAt: 1774105502802
+      notifDay5Sent: false
+      createdAt: 1774101902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774101908442
+      notifNewSent: true
+      id: a319b0c4-b6ab-474d-a049-fa0ca6342b12
+      notifDay3Sent: false
+    - dueAt: 1774106702802
+      notifDay5Sent: false
+      createdAt: 1774103102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774103108442
+      notifNewSent: true
+      id: 99c71afd-9ae6-4509-acf8-d0d60bcda75b
+      notifDay3Sent: false
+    - dueAt: 1774107902802
+      notifDay5Sent: false
+      createdAt: 1774104302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774104308442
+      notifNewSent: true
+      id: 7db15858-873a-4221-9f3f-37c2563762f9
+      notifDay3Sent: false
+    - dueAt: 1774109102802
+      notifDay5Sent: false
+      createdAt: 1774105502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774105508442
+      notifNewSent: true
+      id: 97e78439-e91b-40e7-86e9-a7dab76aa587
+      notifDay3Sent: false
+    - dueAt: 1774110302802
+      notifDay5Sent: false
+      createdAt: 1774106702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774106708442
+      notifNewSent: true
+      id: 2345fe3d-faf3-4321-9a01-67d3e4737ff1
+      notifDay3Sent: false
+    - dueAt: 1774111502802
+      notifDay5Sent: false
+      createdAt: 1774107902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774107908442
+      notifNewSent: true
+      id: c57783d6-e2a1-4260-99ff-6251431e23de
+      notifDay3Sent: false
+    - dueAt: 1774112702802
+      notifDay5Sent: false
+      createdAt: 1774109102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774109108442
+      notifNewSent: true
+      id: 2507b645-a2b6-417a-9822-2b79b976500f
+      notifDay3Sent: false
+    - dueAt: 1774113902802
+      notifDay5Sent: false
+      createdAt: 1774110302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774110308442
+      notifNewSent: true
+      id: bcb19038-fca9-4daf-ac42-4f4d48b5819b
+      notifDay3Sent: false
+    - dueAt: 1774115102802
+      notifDay5Sent: false
+      createdAt: 1774111502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774111508442
+      notifNewSent: true
+      id: 462a74d6-ff8f-4c13-a3e5-4e1776efdd8a
+      notifDay3Sent: false
+    - dueAt: 1774116302802
+      notifDay5Sent: false
+      createdAt: 1774112702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774112708442
+      notifNewSent: true
+      id: 423e6fbd-1472-4c03-b4c6-b85a47d88a26
+      notifDay3Sent: false
+    - dueAt: 1774117502802
+      notifDay5Sent: false
+      createdAt: 1774113902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774113908442
+      notifNewSent: true
+      id: 793e9a8a-68b7-4861-884e-8ebf903cd007
+      notifDay3Sent: false
+    - dueAt: 1774118702802
+      notifDay5Sent: false
+      createdAt: 1774115102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774115108442
+      notifNewSent: true
+      id: 6786a6b1-506e-4595-9e04-df40a3eb1451
+      notifDay3Sent: false
+    - dueAt: 1774119902802
+      notifDay5Sent: false
+      createdAt: 1774116302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774116308442
+      notifNewSent: true
+      id: da6d637c-1b3c-49a0-82b7-37fc644ed018
+      notifDay3Sent: false
+    - dueAt: 1774121102802
+      notifDay5Sent: false
+      createdAt: 1774117502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774117508442
+      notifNewSent: true
+      id: 50768780-5aff-49c7-a88d-a9126f356d72
+      notifDay3Sent: false
+    - dueAt: 1774122302802
+      notifDay5Sent: false
+      createdAt: 1774118702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774118708444
+      notifNewSent: true
+      id: 173cb1ce-3527-412f-ac1d-a87805c1ded6
+      notifDay3Sent: false
+    - dueAt: 1774123502802
+      notifDay5Sent: false
+      createdAt: 1774119902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774119908442
+      notifNewSent: true
+      id: 5a35d58c-6a82-4525-babe-c0f6e13c7f9c
+      notifDay3Sent: false
+    - dueAt: 1774124702802
+      notifDay5Sent: false
+      createdAt: 1774121102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774121108442
+      notifNewSent: true
+      id: 7ea169aa-dfb8-4204-8eb1-f69b30e0c264
+      notifDay3Sent: false
+    - dueAt: 1774125902802
+      notifDay5Sent: false
+      createdAt: 1774122302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774122308442
+      notifNewSent: true
+      id: 392a70e5-3907-45f9-9bdd-fcf96e78b010
+      notifDay3Sent: false
+    - dueAt: 1774127102802
+      notifDay5Sent: false
+      createdAt: 1774123502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774123508442
+      notifNewSent: true
+      id: d304f26f-413a-4b04-9293-3118d43bb4e6
+      notifDay3Sent: false
+    - dueAt: 1774128302802
+      notifDay5Sent: false
+      createdAt: 1774124702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774124708442
+      notifNewSent: true
+      id: 67215bed-754d-4dd5-aa87-331d335cda7e
+      notifDay3Sent: false
+    - dueAt: 1774129502802
+      notifDay5Sent: false
+      createdAt: 1774125902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774125908442
+      notifNewSent: true
+      id: dc29a5d9-2621-42f4-a671-2b7ce9a42524
+      notifDay3Sent: false
+    - dueAt: 1774130702802
+      notifDay5Sent: false
+      createdAt: 1774127102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774127108442
+      notifNewSent: true
+      id: f34c6ef0-8d48-4f4e-a2cd-79210a8f7374
+      notifDay3Sent: false
+    - dueAt: 1774131902802
+      notifDay5Sent: false
+      createdAt: 1774128302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774128308442
+      notifNewSent: true
+      id: 916ef8d3-ee58-4dd5-aeb5-58a7c1db55b3
+      notifDay3Sent: false
+    - dueAt: 1774133102802
+      notifDay5Sent: false
+      createdAt: 1774129502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774129508442
+      notifNewSent: true
+      id: 03979c22-d516-41ef-abad-27c94e2ad3fa
+      notifDay3Sent: false
+    - dueAt: 1774134302802
+      notifDay5Sent: false
+      createdAt: 1774130702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774130708442
+      notifNewSent: true
+      id: 556005d6-efd5-47f6-83f5-356b488688c2
+      notifDay3Sent: false
+    - dueAt: 1774135502802
+      notifDay5Sent: false
+      createdAt: 1774131902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774131908442
+      notifNewSent: true
+      id: ab35e8d0-ef2e-4c1d-932c-b2066ccef6ad
+      notifDay3Sent: false
+    - dueAt: 1774136702802
+      notifDay5Sent: false
+      createdAt: 1774133102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774133108442
+      notifNewSent: true
+      id: a73a74f7-3a0d-4237-9359-904db712b5d1
+      notifDay3Sent: false
+    - dueAt: 1774137902802
+      notifDay5Sent: false
+      createdAt: 1774134302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774134308442
+      notifNewSent: true
+      id: ca188f6f-d55e-4f91-89f4-b8d59b9571de
+      notifDay3Sent: false
+    - dueAt: 1774139102802
+      notifDay5Sent: false
+      createdAt: 1774135502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774135508442
+      notifNewSent: true
+      id: c7f4086c-f534-496c-9b51-107704dd4382
+      notifDay3Sent: false
+    - dueAt: 1774140302802
+      notifDay5Sent: false
+      createdAt: 1774136702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774136708442
+      notifNewSent: true
+      id: 70711516-7f5e-40db-b532-2fba981e57f6
+      notifDay3Sent: false
+    - dueAt: 1774141502802
+      notifDay5Sent: false
+      createdAt: 1774137902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774137908442
+      notifNewSent: true
+      id: 929e72e4-f9f3-47fb-9f4c-810ef1f84d9a
+      notifDay3Sent: false
+    - dueAt: 1774142702802
+      notifDay5Sent: false
+      createdAt: 1774139102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774139108442
+      notifNewSent: true
+      id: 71507eab-4079-4dbb-a7e4-047e5f20f5a0
+      notifDay3Sent: false
+    - dueAt: 1774143902802
+      notifDay5Sent: false
+      createdAt: 1774140302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774140308442
+      notifNewSent: true
+      id: 85fcc3a7-8146-4995-be77-acb33a71000c
+      notifDay3Sent: false
+    - dueAt: 1774145102802
+      notifDay5Sent: false
+      createdAt: 1774141502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774141508442
+      notifNewSent: true
+      id: 32f1e7d3-89cd-4cf2-8dbd-072d319d7e8e
+      notifDay3Sent: false
+    - dueAt: 1774146302802
+      notifDay5Sent: false
+      createdAt: 1774142702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774142708442
+      notifNewSent: true
+      id: 3751ddbf-246a-49d5-ac23-d3e1dcc85c3f
+      notifDay3Sent: false
+    - dueAt: 1774147502802
+      notifDay5Sent: false
+      createdAt: 1774143902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774143908442
+      notifNewSent: true
+      id: 81c31030-58da-4317-b08d-355fcef21117
+      notifDay3Sent: false
+    - dueAt: 1774148702802
+      notifDay5Sent: false
+      createdAt: 1774145102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774145108442
+      notifNewSent: true
+      id: 133ad61e-f9ec-47a1-b8d1-fa0e4957e23a
+      notifDay3Sent: false
+    - dueAt: 1774149902802
+      notifDay5Sent: false
+      createdAt: 1774146302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774146308442
+      notifNewSent: true
+      id: 83fb0204-0921-4e62-bf64-4d5a8383a99a
+      notifDay3Sent: false
+    - dueAt: 1774151102802
+      notifDay5Sent: false
+      createdAt: 1774147502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774147508442
+      notifNewSent: true
+      id: d3543802-d812-4241-bf83-cfa166cdb0ed
+      notifDay3Sent: false
+    - dueAt: 1774152302802
+      notifDay5Sent: false
+      createdAt: 1774148702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774148708442
+      notifNewSent: true
+      id: a966694b-c8ac-46a8-af4f-7e0dc192e412
+      notifDay3Sent: false
+    - dueAt: 1774153502802
+      notifDay5Sent: false
+      createdAt: 1774149902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774149908442
+      notifNewSent: true
+      id: 6a5ac8c3-8947-48ea-91ba-55f38ab48108
+      notifDay3Sent: false
+    - dueAt: 1774154702802
+      notifDay5Sent: false
+      createdAt: 1774151102802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774151108442
+      notifNewSent: true
+      id: d56fcc5d-ce25-47be-9bff-01c95f86bfdf
+      notifDay3Sent: false
+    - dueAt: 1774155902802
+      notifDay5Sent: false
+      createdAt: 1774152302802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774152308442
+      notifNewSent: true
+      id: 0c9d50c8-cd05-43d4-b357-3e22596b8c05
+      notifDay3Sent: false
+    - dueAt: 1774157102802
+      notifDay5Sent: false
+      createdAt: 1774153502802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774153508442
+      notifNewSent: true
+      id: 306495a8-2b21-407c-8b4e-659f46931dc5
+      notifDay3Sent: false
+    - dueAt: 1774158302802
+      notifDay5Sent: false
+      createdAt: 1774154702802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774154708442
+      notifNewSent: true
+      id: d95bfc34-3643-4fa3-804a-b8d8be929e89
+      notifDay3Sent: false
+    - dueAt: 1774159502802
+      notifDay5Sent: false
+      createdAt: 1774155902802
+      amount: 1.43087791508533
+      notifDay2Sent: false
+      paidAt: 1774155908447
+      notifNewSent: true
+      id: aee1cc53-6534-4153-85df-0ab28849da49
+      notifDay3Sent: false
+    - dueAt: 1774160702802
+      notifDay5Sent: false
+      createdAt: 1774157102802
+      amount: 14.106045413422416
+      notifDay2Sent: false
+      paidAt: 1774157108442
+      notifNewSent: true
+      id: 68b2795d-8a40-4ba7-bf80-488f3e556085
+      notifDay3Sent: false
+    - dueAt: 1774161902802
+      notifDay5Sent: false
+      createdAt: 1774158302802
+      amount: 8.146778521370036
+      notifDay2Sent: false
+      paidAt: 1774158308442
+      notifNewSent: true
+      id: 46faeaab-31ee-4d78-a467-4e13d611679b
+      notifDay3Sent: false
+    - dueAt: 1774163102802
+      notifDay5Sent: false
+      createdAt: 1774159502802
+      amount: 16.23849759861963
+      notifDay2Sent: false
+      paidAt: 1774159508442
+      notifNewSent: true
+      id: 58848451-e003-4975-b789-6ebbb7a5ca25
+      notifDay3Sent: false
+    - dueAt: 1774164302802
+      notifDay5Sent: false
+      createdAt: 1774160702802
+      amount: 8.541495402893245
+      notifDay2Sent: false
+      paidAt: 1774160708445
+      notifNewSent: true
+      id: 2b0b0931-1a71-492f-a4ac-d1a8d7e78f44
+      notifDay3Sent: false
     upgrade-in-progress: false
     upgrade-complete-at: 0
     market-listing: false
@@ -559,13 +2981,6 @@ apartments:
       '5':
         min: 255.0
         max: 707.5
-    teleport-location:
-      world: shmar_city
-      x: -301.07497192562266
-      y: 16.0
-      z: 56.808619952348835
-      yaw: 84.45025
-      pitch: 1.5000038
   GrandPalace:
     region: grand_palace
     world: shmar_city
@@ -575,6 +2990,7 @@ apartments:
     level: 1
     last-tax-payment: 1773194812206
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
@@ -616,19 +3032,20 @@ apartments:
   TheMeridian:
     region: the_meridian
     world: shmar_city
-    price: 9600.0
+    price: 182400.0
     tax: 0.0
     tax-days: 0
     level: 1
     last-tax-payment: 1773197580088
     pending-income: 0.0
+    last-generated-income: 0.0
     inactive: false
     penalty: 0.0
     inactive-since: 0
     display-name: TheMeridian
     welcome-message: ''
-    floor: 96
-    height: 1
+    floor: 19
+    height: 96
     auto-tax-payment: false
     last-invoice-at: 0
     tax-invoices: []
@@ -639,20 +3056,20 @@ apartments:
     market-listed-at: 0
     custom-incomes:
       '1':
-        min: 481.0
-        max: 722.5
+        min: 191.0
+        max: 382.5
       '2':
-        min: 673.0
-        max: 1011.5
+        min: 229.0
+        max: 535.5
       '3':
-        min: 961.0
-        max: 1444.5
+        min: 286.0
+        max: 717.0
       '4':
-        min: 1345.0
-        max: 2021.5
+        min: 362.0
+        max: 927.0
       '5':
-        min: 1825.0
-        max: 2742.5
+        min: 457.0
+        max: 1165.5
     teleport-location:
       world: shmar_city
       x: -382.3783602539889

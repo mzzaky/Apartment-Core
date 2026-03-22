@@ -130,6 +130,9 @@ public class ApartmentManager {
                     }
                 }
 
+                // Restore last-generated-income (for income-based tax; 0 = no income yet)
+                apt.lastGeneratedIncome = aptSection.getDouble("last-generated-income", 0.0);
+
                 // Load new tax system data (optional for backward-compatibility)
                 try {
                     apt.autoTaxPayment = aptSection.getBoolean("auto-tax-payment", false);
@@ -343,6 +346,7 @@ public class ApartmentManager {
             dataManager.getDataConfig().set(path + "level", apt.level);
             dataManager.getDataConfig().set(path + "last-tax-payment", apt.lastTaxPayment);
             dataManager.getDataConfig().set(path + "pending-income", apt.pendingIncome);
+            dataManager.getDataConfig().set(path + "last-generated-income", apt.lastGeneratedIncome);
             dataManager.getDataConfig().set(path + "inactive", apt.inactive);
             dataManager.getDataConfig().set(path + "penalty", apt.penalty);
             dataManager.getDataConfig().set(path + "inactive-since", apt.inactiveSince);
@@ -354,6 +358,8 @@ public class ApartmentManager {
             // Save new tax system data
             dataManager.getDataConfig().set(path + "auto-tax-payment", apt.autoTaxPayment);
             dataManager.getDataConfig().set(path + "last-invoice-at", apt.lastInvoiceAt);
+            // Prune paid invoices older than retention period before saving to prevent data bloat
+            apt.prunePaidInvoices(System.currentTimeMillis());
             java.util.List<java.util.Map<String, Object>> invoices = new java.util.ArrayList<>();
             if (apt.taxInvoices != null) {
                 for (TaxInvoice inv : apt.taxInvoices) {
@@ -523,6 +529,9 @@ public class ApartmentManager {
             income = Math.min(income, remaining);
 
             apt.pendingIncome += income;
+
+            // Track the raw income amount for income-based tax calculation
+            apt.lastGeneratedIncome = income;
 
             // Update stats
             ApartmentStats stats = getStats(apt.id);

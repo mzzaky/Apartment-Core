@@ -82,9 +82,29 @@ public class ConfigManager {
 
     // Income & Tax settings
     private int taxGenerationInterval;
+    private TaxCalculationMethod taxCalculationMethod;
+    private boolean autoTaxPaymentEnabled;
 
     // Income settings
     private int incomeGenerationInterval;
+
+    /**
+     * Tax calculation method options.
+     * Only ONE method can be active at a time (configured via config.yml).
+     */
+    public enum TaxCalculationMethod {
+        /**
+         * Tax = apartment price * (tax-percentage / 100).
+         * Default behaviour.
+         */
+        PRICE_BASED,
+        /**
+         * Tax = last-generated-income * (tax-percentage / 100).
+         * Keeps tax proportional to actual earnings.
+         * Falls back to PRICE_BASED when no income has been generated yet.
+         */
+        INCOME_BASED
+    }
 
     public ConfigManager(ApartmentCore plugin) {
         this.plugin = plugin;
@@ -174,6 +194,23 @@ public class ConfigManager {
 
         // Load income & tax settings
         taxGenerationInterval = config.getInt("settings.tax-generation-interval", 24000);
+        autoTaxPaymentEnabled = config.getBoolean("auto-tax-payment.enabled", true);
+
+        // Load tax calculation method with validation
+        String methodRaw = config.getString("settings.tax-calculation-method", "price-based");
+        if (methodRaw == null) methodRaw = "price-based";
+        switch (methodRaw.trim().toLowerCase()) {
+            case "income-based" ->
+                taxCalculationMethod = TaxCalculationMethod.INCOME_BASED;
+            case "price-based" ->
+                taxCalculationMethod = TaxCalculationMethod.PRICE_BASED;
+            default -> {
+                plugin.getLogger().warning(
+                    "[ApartmentCore] Invalid settings.tax-calculation-method '" + methodRaw +
+                    "'. Valid values: 'price-based', 'income-based'. Defaulting to 'price-based'.");
+                taxCalculationMethod = TaxCalculationMethod.PRICE_BASED;
+            }
+        }
 
         // Load income settings
         incomeGenerationInterval = config.getInt("settings.income-generation-interval", 24000);
@@ -403,6 +440,18 @@ public class ConfigManager {
     // Income & Tax getters
     public int getTaxGenerationInterval() {
         return taxGenerationInterval;
+    }
+    
+    public boolean isAutoTaxPaymentEnabled() {
+        return autoTaxPaymentEnabled;
+    }
+
+    /**
+     * Returns the configured tax calculation method.
+     * Only one method is active at a time.
+     */
+    public TaxCalculationMethod getTaxCalculationMethod() {
+        return taxCalculationMethod != null ? taxCalculationMethod : TaxCalculationMethod.PRICE_BASED;
     }
 
     // Income getters

@@ -1,3 +1,18 @@
+Cara Update di Masa Depan (Rilis Versi Baru)
+Jika nanti Anda merilis versi 1.4.0, Anda tidak perlu mengubah kode Java lagi. Cukup lakukan ini:
+
+Buka Supabase SQL Editor.
+Jalankan perintah update sederhana ini:
+sql
+```
+UPDATE plugin_metadata 
+SET latest_version = '1.4.0', 
+    changelog_summary = 'Menambahkan fitur baru X dan Y.' 
+WHERE plugin_name = 'ApartmentCore';
+```
+Seketika, semua server yang menggunakan plugin Anda akan mendapatkan notifikasi: "Update Available! v1.4.0".
+Sangat efisien, bukan? Apakah ada bagian dari langkah di atas yang ingin Anda tanyakan lebih detail?
+
 # Panduan Manajemen Lisensi ApartmentCore Pro
 
 Berikut adalah panduan untuk mengelola lisensi Anda menggunakan infrastruktur Supabase yang telah Anda setup.

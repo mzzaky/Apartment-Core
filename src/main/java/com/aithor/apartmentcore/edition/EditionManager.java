@@ -41,6 +41,16 @@ public class EditionManager {
         return edition.isPro();
     }
 
+    /**
+     * Helper to check if the plugin is running Pro edition AND the license is valid/active.
+     * This ensures strict gating.
+     */
+    public boolean isProActive() {
+        return isPro() 
+            && plugin.getLicenseManager() != null 
+            && plugin.getLicenseManager().isLicenseActive();
+    }
+
     // ── Limit helpers ───────────────────────────────────────────────────────
 
     /**
@@ -102,6 +112,16 @@ public class EditionManager {
      */
     public boolean isBackupEnabled() {
         return isPro();
+    }
+
+    /**
+     * Whether the Auto Tax Payment feature is available.
+     * This feature automatically pays tax invoices from the player's balance
+     * when they are generated, preventing overdue status.
+     * Only works in Pro edition with an active license and if enabled in config.
+     */
+    public boolean isAutoTaxPaymentEnabled() {
+        return isProActive() && plugin.getConfigManager().isAutoTaxPaymentEnabled();
     }
 
     /**

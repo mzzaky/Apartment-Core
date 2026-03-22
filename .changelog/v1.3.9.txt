@@ -1,0 +1,38 @@
+Version 1.3.9 – Tax Calculation Balance Update
+
+Added:
+- Tax Calculation Method feature: Admins can now choose between "price-based" or "income-based" taxation.
+- `tax-calculation-method` option in config.yml to determine the tax calculation basis.
+- `lastGeneratedIncome` tracking system per apartment to keep tax proportional to the latest earnings.
+- Automatic fallback to price-based taxation if an apartment has not generated any income yet.
+- Automated Update Checker mechanism integrated with Cloudflare Workers & Supabase.
+- Join notifications for administrators when a new plugin version is detected.
+- Latest update status and download links displayed in the `/ac version` command output.
+- Automatic pruning mechanism for old paid tax invoices (`paidAt > 0`) after 30 days.
+
+Changed:
+- Updated config-version from 4 to 5.
+- Updated plugin version from 1.3.8 to 1.3.9.
+- Optimized tax calculation logic in Apartment.java to prevent imbalances (tax > income).
+- Cloudflare Worker now supports the `/api/version` endpoint for plugin metadata.
+- Improved "Net Income" display accuracy in Statistics GUIs according to the active tax method.
+- Adjusted Tax Overview information in Tax Management GUI to reflect the active calculation basis (income-based / price-based).
+- Set Display Name input mechanism in ApartmentDetailsGUI now uses an interactive chat prompt instead of raw chat instructions.
+- Solar Panel shop buff effects (tax reduction) are now visible directly in the TaxManagementGUI (Overview, Apartment Tax Info, and Invoice Details).
+
+Technical:
+- Implemented TaxCalculationMethod enum in ConfigManager for active method validation.
+- Added `last-generated-income` field in apartment data storage to persist after restarts.
+- Refactored `computeBaseTaxAmount` method to support dynamic calculation substitution.
+- Implemented `UpdateChecker` & `UpdateNotifyListener` classes for asynchronous notification system.
+- Integrated update checker lifecycle during plugin startup in ApartmentCore.java.
+- Implemented `prunePaidInvoices(now)` method in `Apartment.java` to prevent YAML data file bloat.
+- Added `PAID_INVOICE_RETENTION_MS` constant (30 days) as the retention limit for paid invoices.
+- Integrated automatic pruning into the `saveApartments()` cycle in `ApartmentManager.java`.
+- Synchronized tax calculations in `ApartmentStatisticsGUI.java` with the `TaxCalculationMethod` logic in ConfigManager.
+- Adjusted `TaxManagementGUI.java` to read and display dynamic tax percentage bases from `ConfigManager`.
+- [PRO] Auto Tax Payment feature is now exclusive to the Pro version: added `EditionManager.isAutoTaxPaymentEnabled()` checks in `tickTaxInvoices()` (two execution points), `handleAutoPayToggle()`, and all related GUI displays.
+- Auto-Pay button in TaxManagementGUI now displays a locked visual (GRAY_CONCRETE + [PRO] label) on the Free edition.
+- Auto-pay status in ApartmentDetailsGUI and per-apartment items in TaxManagementGUI now displays "&8[PRO Only]" on the Free edition, or "&c[Disabled by Admin]" if disabled via config.
+- Added `isProActive()` and `isAutoTaxPaymentEnabled()` methods in `EditionManager` as the single source of truth for feature gating.
+- Added `auto-tax-payment.enabled` option in config.yml for global feature control (Pro edition only).

@@ -10,6 +10,7 @@ import com.aithor.apartmentcore.model.TaxStatus;
 import com.aithor.apartmentcore.research.ResearchManager;
 import com.aithor.apartmentcore.shop.ApartmentShopData;
 import com.aithor.apartmentcore.shop.ShopItem;
+import com.aithor.apartmentcore.manager.ConfigManager;
 import com.aithor.apartmentcore.gui.GUIManager;
 import com.aithor.apartmentcore.gui.interfaces.GUI;
 import com.aithor.apartmentcore.gui.items.ItemBuilder;
@@ -345,8 +346,33 @@ public class ApartmentStatisticsGUI implements GUI {
                     : baseCapacity;
 
             // --- Tax calculation ---
+            // Mirror Apartment#computeBaseTaxAmount: respect the active tax-calculation-method.
+            ConfigManager.TaxCalculationMethod taxMethod =
+                    plugin.getConfigManager().getTaxCalculationMethod();
+
             double baseTaxRate = cfg.taxPercentage / 100.0;
-            double baseTaxAmt = apt.price * baseTaxRate;
+
+            // Determine which base value is used and build a human-readable label for the GUI
+            boolean usingIncomeBased = taxMethod == ConfigManager.TaxCalculationMethod.INCOME_BASED
+                    && apt.lastGeneratedIncome > 0;
+            boolean incomeFallback = taxMethod == ConfigManager.TaxCalculationMethod.INCOME_BASED
+                    && apt.lastGeneratedIncome <= 0;
+
+            double taxBase;
+            String taxBaseLabel;
+            if (usingIncomeBased) {
+                taxBase = apt.lastGeneratedIncome;
+                taxBaseLabel = "&7  Base: &flast income ("
+                        + plugin.getConfigManager().formatMoney(taxBase) + ")";
+            } else {
+                // price-based (or income-based fallback when no income recorded yet)
+                taxBase = apt.price;
+                taxBaseLabel = "&7  Base: &fprice ("
+                        + plugin.getConfigManager().formatMoney(taxBase) + ")"
+                        + (incomeFallback ? " &e(income-based fallback)" : "");
+            }
+
+            double baseTaxAmt = taxBase * baseTaxRate;
             double shopTaxReduct = plugin.getShopManager() != null
                     ? plugin.getShopManager().getTaxReductionPercentage(apt.id)
                     : 0;
@@ -387,8 +413,13 @@ public class ApartmentStatisticsGUI implements GUI {
                         + plugin.getConfigManager().formatMoney(finalCapacity));
             lore.add("&b  ▶ Final Capacity: &f&l" + plugin.getConfigManager().formatMoney(finalCapacity));
             lore.add("");
-            lore.add("&e🧾 Tax (per cycle):");
-            lore.add("&7  Base Tax (" + String.format("%.1f%%", cfg.taxPercentage) + "): &f"
+
+            // Tax method header — shows which method is active
+            String methodTag = usingIncomeBased ? "&7[&bincome-based&7]"
+                    : (incomeFallback ? "&7[&eincome-based → price fallback&7]" : "&7[&7price-based&7]");
+            lore.add("&e🧾 Tax (per cycle): " + methodTag);
+            lore.add(taxBaseLabel);
+            lore.add("&7  × Tax Rate: &f" + String.format("%.2f%%", cfg.taxPercentage) + " &7→ &f"
                     + plugin.getConfigManager().formatMoney(baseTaxAmt));
             if (shopTaxReduct > 0)
                 lore.add("&7  - Shop Tax Reduction (" + String.format("-%.1f%%", shopTaxReduct) + "): &a→ &f"
@@ -410,6 +441,7 @@ public class ApartmentStatisticsGUI implements GUI {
                 .build();
         inventory.setItem(FINAL_MATH_SLOT, item);
     }
+
 
     // =====================================================================
     // Section 5 — Other / Lifetime Statistics

@@ -10,6 +10,7 @@ import com.aithor.apartmentcore.gui.interfaces.PaginatedGUI;
 import com.aithor.apartmentcore.gui.items.GUIItem;
 import com.aithor.apartmentcore.gui.items.ItemBuilder;
 import com.aithor.apartmentcore.gui.utils.GUIUtils;
+import com.aithor.apartmentcore.manager.ConfigManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -112,7 +113,9 @@ public class TaxManagementGUI extends PaginatedGUI {
         inventory.setItem(PAY_ALL_SLOT, payAllItem);
 
         // Auto-pay toggle
-        boolean hasAutoPayEnabled = plugin.getApartmentManager().getApartments().values().stream()
+        boolean isProActive = plugin.getEditionManager().isProActive();
+        boolean isFeatureEnabled = plugin.getEditionManager().isAutoTaxPaymentEnabled();
+        boolean hasAutoPayEnabled = isFeatureEnabled && plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .anyMatch(a -> a.autoTaxPayment);
 
@@ -120,21 +123,48 @@ public class TaxManagementGUI extends PaginatedGUI {
                 .filter(a -> player.getUniqueId().equals(a.owner))
                 .count();
 
-        Material autoPayMaterial = hasAutoPayEnabled ? Material.LIME_CONCRETE : Material.RED_CONCRETE;
-        ItemStack autoPayItem = new ItemBuilder(autoPayMaterial)
-                .name("&6⚙️ Auto-Pay Settings")
-                .lore(
-                        "&7Toggle automatic tax payment",
-                        "",
-                        "&7Current Status: " + (hasAutoPayEnabled ? "&aEnabled" : "&cDisabled"),
-                        "&7Apartments: &f" + apartmentCount,
-                        "",
-                        "&7Auto-pay attempts to pay taxes",
-                        "&7automatically when due if you",
-                        "&7have sufficient balance.",
-                        "",
-                        "&a▶ Click to toggle all apartments")
-                .build();
+        ItemStack autoPayItem;
+        if (!isProActive) {
+            // Free edition — show locked button
+            autoPayItem = new ItemBuilder(Material.GRAY_CONCRETE)
+                    .name("&7⚙️ Auto-Pay Settings &8[PRO]")
+                    .lore(
+                            "&7Automatically pay tax invoices",
+                            "&7from your balance when they are due.",
+                            "",
+                            "&c🔒 This feature is only available",
+                            "&cin &6ApartmentCore Pro&c.",
+                            "",
+                            "&7Get Pro at: &bhttps://pasman.io/apartmentcore")
+                    .build();
+        } else if (!isFeatureEnabled) {
+            // Disabled by admin config
+            autoPayItem = new ItemBuilder(Material.BARRIER)
+                    .name("&c⚙️ Auto-Pay Settings &8[DISABLED]")
+                    .lore(
+                            "&7Automatically pay tax invoices",
+                            "&7from your balance when they are due.",
+                            "",
+                            "&c🔒 This feature has been disabled",
+                            "&cby the server administrator.")
+                    .build();
+        } else {
+            Material autoPayMaterial = hasAutoPayEnabled ? Material.LIME_CONCRETE : Material.RED_CONCRETE;
+            autoPayItem = new ItemBuilder(autoPayMaterial)
+                    .name("&6⚙️ Auto-Pay Settings")
+                    .lore(
+                            "&7Toggle automatic tax payment",
+                            "",
+                            "&7Current Status: " + (hasAutoPayEnabled ? "&aEnabled" : "&cDisabled"),
+                            "&7Apartments: &f" + apartmentCount,
+                            "",
+                            "&7Auto-pay attempts to pay taxes",
+                            "&7automatically when due if you",
+                            "&7have sufficient balance.",
+                            "",
+                            "&a▶ Click to toggle all apartments")
+                    .build();
+        }
         inventory.setItem(AUTO_PAY_TOGGLE_SLOT, autoPayItem);
 
         // Tax Information
@@ -155,6 +185,22 @@ public class TaxManagementGUI extends PaginatedGUI {
             taxEfficiencyBonus = plugin.getResearchManager().getTaxReduction(player.getUniqueId());
         }
 
+        // Get average shop tax reduction bonus for overview
+        double totalShopTaxBuff = 0.0;
+        int apartmentsWithShopBuff = 0;
+        for (Apartment app : plugin.getApartmentManager().getApartments().values()) {
+            if (player.getUniqueId().equals(app.owner)) {
+                if (plugin.getShopManager() != null) {
+                    double buff = plugin.getShopManager().getTaxReductionPercentage(app.id);
+                    if (buff > 0) {
+                        totalShopTaxBuff += buff;
+                        apartmentsWithShopBuff++;
+                    }
+                }
+            }
+        }
+        double avgShopTaxBuff = apartmentsWithShopBuff > 0 ? totalShopTaxBuff / apartmentsWithShopBuff : 0.0;
+
         List<String> taxInfoLore = new ArrayList<>();
         taxInfoLore.add("&7Summary of your tax situation");
         taxInfoLore.add("");
@@ -166,10 +212,20 @@ public class TaxManagementGUI extends PaginatedGUI {
         if (taxEfficiencyBonus > 0) {
             taxInfoLore.add("&7• Tax Efficiency: &a-" + String.format("%.0f%%", taxEfficiencyBonus) + " &7(Research)");
         }
+        if (avgShopTaxBuff > 0) {
+            taxInfoLore.add("&7• Avg Shop Buff: &a-" + String.format("%.0f%%", avgShopTaxBuff) + " &7(Solar Panel)");
+        }
         taxInfoLore.add("");
-        taxInfoLore.add("&7Taxes are calculated as 2.5% per level");
-        taxInfoLore.add("&7of your apartment's purchase price");
-        taxInfoLore.add("&7and are billed every 24 hours.");
+        
+        ConfigManager.TaxCalculationMethod taxMethod = plugin.getConfigManager().getTaxCalculationMethod();
+        if (taxMethod == ConfigManager.TaxCalculationMethod.INCOME_BASED) {
+            taxInfoLore.add("&7Taxes are calculated based on a percentage");
+            taxInfoLore.add("&7of the apartment's &elast generated income&7.");
+            taxInfoLore.add("&7(Falls back to price-based if no income yet)");
+        } else {
+            taxInfoLore.add("&7Taxes are calculated based on a percentage");
+            taxInfoLore.add("&7of the apartment's &epurchase price&7.");
+        }
 
         ItemStack taxInfoItem = new ItemBuilder(Material.BOOK)
                 .name("&6📊 Tax Overview")
@@ -202,6 +258,12 @@ public class TaxManagementGUI extends PaginatedGUI {
         double taxEfficiencyBonus = 0.0;
         if (plugin.getResearchManager() != null && apartment.owner != null) {
             taxEfficiencyBonus = plugin.getResearchManager().getTaxReduction(apartment.owner);
+        }
+
+        // Get shop tax buff
+        double shopTaxBuff = 0.0;
+        if (plugin.getShopManager() != null) {
+            shopTaxBuff = plugin.getShopManager().getTaxReductionPercentage(apartment.id);
         }
 
         // Determine display based on status
@@ -243,9 +305,20 @@ public class TaxManagementGUI extends PaginatedGUI {
         if (taxEfficiencyBonus > 0) {
             lore.add("&7• Tax Efficiency: &a-" + String.format("%.0f%%", taxEfficiencyBonus) + " &7(Research)");
         }
+        if (shopTaxBuff > 0) {
+            lore.add("&7• Shop Buff: &a-" + String.format("%.0f%%", shopTaxBuff) + " &7(Solar Panel)");
+        }
         lore.add("&7• Active Bills: &f" + activeInvoices);
         lore.add("&7• Oldest Bill: &f" + oldestDays + " days old");
-        lore.add("&7• Auto-pay: " + (apartment.autoTaxPayment ? "&aEnabled" : "&cDisabled"));
+        boolean isFeatureEnabled = plugin.getEditionManager().isAutoTaxPaymentEnabled();
+        boolean isProActive = plugin.getEditionManager().isProActive();
+        if (!isProActive) {
+            lore.add("&7• Auto-pay: &8[PRO Only]");
+        } else if (!isFeatureEnabled) {
+            lore.add("&7• Auto-pay: &c[Disabled by Admin]");
+        } else {
+            lore.add("&7• Auto-pay: " + (apartment.autoTaxPayment ? "&aEnabled" : "&cDisabled"));
+        }
         lore.add("");
         lore.addAll(statusLore);
         lore.add("");
@@ -289,16 +362,28 @@ public class TaxManagementGUI extends PaginatedGUI {
             taxEfficiencyBonus = plugin.getResearchManager().getTaxReduction(apartment.owner);
         }
 
+        // Get shop tax buff
+        double shopTaxBuff = 0.0;
+        if (plugin.getShopManager() != null) {
+            shopTaxBuff = plugin.getShopManager().getTaxReductionPercentage(apartment.id);
+        }
+
         List<String> lore = new ArrayList<>();
         lore.add("&7Apartment: &f" + apartment.displayName);
         lore.add("&7Invoice ID: &f" + invoice.id.substring(0, 8) + "...");
         lore.add("");
         lore.add("&e💰 Bill Details:");
         lore.add("&7• Amount: &c" + plugin.getConfigManager().formatMoney(invoice.amount));
-        if (taxEfficiencyBonus > 0) {
-            double originalAmount = invoice.amount / (1.0 - (taxEfficiencyBonus / 100.0));
+        if (taxEfficiencyBonus > 0 || shopTaxBuff > 0) {
+            double totalReduction = taxEfficiencyBonus + shopTaxBuff;
+            double originalAmount = invoice.amount / (1.0 - (totalReduction / 100.0));
             lore.add("&7• Original: &c" + plugin.getConfigManager().formatMoney(originalAmount));
-            lore.add("&7• Tax Efficiency: &a-" + String.format("%.0f%%", taxEfficiencyBonus) + " &7(Research)");
+            if (taxEfficiencyBonus > 0) {
+                lore.add("&7• Tax Efficiency: &a-" + String.format("%.0f%%", taxEfficiencyBonus) + " &7(Research)");
+            }
+            if (shopTaxBuff > 0) {
+                lore.add("&7• Shop Buff: &a-" + String.format("%.0f%%", shopTaxBuff) + " &7(Solar Panel)");
+            }
         }
         lore.add("&7• Age: &f" + daysSinceCreated + " days");
         lore.add("&7• Status: " + urgencyColor + urgencyText);
@@ -371,6 +456,20 @@ public class TaxManagementGUI extends PaginatedGUI {
     }
 
     private void handleAutoPayToggle() {
+        // Check Pro edition gate
+        if (!plugin.getEditionManager().isProActive()) {
+            plugin.getEditionManager().sendProOnlyMessage(player, "Auto Tax Payment");
+            GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+            return;
+        }
+
+        // Check if disabled by Admin
+        if (!plugin.getEditionManager().isAutoTaxPaymentEnabled()) {
+            GUIUtils.sendMessage(player, "&cThis feature has been disabled by the administrator.");
+            GUIUtils.playSound(player, GUIUtils.ERROR_SOUND);
+            return;
+        }
+
         // Toggle auto-pay for all apartments
         boolean newState = plugin.getApartmentManager().getApartments().values().stream()
                 .filter(a -> player.getUniqueId().equals(a.owner))

@@ -36,6 +36,8 @@ public class Apartment {
     public int level;
     public long lastTaxPayment;
     public double pendingIncome;
+    // Amount generated in the last income tick (used for income-based tax calculation)
+    public double lastGeneratedIncome;
 
     // Legacy inactive/penalty fields (kept for backward-compat)
     public boolean inactive;
@@ -117,6 +119,9 @@ public class Apartment {
 
         this.customMinIncomes = new HashMap<>();
         this.customMaxIncomes = new HashMap<>();
+
+        // lastGeneratedIncome starts at 0 (no income generated yet)
+        this.lastGeneratedIncome = 0.0;
 
         // Custom icon (null means use default)
         this.icon = null;
@@ -262,6 +267,26 @@ public class Apartment {
     // =========================
 
     /**
+     * Paid invoices are kept for this long before being pruned from storage.
+     * 30 real days should be more than enough for audit/display purposes.
+     */
+    private static final long PAID_INVOICE_RETENTION_MS = 30L * 24 * 60 * 60 * 1000; // 30 days
+
+    /**
+     * Remove paid invoices that are older than {@code PAID_INVOICE_RETENTION_MS}.
+     * Call this before persisting to disk (e.g., inside saveApartments()) to prevent
+     * the data file from growing indefinitely.
+     *
+     * @param now current epoch millis (use System.currentTimeMillis())
+     */
+    public void prunePaidInvoices(long now) {
+        if (taxInvoices == null || taxInvoices.isEmpty()) return;
+        taxInvoices.removeIf(inv -> inv.isPaid()
+                && (now - inv.paidAt) > PAID_INVOICE_RETENTION_MS);
+    }
+
+
+    /**
      * Base tax percentage based on config level.
      * Fallback to 2.5% per level if config is null.
      */
@@ -276,9 +301,21 @@ public class Apartment {
     }
 
     /**
-     * Base tax amount for a new invoice before multipliers.
+     * Base tax amount for a new invoice, using the configured calculation method.
+     *
+     * <ul>
+     *   <li><b>PRICE_BASED</b>: tax = price * (tax-percentage / 100)</li>
+     *   <li><b>INCOME_BASED</b>: tax = lastGeneratedIncome * (tax-percentage / 100).
+     *       Falls back to PRICE_BASED when {@code lastGeneratedIncome == 0}.</li>
+     * </ul>
      */
     public double computeBaseTaxAmount(ConfigManager configManager) {
+        if (configManager != null &&
+                configManager.getTaxCalculationMethod() == ConfigManager.TaxCalculationMethod.INCOME_BASED
+                && lastGeneratedIncome > 0) {
+            return lastGeneratedIncome * getBaseTaxPercent(configManager);
+        }
+        // Default: price-based
         return price * getBaseTaxPercent(configManager);
     }
 
@@ -427,8 +464,11 @@ public class Apartment {
                 invoice.notifNewSent = true;
             }
 
-            // Attempt auto-payment immediately if enabled and funds available
-            if (autoTaxPayment && player != null) {
+            // Attempt auto-payment immediately if enabled AND Pro edition AND funds available
+            boolean autoPayAllowed = autoTaxPayment
+                    && plugin.getEditionManager() != null
+                    && plugin.getEditionManager().isAutoTaxPaymentEnabled();
+            if (autoPayAllowed && player != null) {
                 if (econ.has(player, invoice.amount)) {
                     econ.withdrawPlayer(player, invoice.amount);
                     invoice.paidAt = System.currentTimeMillis();
@@ -462,9 +502,12 @@ public class Apartment {
         // 2) Notifications for existing unpaid invoices and status effects
         OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
 
-        // Try auto-paying existing unpaid invoices if enabled and balance allows
+        // Try auto-paying existing unpaid invoices if enabled AND Pro edition AND balance allows
         // (oldest first)
-        if (autoTaxPayment && player != null) {
+        boolean autoPayAllowedGlobal = autoTaxPayment
+                && plugin.getEditionManager() != null
+                && plugin.getEditionManager().isAutoTaxPaymentEnabled();
+        if (autoPayAllowedGlobal && player != null) {
             java.util.List<TaxInvoice> unpaid = new java.util.ArrayList<>();
             if (taxInvoices != null) {
                 for (TaxInvoice i : taxInvoices) {

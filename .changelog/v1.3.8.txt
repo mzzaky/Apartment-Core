@@ -42,7 +42,7 @@ Changed:
 - Updated research system to be visible and functional in Free edition but configuration is restricted to Pro.
 - Moved apartment levels configuration from "config.yml" to a new dedicated "levels.yml" file for better organization.
 - Core features (Income Generation, Tax System, Teleportation) are now always enabled and non-toggleable. Corresponding configuration toggles have been removed from config.yml.
-- Merapikan config.yml dan menyesuaikannya dengan update terbaru
+- adjust config.yml with the latest update, make it cleaner and easier to configure
 
 Technical:
 - Maven profiles: `edition-free` (default), `edition-pro`.

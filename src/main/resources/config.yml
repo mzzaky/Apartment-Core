@@ -1,12 +1,13 @@
 # =================================================================
 # ApartmentCore Configuration File
-# Version: 1.3.8
+# Version: 1.3.9
 # Author: Aithor
 # =================================================================
 
 debug: false
 
-config-version: 4
+config-version: 5
+
 
 placeholderapi:
   enabled: true   # Enable PlaceholderAPI integration
@@ -41,6 +42,24 @@ settings:
   inactive-grace-period: 3            # Days before apartment becomes inactive after non-payment
   tax-generation-interval: 24000      # How often tax is collected (in ticks; 20 ticks = 1 second)
 
+  # -----------------------------------------------------------------
+  # Tax Calculation Method
+  # IMPORTANT: Only ONE method can be active at a time.
+  #
+  # Available options:
+  #   "price-based"  - Tax is calculated as a percentage of the apartment's
+  #                    purchase price (defined by tax-percentage in levels.yml).
+  #                    Formula: tax = price * (tax-percentage / 100)
+  #
+  #   "income-based" - Tax is calculated as a percentage of the apartment's
+  #                    last generated income amount. Useful when tax and income
+  #                    generation intervals differ, since tax stays proportional
+  #                    to actual earnings.
+  #                    Formula: tax = last-generated-income * (tax-percentage / 100)
+  #                    Falls back to price-based if no income has been generated yet.
+  # -----------------------------------------------------------------
+  tax-calculation-method: "income-based"
+
 auction:
   enabled: true
   min-starting-bid: 1000
@@ -72,6 +91,9 @@ auto-save:
 
 license:
   key: ""
+
+auto-tax-payment:
+  enabled: true    # Enable automatic tax payment feature for global
 
 backup:
   enabled: true    # Enable automatic backup creation

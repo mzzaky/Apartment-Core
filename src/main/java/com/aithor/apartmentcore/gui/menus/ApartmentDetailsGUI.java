@@ -156,7 +156,15 @@ public class ApartmentDetailsGUI implements GUI {
         lore.add("&7• Tax Status: " + statusDisplay);
         lore.add("&7• Can Generate Income: " + (apartment.canGenerateIncome(now) ? "&aYes" : "&cNo"));
         if (apartment.owner != null) {
-            lore.add("&7• Auto-pay Taxes: " + (apartment.autoTaxPayment ? "&aEnabled" : "&cDisabled"));
+            boolean isFeatureEnabled = plugin.getEditionManager().isAutoTaxPaymentEnabled();
+            boolean isProActive = plugin.getEditionManager().isProActive();
+            if (!isProActive) {
+                lore.add("&7• Auto-pay Taxes: &8[PRO Only]");
+            } else if (!isFeatureEnabled) {
+                lore.add("&7• Auto-pay Taxes: &c[Disabled by Admin]");
+            } else {
+                lore.add("&7• Auto-pay Taxes: " + (apartment.autoTaxPayment ? "&aEnabled" : "&cDisabled"));
+            }
         }
         lore.add("");
 
@@ -654,8 +662,7 @@ public class ApartmentDetailsGUI implements GUI {
     }
 
     private void handleSetName() {
-        player.closeInventory();
-        GUIUtils.sendMessage(player, "&eUse command: &f/apartmentcore setname " + apartmentId + " <name>");
+        guiManager.requestNameInput(player, apartmentId);
     }
 
     private void handleSetWelcome() {

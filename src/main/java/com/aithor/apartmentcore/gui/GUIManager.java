@@ -42,6 +42,7 @@ public class GUIManager implements Listener {
     private final Map<Inventory, GUI> inventoryToGUI;
     private final Map<UUID, String> pendingMarketPriceInputs;
     private final Map<UUID, String> pendingIconInputs;
+    private final Map<UUID, String> pendingNameInputs;
     private int refreshTaskId = -1;
 
     public GUIManager(ApartmentCore plugin) {
@@ -50,6 +51,7 @@ public class GUIManager implements Listener {
         this.inventoryToGUI = new HashMap<>();
         this.pendingMarketPriceInputs = new HashMap<>();
         this.pendingIconInputs = new HashMap<>();
+        this.pendingNameInputs = new HashMap<>();
 
         // Register event listener
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -471,6 +473,20 @@ public class GUIManager implements Listener {
     }
 
     /**
+     * Request name input from player
+     * 
+     * @param player      The player to request input from
+     * @param apartmentId The apartment ID to set the name for
+     */
+    public void requestNameInput(Player player, String apartmentId) {
+        closeGUI(player);
+        player.closeInventory();
+        pendingNameInputs.put(player.getUniqueId(), apartmentId);
+        GUIUtils.sendMessage(player, "&ePlease enter the new display name for the apartment in chat.");
+        GUIUtils.sendMessage(player, "&eType '&ccancel&e' to cancel.");
+    }
+
+    /**
      * Request icon input from player
      * 
      * @param player      The player to request input from
@@ -489,6 +505,24 @@ public class GUIManager implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
+
+        // Handle name input
+        if (pendingNameInputs.containsKey(uuid)) {
+            event.setCancelled(true);
+            String apartmentId = pendingNameInputs.remove(uuid);
+            String message = event.getMessage().trim();
+
+            if (message.equalsIgnoreCase("cancel")) {
+                GUIUtils.sendMessage(player, "&cName change cancelled.");
+                return;
+            }
+
+            // Run the command synchronously on the next tick
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                plugin.getServer().dispatchCommand(player, "apartmentcore setname " + apartmentId + " " + message);
+            });
+            return;
+        }
 
         if (pendingMarketPriceInputs.containsKey(uuid)) {
             event.setCancelled(true);

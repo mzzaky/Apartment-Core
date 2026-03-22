@@ -119,6 +119,24 @@ public class CommandHandler implements TabCompleter {
                     }
                 }
                 sender.sendMessage(ChatColor.YELLOW + "License Status: " + ChatColor.WHITE + status);
+
+                // Show update checker status
+                com.aithor.apartmentcore.util.UpdateChecker uc = plugin.getUpdateChecker();
+                if (uc != null) {
+                    if (uc.isUpdateAvailable()) {
+                        sender.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Update Available! "
+                                + ChatColor.RESET + ChatColor.YELLOW + "v" + uc.getLatestVersion()
+                                + ChatColor.GRAY + " (current: v" + uc.getCurrentVersion() + ")");
+                        if (uc.getDownloadUrl() != null) {
+                            sender.sendMessage(ChatColor.AQUA + "Download: " + ChatColor.WHITE + uc.getDownloadUrl());
+                        }
+                    } else if (uc.getLatestVersion() != null) {
+                        sender.sendMessage(ChatColor.GREEN + "Up-to-date " + ChatColor.GRAY
+                                + "(latest: v" + uc.getLatestVersion() + ")");
+                    } else {
+                        sender.sendMessage(ChatColor.GRAY + "Update status: checking...");
+                    }
+                }
                 return true;
 
             case "info":

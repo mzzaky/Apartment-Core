@@ -19,6 +19,8 @@ import com.aithor.apartmentcore.research.ResearchManager;
 import com.aithor.apartmentcore.shop.ApartmentShopManager;
 import com.aithor.apartmentcore.gui.config.MainMenuConfig;
 import com.aithor.apartmentcore.util.SplashArt;
+import com.aithor.apartmentcore.util.UpdateChecker;
+import com.aithor.apartmentcore.util.UpdateNotifyListener;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -52,6 +54,7 @@ public class ApartmentCore extends JavaPlugin {
     private AchievementManager achievementManager;
     private MainMenuConfig mainMenuConfig;
     private BukkitTask auctionTask;
+    private UpdateChecker updateChecker;
 
     private final Map<UUID, Long> commandCooldowns = new ConcurrentHashMap<>();
     private final Map<UUID, ConfirmationAction> pendingConfirmations = new ConcurrentHashMap<>();
@@ -165,6 +168,12 @@ public class ApartmentCore extends JavaPlugin {
                 getLogger().warning("Failed to register PlaceholderAPI expansion: " + t.getMessage());
             }
         }
+
+        // ── Update Checker ──────────────────────────────────────────────────
+        this.updateChecker = new UpdateChecker(this);
+        this.updateChecker.start();
+        getServer().getPluginManager().registerEvents(
+                new UpdateNotifyListener(this, this.updateChecker), this);
 
         log("ApartmentCore enabled.");
     }
@@ -363,6 +372,10 @@ public class ApartmentCore extends JavaPlugin {
 
     public AchievementManager getAchievementManager() {
         return achievementManager;
+    }
+
+    public UpdateChecker getUpdateChecker() {
+        return updateChecker;
     }
 
     public MainMenuConfig getMainMenuConfig() {

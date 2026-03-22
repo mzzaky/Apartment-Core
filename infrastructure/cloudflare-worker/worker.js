@@ -9,6 +9,7 @@
  *
  * Endpoints:
  *   POST /api/validate   – Validate a license key
+ *   GET  /api/version    – Get latest plugin version metadata
  *   GET  /api/health     – Health check
  *
  * Free tier: 100,000 requests/day.
@@ -37,6 +38,10 @@ export default {
 
     if (url.pathname === "/api/validate" && request.method === "POST") {
       return handleValidate(request, env, corsHeaders);
+    }
+
+    if (url.pathname === "/api/version" && request.method === "GET") {
+      return handleVersion(url, env, corsHeaders);
     }
 
     return json({ error: "Not found" }, 404, corsHeaders);
@@ -152,6 +157,45 @@ async function handleValidate(request, env, corsHeaders) {
 
   } catch (err) {
     return json({ valid: false, error: "Internal error: " + err.message }, 500, corsHeaders);
+  }
+}
+
+// ── Version endpoint ──────────────────────────────────────────────────
+
+async function handleVersion(url, env, corsHeaders) {
+  const pluginName = url.searchParams.get("plugin") || "ApartmentCore";
+  const supabaseUrl = env.SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_SERVICE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return json({ error: "Server misconfigured" }, 500, corsHeaders);
+  }
+
+  try {
+    const res = await supabaseGet(
+      supabaseUrl,
+      supabaseKey,
+      `/rest/v1/plugin_metadata?plugin_name=eq.${encodeURIComponent(pluginName)}&select=latest_version,download_url,changelog_summary&limit=1`
+    );
+
+    if (!res.ok) {
+      return json({ error: "Database error" }, 500, corsHeaders);
+    }
+
+    const rows = await res.json();
+    if (rows.length === 0) {
+      return json({ error: "Plugin not found" }, 404, corsHeaders);
+    }
+
+    const meta = rows[0];
+    return json({
+      latest_version: meta.latest_version,
+      download_url: meta.download_url || null,
+      changelog_summary: meta.changelog_summary || null,
+    }, 200, corsHeaders);
+
+  } catch (err) {
+    return json({ error: "Internal error: " + err.message }, 500, corsHeaders);
   }
 }
 
